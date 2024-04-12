@@ -5,6 +5,12 @@ VisualStudioVersion = 17.10.34707.107
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Celin.XL.Server", "Celin.XL.Server\Celin.XL.Server.csproj", "{2535ADBC-2713-413C-BAC0-5F810EDE35CE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Celin.Script", "..\Celin.Query\Celin.Script\Celin.Script.csproj", "{1AAD3F17-D19C-4842-A809-C429AD63922B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Celin.AIS", "..\Celin.AIS\Celin.AIS.csproj", "{498DBB8F-E031-4424-9714-F65552157269}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Celin.Query", "..\Celin.Query\Celin.Query\Celin.Query.csproj", "{7A91A8AD-7FE0-4C0E-A26F-293FF8035A70}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +21,18 @@ Global
 		{2535ADBC-2713-413C-BAC0-5F810EDE35CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2535ADBC-2713-413C-BAC0-5F810EDE35CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2535ADBC-2713-413C-BAC0-5F810EDE35CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AAD3F17-D19C-4842-A809-C429AD63922B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AAD3F17-D19C-4842-A809-C429AD63922B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AAD3F17-D19C-4842-A809-C429AD63922B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AAD3F17-D19C-4842-A809-C429AD63922B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{498DBB8F-E031-4424-9714-F65552157269}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{498DBB8F-E031-4424-9714-F65552157269}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{498DBB8F-E031-4424-9714-F65552157269}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{498DBB8F-E031-4424-9714-F65552157269}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A91A8AD-7FE0-4C0E-A26F-293FF8035A70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A91A8AD-7FE0-4C0E-A26F-293FF8035A70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A91A8AD-7FE0-4C0E-A26F-293FF8035A70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A91A8AD-7FE0-4C0E-A26F-293FF8035A70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
