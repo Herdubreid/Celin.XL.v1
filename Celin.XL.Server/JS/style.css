@@ -1,0 +1,72 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .hidden {
+    @apply invisible;
+  }
+  .active-tab {
+    @apply border-b border-slate-600 bg-slate-900 text-slate-400;
+  }
+  .inactive-tab {
+    @apply hover:bg-slate-300;
+  }
+  .selected {
+    @apply scale-95 border-slate-600 border-l-2 border-t-2 border-solid;
+  }
+  .border-toggle {
+    @apply border-t-2 border-l-2 border-slate-900;
+  }
+  .enabled:active {
+    @apply scale-90;
+  }
+  .disabled {
+    @apply opacity-40;
+  }
+  .error {
+    @apply text-red-500;
+  }
+
+  .suggestion {
+    font-style: italic;
+    opacity: 0.5;
+  }
+  .suggestion-help {
+    color: rgb(19, 78, 74);
+    background: rgb(156, 163, 175);
+    border-radius: 4px;
+    margin: 2px 4px;
+    padding: 2px 4px;
+  }
+
+  #blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+  }
+  #blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgb(30, 41, 59);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(151, 163, 175);
+  }
+}
+
+@import "~prismjs/themes/prism-funky.css";

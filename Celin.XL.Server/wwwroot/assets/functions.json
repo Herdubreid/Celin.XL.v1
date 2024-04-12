@@ -1,0 +1,334 @@
+{
+    "allowCustomDataForDataTypeAny": true,
+    "functions": [
+        {
+            "description": "Call a Function on CQL Update",
+            "helpUrl": "https://celin.io/xl-docs/functions/oncql.html",
+            "id": "ONCQL",
+            "name": "ONCQL",
+            "options": {
+                "stream": true
+            },
+            "parameters": [
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "func",
+                    "type": "string"
+                },
+                {
+                    "dimensionality": "matrix",
+                    "name": "parameters",
+                    "repeating": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix"
+            }
+        },
+        {
+            "description": "Call a Function on CSL Update",
+            "helpUrl": "https://celin.io/xl-docs/functions/oncsl.html",
+            "id": "ONCSL",
+            "name": "ONCSL",
+            "options": {
+                "stream": true
+            },
+            "parameters": [
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "func",
+                    "type": "string"
+                },
+                {
+                    "dimensionality": "matrix",
+                    "name": "parameters",
+                    "repeating": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix"
+            }
+        },
+        {
+            "description": "Stream a Function",
+            "helpUrl": "https://celin.io/xl-docs/functions/callstream.html",
+            "id": "CALLSTREAM",
+            "name": "CALLSTREAM",
+            "options": {
+                "stream": true
+            },
+            "parameters": [
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "dimensionality": "matrix",
+                    "name": "params",
+                    "repeating": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix"
+            }
+        },
+        {
+            "description": "Volatile Call a Function",
+            "helpUrl": "https://celin.io/xl-docs/functions/callvolatile.html",
+            "id": "CALLVOLATILE",
+            "name": "CALLVOLATILE",
+            "options": {
+                "volatile": true
+            },
+            "parameters": [
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "dimensionality": "matrix",
+                    "name": "params",
+                    "repeating": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix"
+            }
+        },
+        {
+            "description": "Call a Function",
+            "helpUrl": "https://celin.io/xl-docs/functions/call.html",
+            "id": "CALL",
+            "name": "CALL",
+            "parameters": [
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "dimensionality": "matrix",
+                    "name": "params",
+                    "repeating": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix"
+            }
+        },
+        {
+            "description": "Menu event",
+            "helpUrl": "https://celin.io/xl-docs/functions/onmenu.html",
+            "id": "ONMENU",
+            "name": "ONMENU",
+            "options": {
+                "stream": true
+            },
+            "parameters": [
+                {
+                    "description": "Menu name",
+                    "name": "menu",
+                    "type": "string"
+                },
+                {
+                    "description": "Menu option",
+                    "name": "option",
+                    "type": "any"
+                },
+                {
+                    "description": "Columns to display",
+                    "name": "columns",
+                    "repeating": true,
+                    "type": "number"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix"
+            }
+        },
+        {
+            "description": "Regular Expression function",
+            "helpUrl": "https://celin.io/xl-docs/functions/regex.html",
+            "id": "REGEX",
+            "name": "REGEX",
+            "parameters": [
+                {
+                    "name": "match",
+                    "type": "string"
+                },
+                {
+                    "name": "pattern",
+                    "type": "string"
+                }
+            ],
+            "result": {}
+        },
+        {
+            "description": ". * Run a named Script",
+            "helpUrl": "https://celin.io/xl-docs/functions/csl.html",
+            "id": "CSL",
+            "name": "CSL",
+            "options": {
+                "stream": true
+            },
+            "parameters": [
+                {
+                    "description": "Name",
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "dimensionality": "matrix",
+                    "name": "_",
+                    "repeating": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Run a named Query",
+            "helpUrl": "https://celin.io/xl-docs/functions/cql.html",
+            "id": "CQL",
+            "name": "CQL",
+            "options": {
+                "stream": true
+            },
+            "parameters": [
+                {
+                    "description": "CQL Name",
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "dimensionality": "matrix",
+                    "name": "_",
+                    "repeating": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Get CQL State",
+            "helpUrl": "https://celin.io/xl-docs/functions/cqlstate.html",
+            "id": "CQLSTATE",
+            "name": "CQLSTATE",
+            "options": {
+                "stream": true
+            },
+            "parameters": [
+                {
+                    "description": "CQL Name",
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "description": "Attribute",
+                    "name": "attribute",
+                    "type": "string"
+                },
+                {
+                    "name": "_default",
+                    "type": "any"
+                }
+            ],
+            "result": {}
+        },
+        {
+            "description": "Get CSL State",
+            "helpUrl": "https://celin.io/xl-docs/functions/cslstate.html",
+            "id": "CSLSTATE",
+            "name": "CSLSTATE",
+            "options": {
+                "stream": true
+            },
+            "parameters": [
+                {
+                    "description": "CSL Name",
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "description": "Attribute",
+                    "name": "attribute",
+                    "type": "string"
+                },
+                {
+                    "name": "_default",
+                    "type": "any"
+                }
+            ],
+            "result": {}
+        },
+        {
+            "description": "Get named data results",
+            "helpUrl": "https://celin.io/xl-docs/functions/data.html",
+            "id": "DATA",
+            "name": "DATA",
+            "options": {
+                "stream": true
+            },
+            "parameters": [
+                {
+                    "description": "Data Name",
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "description": "From Row",
+                    "name": "from",
+                    "type": "number"
+                },
+                {
+                    "description": "To Row",
+                    "name": "to",
+                    "type": "number"
+                },
+                {
+                    "description": "Format",
+                    "name": "format",
+                    "optional": true,
+                    "repeating": true,
+                    "type": "any"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix"
+            }
+        },
+        {
+            "description": "Incremental ticker function",
+            "helpUrl": "https://celin.io/xl-docs/functions/ticker.html",
+            "id": "TICKER",
+            "name": "TICKER",
+            "options": {
+                "stream": true
+            },
+            "parameters": [
+                {
+                    "description": "Delay seconds",
+                    "name": "delay",
+                    "type": "number"
+                }
+            ],
+            "result": {
+                "type": "number"
+            }
+        }
+    ]
+}

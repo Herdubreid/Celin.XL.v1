@@ -1,0 +1,19 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "./wwwroot/assets",
+    "module": "ESNext",
+    "target": "ESNext",
+    "allowJs": true,
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": false
+  },
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "include": [
+    "JS/**/*"
+  ],
+  "exclude": [
+    "node_modules/*",
+    "wwwroot/*"
+  ],
+}

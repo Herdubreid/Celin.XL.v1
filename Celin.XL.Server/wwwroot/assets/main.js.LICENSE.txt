@@ -1,0 +1,35 @@
+/*!
+    localForage -- Offline Storage, Improved
+    Version 1.10.0
+    https://localforage.github.io/localForage
+    (c) 2013-2017 Mozilla, Apache License 2.0
+*/
+
+/*!
+* TW Elements
+* Version: FREE 2.0.0
+* 
+* Copyright: Material Design for Bootstrap
+* https://mdbootstrap.com/
+* 
+* Read the license: https://tw-elements.com/license/
+*
+*
+* Documentation: https://tw-elements.com/
+*
+* Support: https://mdbootstrap.com/support/cat/twe
+*
+* Contact: tailwind@mdbootstrap.com
+* 
+*/
+
+/*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */
+
+/**
+ * Prism: Lightweight, robust, elegant syntax highlighting
+ *
+ * @license MIT <https://opensource.org/licenses/MIT>
+ * @author Lea Verou <https://lea.verou.me>
+ * @namespace
+ * @public
+ */

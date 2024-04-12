@@ -1,0 +1,140 @@
+[
+    {
+        "value": "=",
+        "label": "EQUAL",
+        "examples": [
+            {
+                "code": "AT1 = C",
+                "description": "Search Type (AT1) is equal to C"
+            },
+            {
+                "code": "DGJ = \"31/12/21\"",
+                "description": "GL Date (DGJ) is EQUAL to 31/12/21 (double quotes are required around special characters like \"/\")"
+            }
+        ]
+    },
+    {
+        "value": ">",
+        "label": "GREATER THAN",
+        "examples": [
+            {
+                "code": "AN8 > 4000",
+                "description": "Where Address Number (AN8) is greater than 4000"
+            }
+        ]
+    },
+    {
+        "value": "<",
+        "label": "LESS THAN",
+        "examples": [
+            {
+                "code": "AN8 < 4000",
+                "description": "Where Address Number (AN8) is less than 4000"
+            }
+        ]
+    },
+    {
+        "value": ">=",
+        "label": "GREATER THAN OR EQUAL",
+        "examples": [
+            {
+                "code": "AN8 >= 4000",
+                "description": "Where Address Number (AN8) is greater than or equal to 4000"
+            }
+        ]
+    },
+    {
+        "value": "<=",
+        "label": "LESS THAN OR EQUAL",
+        "examples": [
+            {
+                "code": "AN8 <= 4000",
+                "description": "Where Address Number (AN8) is less than or equal to 4000"
+            }
+        ]
+    },
+    {
+        "value": "<>",
+        "label": "NOT EQUAL",
+        "examples": [
+            {
+                "code": "AT1 <> C",
+                "description": "Where Search Type (AT1) is not equal to C"
+            }
+        ]
+    },
+    {
+        "value": "bw",
+        "label": "BETWEEN",
+        "examples": [
+            {
+                "code": "NXTR bw 320,340",
+                "description": "Where Next Status (NXTR) is greater than or equal 320, and less than or 340"
+            }
+        ]
+    },
+    {
+        "value": "in",
+        "label": "IN A LIST",
+        "examples": [
+            {
+                "code": "NXTR in 320,340,360",
+                "description": "Where Next Status (NXTR) matces any of 320, 340 or 360"
+            }
+        ]
+    },
+    {
+        "value": "?",
+        "label": "STRING CONTAINS",
+        "examples": [
+            {
+                "code": "ALPH ? John",
+                "description": "Where Alpha Name (ALPH) contains John"
+            },
+            {
+                "code": "ALPH ? \"John Doe\"",
+                "description": "Where Alpha Name (ALPH) contains \"John Doe\" (use double quotes when text contains spaces or special characters)"
+            }
+        ]
+    },
+    {
+        "value": "_",
+        "label": "STRING IS BLANK",
+        "examples": [
+            {
+                "code": "SFXO _ blank",
+                "description": "Where Order Suffix (SFXO) is blank or empty - the literal \"blank\" is only reqired for sematics and can be any alphanumeric set"
+            }
+        ]
+    },
+    {
+        "value": "!",
+        "label": "STRING IS NOT BLANK",
+        "examples": [
+            {
+                "code": "SFXO ! blank",
+                "description": "Where Order Suffix (SFXO) is not blank or empty - the literal \"blank\" is only reqired for sematics and can be any alphanumeric set"
+            }
+        ]
+    },
+    {
+        "value": "^",
+        "label": "STRING STARTS WITH",
+        "examples": [
+            {
+                "code": "LTTR ^ 3",
+                "description": "Where Last Status (LTTR) starts with 3"
+            }
+        ]
+    },
+    {
+        "value": "$",
+        "label": "STRING ENDS WITH",
+        "examples": [
+            {
+                "code": "DCTO $ O",
+                "description": "Where Document Type (DCTO) ends with O"
+            }
+        ]
+    }
+]

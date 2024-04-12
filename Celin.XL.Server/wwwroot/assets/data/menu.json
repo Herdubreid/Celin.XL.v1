@@ -1,0 +1,28 @@
+[
+  [
+    {
+      "title": "Run Query",
+      "command": "KeyR"
+    }
+  ],
+  [
+    {
+      "title": "Run Script",
+      "command": "KeyR"
+    },
+    {
+      "title": "Build Script",
+      "command": "KeyB"
+    }
+  ],
+  [
+    {
+      "title": "Build Command",
+      "command": "KeyB"
+    },
+    {
+      "title": "Create Menu",
+      "command": "KeyM"
+    }
+  ]
+]

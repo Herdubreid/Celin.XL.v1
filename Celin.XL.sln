@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34707.107
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Celin.XL.Server", "Celin.XL.Server\Celin.XL.Server.csproj", "{2535ADBC-2713-413C-BAC0-5F810EDE35CE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2535ADBC-2713-413C-BAC0-5F810EDE35CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2535ADBC-2713-413C-BAC0-5F810EDE35CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2535ADBC-2713-413C-BAC0-5F810EDE35CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2535ADBC-2713-413C-BAC0-5F810EDE35CE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E33CFFA1-7A93-4BE2-ACCF-E941DEE9C787}
+	EndGlobalSection
+EndGlobal

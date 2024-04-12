@@ -1,0 +1,25 @@
+﻿@page "/"
+@rendermode RenderMode.InteractiveServer
+@using System.Reflection
+@using BlazorState
+@inject JsService JS
+@inherits BlazorStateComponent
+
+<PageTitle>It's all about data!</PageTitle>
+
+<div id="editor-app" />
+
+@code {
+	AppState State => GetState<AppState>();
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			string? ver = Assembly.GetExecutingAssembly()?.
+				GetName()?.Version?.ToString();
+
+			await JS.InitEditorApp(ver?.Substring(0, ver.Length - 4));
+			await JS.SetServers(State.Contexts!);
+		}
+	}
+}
