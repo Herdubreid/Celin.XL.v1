@@ -35,7 +35,7 @@ export const app = {
       },
     });
   },
-  login: () => stateStore.login(true),
+  login: (flag: boolean) => stateStore.login(flag),
   authenticated: (context) => {
     serversStore.update(context);
     stateStore.last();

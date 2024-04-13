@@ -203,7 +203,6 @@ export const toggleCmd = async (cmd: ICmd) => {
 };
 
 export const buildCmd = (cmd: ICmd): any => {
-  console.log(cmd);
   const strict = "'use strict';";
   const isAsync = cmd.isAsync ? "async " : "";
   const slib = "const lib=arguments[0];";

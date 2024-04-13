@@ -65,6 +65,7 @@ public partial class AppState
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
+                await JS.Login(false);
                 await JS.NotifyError(ex.Message);
             }
 

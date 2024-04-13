@@ -6,8 +6,13 @@
   let username = "";
   let password = "";
 
-  const unsubscibe = serversStore.subscribe((servers) => username =
-      servers?.length > 0 ? servers[serversStore.server]?.authResponse?.username : username);
+  const unsubscibe = serversStore.subscribe(
+    (servers) =>
+      (username =
+        servers?.length > 0
+          ? servers[serversStore.server]?.authResponse?.username
+          : username),
+  );
 
   const ok = () => {
     stateStore.busy(true);
@@ -23,7 +28,7 @@
 {#if $stateStore.login}
   <div
     transition:fade
-    class="bg-opacity-70 bg-slate-900  z-40 fixed top-0 h-full w-full"
+    class="bg-opacity-70 bg-slate-900 z-40 fixed top-0 h-full w-full"
   >
     <form
       class="relative top-1/4 mx-auto max-w-xs border-4 border-l-slate-600 border-t-slate-600 border-r-slate-400 border-b-slate-400"
@@ -31,7 +36,9 @@
     >
       <div class="px-8">
         <div class="flex place-content-center py-4 text-slate-300">
-          <p class="text-xl font-semibold">{serversStore.server}</p>
+          <p class="text-xl font-semibold">
+            {$serversStore[$stateStore.contextId]?.name}
+          </p>
         </div>
         <div class="pb-4">
           <!-- svelte-ignore a11y-autofocus -->

@@ -1,10 +1,8 @@
 <script>
   import { fade } from "svelte/transition";
   import { serversStore, stateStore } from "../stores";
-  import { getItem, setItem } from "../persist";
-  import { onMount } from "svelte";
-
-  const CURRENT_KEY = "CurrentServer";
+    import Server from "./Server.svelte";
+    import { onDestroy } from "svelte";
 
   export let version;
   export let menu;
@@ -25,6 +23,11 @@
     menu(option);
   };
 
+  const unsubscibe = stateStore.subscribe(state => console.log(state));
+
+  onDestroy(() => {
+    unsubscibe();
+  });
 </script>
 
 {#if openMenu}
@@ -111,11 +114,11 @@
         <div
           class="mt-1 bg-slate-400 rounded-b-md rounded-tr-md border-slate-600 border-l-2 border-solid"
         >
-          {#each ($serversStore ?? []).filter((e) => e.id !== serverOption) as s}
+          {#each ($serversStore ?? []).filter((e) => e.id !== $stateStore.contextId) as s}
             <button
               on:click={() => {
                 global.blazorLib.invokeMethodAsync("SelectContext", s.id);
-                stateStore.setServer(s.id);
+                stateStore.context(s.id);
               }}
               class="rounded block w-full text-left py-2 pl-4 pr-2 outline-none hover:bg-slate-300 overflow-hidden font-semibold"
               >{s.name}</button
@@ -144,7 +147,7 @@
         />
       </svg>
       <span class="text-nowrap ml-1"
-        >{($serversStore ?? []).find((s) => s.id === serverOption)?.name ??
+        >{($serversStore ?? []).find((s) => s.id === $stateStore.contextId)?.name ??
           ""}</span
       >
     </button>

@@ -1315,6 +1315,7 @@ function create_fragment(ctx) {
 	let div3;
 	let div0;
 	let p;
+	let t0;
 	let t1;
 	let div1;
 	let input0;
@@ -1346,7 +1347,7 @@ function create_fragment(ctx) {
 			div3 = (0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.element)("div");
 			div0 = (0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.element)("div");
 			p = (0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.element)("p");
-			p.textContent = "Environment";
+			t0 = (0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.text)(/*title*/ ctx[2]);
 			t1 = (0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.space)();
 			div1 = (0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.element)("div");
 			input0 = (0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.element)("input");
@@ -1365,65 +1366,65 @@ function create_fragment(ctx) {
 			path1 = (0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.svg_element)("path");
 			t5 = (0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.space)();
 			div6 = (0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.element)("div");
-			t6 = (0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.text)(/*notice*/ ctx[2]);
+			t6 = (0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.text)(/*notice*/ ctx[3]);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(p, "class", "text-xl font-semibold");
-			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(p, file, 50, 8, 1226);
+			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(p, file, 58, 8, 1373);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(div0, "class", "flex place-content-center py-2 text-slate-300");
-			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(div0, file, 49, 6, 1157);
+			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(div0, file, 57, 6, 1304);
 			input0.autofocus = true;
 			input0.required = true;
-			input0.disabled = /*busy*/ ctx[3];
+			input0.disabled = /*busy*/ ctx[4];
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(input0, "class", "border rounded w-full py-2 px-3");
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(input0, "type", "text");
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(input0, "placeholder", "User Name");
-			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(input0, file, 54, 8, 1371);
+			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(input0, file, 64, 8, 1536);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(div1, "class", "pb-4");
-			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(div1, file, 52, 6, 1296);
+			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(div1, file, 62, 6, 1461);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(input1, "class", "border border-red rounded w-full py-2 px-3");
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(input1, "type", "password");
 			input1.required = true;
-			input1.disabled = /*busy*/ ctx[3];
+			input1.disabled = /*busy*/ ctx[4];
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(input1, "placeholder", "Password");
-			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(input1, file, 65, 8, 1649);
+			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(input1, file, 75, 8, 1814);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(div2, "class", "mb-2");
-			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(div2, file, 64, 6, 1621);
+			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(div2, file, 74, 6, 1786);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(div3, "class", "px-8");
-			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(div3, file, 48, 4, 1131);
+			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(div3, file, 56, 4, 1278);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(path0, "fill-rule", "evenodd");
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(path0, "d", "M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z");
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(path0, "clip-rule", "evenodd");
-			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(path0, file, 88, 12, 2331);
+			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(path0, file, 98, 12, 2496);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(svg0, "xmlns", "http://www.w3.org/2000/svg");
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(svg0, "class", "h-5 w-5");
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(svg0, "viewBox", "0 0 20 20");
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(svg0, "fill", "currentColor");
-			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(svg0, file, 82, 10, 2157);
+			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(svg0, file, 92, 10, 2322);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(button0, "class", "transform active:scale-95 hover:ring py-2 px-4 bg-green-100");
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(button0, "type", "submit");
-			button0.disabled = /*busy*/ ctx[3];
-			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(button0, file, 77, 8, 1996);
+			button0.disabled = /*busy*/ ctx[4];
+			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(button0, file, 87, 8, 2161);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(path1, "fill-rule", "evenodd");
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(path1, "d", "M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z");
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(path1, "clip-rule", "evenodd");
-			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(path1, file, 107, 12, 3038);
+			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(path1, file, 117, 12, 3203);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(svg1, "xmlns", "http://www.w3.org/2000/svg");
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(svg1, "class", "h-5 w-5");
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(svg1, "viewBox", "0 0 20 20");
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(svg1, "fill", "currentColor");
-			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(svg1, file, 101, 10, 2864);
+			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(svg1, file, 111, 10, 3029);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(button1, "class", "transform active:scale-95 hover:ring py-2 px-4 bg-red-100");
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(button1, "type", "button");
-			button1.disabled = /*busy*/ ctx[3];
-			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(button1, file, 95, 8, 2668);
+			button1.disabled = /*busy*/ ctx[4];
+			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(button1, file, 105, 8, 2833);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(div4, "class", "flex items-center place-content-between");
-			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(div4, file, 76, 6, 1933);
+			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(div4, file, 86, 6, 2098);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(div5, "class", "px-8 pt-4");
-			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(div5, file, 75, 4, 1902);
+			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(div5, file, 85, 4, 2067);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(div6, "class", "px-8 py-2 text-sm text-center text-red-400");
-			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(div6, file, 116, 4, 3412);
-			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(form, file, 47, 2, 1081);
+			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(div6, file, 126, 4, 3577);
+			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(form, file, 55, 2, 1228);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.attr_dev)(div7, "class", "bg-opacity-70 bg-slate-900 z-40 fixed top-0 h-full w-full");
-			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(div7, file, 43, 0, 981);
+			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.add_location)(div7, file, 51, 0, 1129);
 		},
 		l: function claim(nodes) {
 			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1434,6 +1435,7 @@ function create_fragment(ctx) {
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.append_dev)(form, div3);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.append_dev)(div3, div0);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.append_dev)(div0, p);
+			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.append_dev)(p, t0);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.append_dev)(div3, t1);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.append_dev)(div3, div1);
 			(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.append_dev)(div1, input0);
@@ -1460,41 +1462,43 @@ function create_fragment(ctx) {
 
 			if (!mounted) {
 				dispose = [
-					(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.listen_dev)(input0, "input", /*input0_input_handler*/ ctx[6]),
-					(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.listen_dev)(input1, "input", /*input1_input_handler*/ ctx[7]),
-					(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.listen_dev)(button1, "click", /*click_handler*/ ctx[8], false, false, false, false),
-					(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.listen_dev)(form, "submit", (0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.prevent_default)(/*submit_handler*/ ctx[9]), false, true, false, false)
+					(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.listen_dev)(input0, "input", /*input0_input_handler*/ ctx[7]),
+					(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.listen_dev)(input1, "input", /*input1_input_handler*/ ctx[8]),
+					(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.listen_dev)(button1, "click", /*click_handler*/ ctx[9], false, false, false, false),
+					(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.listen_dev)(form, "submit", (0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.prevent_default)(/*submit_handler*/ ctx[10]), false, true, false, false)
 				];
 
 				mounted = true;
 			}
 		},
 		p: function update(ctx, [dirty]) {
-			if (!current || dirty & /*busy*/ 8) {
-				(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.prop_dev)(input0, "disabled", /*busy*/ ctx[3]);
+			if (!current || dirty & /*title*/ 4) (0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.set_data_dev)(t0, /*title*/ ctx[2]);
+
+			if (!current || dirty & /*busy*/ 16) {
+				(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.prop_dev)(input0, "disabled", /*busy*/ ctx[4]);
 			}
 
 			if (dirty & /*username*/ 1 && input0.value !== /*username*/ ctx[0]) {
 				(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.set_input_value)(input0, /*username*/ ctx[0]);
 			}
 
-			if (!current || dirty & /*busy*/ 8) {
-				(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.prop_dev)(input1, "disabled", /*busy*/ ctx[3]);
+			if (!current || dirty & /*busy*/ 16) {
+				(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.prop_dev)(input1, "disabled", /*busy*/ ctx[4]);
 			}
 
 			if (dirty & /*password*/ 2 && input1.value !== /*password*/ ctx[1]) {
 				(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.set_input_value)(input1, /*password*/ ctx[1]);
 			}
 
-			if (!current || dirty & /*busy*/ 8) {
-				(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.prop_dev)(button0, "disabled", /*busy*/ ctx[3]);
+			if (!current || dirty & /*busy*/ 16) {
+				(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.prop_dev)(button0, "disabled", /*busy*/ ctx[4]);
 			}
 
-			if (!current || dirty & /*busy*/ 8) {
-				(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.prop_dev)(button1, "disabled", /*busy*/ ctx[3]);
+			if (!current || dirty & /*busy*/ 16) {
+				(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.prop_dev)(button1, "disabled", /*busy*/ ctx[4]);
 			}
 
-			if (!current || dirty & /*notice*/ 4) (0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.set_data_dev)(t6, /*notice*/ ctx[2]);
+			if (!current || dirty & /*notice*/ 8) (0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.set_data_dev)(t6, /*notice*/ ctx[3]);
 		},
 		i: function intro(local) {
 			if (current) return;
@@ -1536,6 +1540,7 @@ function instance($$self, $$props, $$invalidate) {
 	(0,svelte_internal__WEBPACK_IMPORTED_MODULE_0__.validate_slots)('LoginApp', slots, []);
 	let username = "";
 	let password = "";
+	let title = "Login";
 	let notice = "";
 	let busy = false;
 
@@ -1544,12 +1549,15 @@ function instance($$self, $$props, $$invalidate) {
 			const msg = JSON.parse(result.message);
 
 			switch (true) {
+				case !!msg.title:
+					$$invalidate(2, title = msg.title);
+					break;
 				case !!msg.username:
 					$$invalidate(0, username = msg.username);
 					break;
 				case !!msg.notice:
-					$$invalidate(3, busy = false);
-					$$invalidate(2, notice = msg.notice);
+					$$invalidate(4, busy = false);
+					$$invalidate(3, notice = msg.notice);
 					break;
 			}
 		});
@@ -1558,8 +1566,8 @@ function instance($$self, $$props, $$invalidate) {
 	});
 
 	const ok = () => {
-		$$invalidate(2, notice = "");
-		$$invalidate(3, busy = true);
+		$$invalidate(3, notice = "");
+		$$invalidate(4, busy = true);
 		Office.context.ui.messageParent(JSON.stringify({ ok: true, username, password }));
 	};
 
@@ -1590,6 +1598,7 @@ function instance($$self, $$props, $$invalidate) {
 		fade: svelte_transition__WEBPACK_IMPORTED_MODULE_1__.fade,
 		username,
 		password,
+		title,
 		notice,
 		busy,
 		ok,
@@ -1599,8 +1608,9 @@ function instance($$self, $$props, $$invalidate) {
 	$$self.$inject_state = $$props => {
 		if ('username' in $$props) $$invalidate(0, username = $$props.username);
 		if ('password' in $$props) $$invalidate(1, password = $$props.password);
-		if ('notice' in $$props) $$invalidate(2, notice = $$props.notice);
-		if ('busy' in $$props) $$invalidate(3, busy = $$props.busy);
+		if ('title' in $$props) $$invalidate(2, title = $$props.title);
+		if ('notice' in $$props) $$invalidate(3, notice = $$props.notice);
+		if ('busy' in $$props) $$invalidate(4, busy = $$props.busy);
 	};
 
 	if ($$props && "$$inject" in $$props) {
@@ -1610,6 +1620,7 @@ function instance($$self, $$props, $$invalidate) {
 	return [
 		username,
 		password,
+		title,
 		notice,
 		busy,
 		ok,

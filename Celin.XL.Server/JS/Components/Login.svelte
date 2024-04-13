@@ -13,9 +13,8 @@
   let username;
   let dialog = false;
 
-  const lastUser = serversStore.subscribe((servers) => {
-    username =
-      servers?.length > 0 ? servers[0].authResponse?.username : username;
+  const lastUser = stateStore.subscribe((state) => {
+    username = serversStore[state.contextId]?.authResponse?.username;
   });
   const prompt = stateStore.subscribe((state) => {
     if (dialog) {
@@ -46,21 +45,26 @@
                 const msg = JSON.parse(ev.message);
                 switch (true) {
                   case msg.loaded:
-                    dialog.messageChild(JSON.stringify({ username }));
+                    dialog.messageChild(
+                      JSON.stringify({
+                        username,
+                        title: $serversStore[state.contextId]?.name,
+                      }),
+                    );
                     break;
                   case msg.ok:
                     stateStore.busy(true);
                     global.blazorLib.invokeMethodAsync(
                       "Authenticate",
                       msg.username,
-                      msg.password
+                      msg.password,
                     );
                     break;
                   case msg.cancel:
                     stateStore.login(false);
                     break;
                 }
-              }
+              },
             );
             dialog.addEventHandler(
               Office.EventType.DialogEventReceived,
@@ -68,10 +72,10 @@
                 if (ev.error === 12006) {
                   stateStore.login(false);
                 }
-              }
+              },
             );
           }
-        }
+        },
       );
     }
   });
@@ -85,6 +89,6 @@
 {#if $stateStore.login}
   <div
     transition:fade
-    class="bg-opacity-70 bg-slate-900  z-40 fixed top-0 h-full w-full"
+    class="bg-opacity-70 bg-slate-900 z-40 fixed top-0 h-full w-full"
   />
 {/if}

@@ -3,6 +3,7 @@
 
   let username = "";
   let password = "";
+  let title = "Login";
   let notice = "";
   let busy = false;
 
@@ -12,6 +13,9 @@
       (result) => {
         const msg = JSON.parse(result.message);
         switch (true) {
+          case !!msg.title:
+            title = msg.title;
+            break;
           case !!msg.username:
             username = msg.username;
             break;
@@ -20,7 +24,7 @@
             notice = msg.notice;
             break;
         }
-      }
+      },
     );
     Office.context.ui.messageParent(JSON.stringify({ loaded: true }));
   });
@@ -28,27 +32,33 @@
   const ok = () => {
     notice = "";
     busy = true;
-    Office.context.ui.messageParent(JSON.stringify({
-      ok: true,
-      username,
-      password,
-    }));
+    Office.context.ui.messageParent(
+      JSON.stringify({
+        ok: true,
+        username,
+        password,
+      }),
+    );
   };
   const cancel = () => {
-    Office.context.ui.messageParent(JSON.stringify({
-      cancel: true,
-    }));
+    Office.context.ui.messageParent(
+      JSON.stringify({
+        cancel: true,
+      }),
+    );
   };
 </script>
 
 <div
   transition:fade
-  class="bg-opacity-70 bg-slate-900  z-40 fixed top-0 h-full w-full"
+  class="bg-opacity-70 bg-slate-900 z-40 fixed top-0 h-full w-full"
 >
   <form on:submit|preventDefault={() => ok()}>
     <div class="px-8">
       <div class="flex place-content-center py-2 text-slate-300">
-        <p class="text-xl font-semibold">Environment</p>
+        <p class="text-xl font-semibold">
+          {title}
+        </p>
       </div>
       <div class="pb-4">
         <!-- svelte-ignore a11y-autofocus -->

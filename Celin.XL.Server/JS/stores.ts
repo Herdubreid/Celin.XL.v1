@@ -34,7 +34,7 @@ export const optionsStore = options();
 const initFlags = {
   busy: false,
   login: false,
-  server: 0,
+  server: false,
   active: false,
   notify: null,
   action: false,
@@ -42,6 +42,7 @@ const initFlags = {
 const resetState = {
   table: null,
   info: null,
+  contextId: 0,
 };
 const initState = {
   ...initFlags,
@@ -73,6 +74,8 @@ const state = () => {
       })),
     server: (server) =>
       update((s) => ({ ...s, ...initFlags, server, active: server })),
+    context: (contextId) =>
+      update((s) => ({ ...s, contextId})),
     selected: (data) =>
       update((s) => {
         const selected = s.selected === data ? null : data;

@@ -28,8 +28,8 @@ public class JsService
         => JS.InvokeVoidAsync(EditorApp(app.init), Ref, version);
     public ValueTask SetServers(IEnumerable<Query.Context> ctxs)
         => JS.InvokeVoidAsync(EditorApp(app.setServers), ctxs);
-    public ValueTask Login()
-        => JS.InvokeVoidAsync(EditorApp(app.login));
+    public ValueTask Login(bool flag = true)
+        => JS.InvokeVoidAsync(EditorApp(app.login), flag);
     public ValueTask Authenticated(Query.Context ctx)
         => JS.InvokeVoidAsync(EditorApp(app.authenticated), ctx);
     public ValueTask UpdateCql(object data)
