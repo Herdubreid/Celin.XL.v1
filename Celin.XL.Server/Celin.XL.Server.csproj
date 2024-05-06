@@ -11,12 +11,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="**/*.ts" />
-		<Content Remove="**/*.ts" />
-		<TypeScriptCompile Include="**/*.ts" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <None Include="Celin.Query.csproj" />
 	  <None Include="Celin.Query.csproj.user" />
 	</ItemGroup>
