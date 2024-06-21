@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Celin.AIS", "..\Celin.AIS\C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Celin.Query", "..\Celin.Query\Celin.Query\Celin.Query.csproj", "{7A91A8AD-7FE0-4C0E-A26F-293FF8035A70}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptConsole", "ScriptConsole\ScriptConsole.csproj", "{74B0F92F-2678-4F24-80E4-E59C36B90586}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{7A91A8AD-7FE0-4C0E-A26F-293FF8035A70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A91A8AD-7FE0-4C0E-A26F-293FF8035A70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A91A8AD-7FE0-4C0E-A26F-293FF8035A70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74B0F92F-2678-4F24-80E4-E59C36B90586}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74B0F92F-2678-4F24-80E4-E59C36B90586}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74B0F92F-2678-4F24-80E4-E59C36B90586}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74B0F92F-2678-4F24-80E4-E59C36B90586}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
