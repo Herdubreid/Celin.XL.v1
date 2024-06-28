@@ -1,6 +1,33 @@
-﻿using System;
+﻿using Celin;
+using System;
+using System.Text.Json;
+using System.Threading.Tasks;
 
-Process("Starting...");
-Console.WriteLine("This is Script!");
-Console.WriteLine("Name: {0}", E1.AuthRequest.username);
+record F0101 : Celin.AIS.FormResponse
+{
+    // Instead of defining row members, we use the DynamicJsonElment
+    public FormResult fs_DATABROWSE_F0101 { get; set; } = null!;
+}
+
+LogInformation("Starting...");
+
+var rq = QL("f0101 (an8,alph)");
+
+var rs = await E1.RequestAsync<F0101>(rq);
+// Simplify the return parameter
+var d = rs.fs_DATABROWSE_F0101.data.gridData;
+// Dump the query result
+Console.WriteLine("Returned {0} records, there are {1}more.", d.summary.records, d.summary.moreRecords ? string.Empty : "no ");
+// Note that the 'r' variable is now dynamic
+foreach (dynamic r in d.rowset)
+{
+    // Now we can access the members without concrete class!
+    Console.WriteLine("{0,8} {1}", r.f0101_an8, r.f0101_alph);
+}
+
+//LogDebug(JsonSerializer.Serialize(rq, new JsonSerializerOptions { WriteIndented = true }));
+//LogInformation("Waiting...");
+//await Task.Delay(5000);
+LogInformation("Done");
+
 Message = "Done!";
