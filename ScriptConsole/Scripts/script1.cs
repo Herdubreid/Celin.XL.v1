@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 record F0101 : Celin.AIS.FormResponse
 {
     // Instead of defining row members, we use the DynamicJsonElment
-    public FormResult fs_DATABROWSE_F0101 { get; set; } = null!;
+    //public DynamicFormResult fs_DATABROWSE_F0101 { get; set; } = null!;
+    public ObjectFormResult fs_DATABROWSE_F0101 { get; set; } = null!;
 }
 
 LogInformation("Starting...");
@@ -22,7 +23,7 @@ Console.WriteLine("Returned {0} records, there are {1}more.", d.summary.records,
 foreach (dynamic r in d.rowset)
 {
     // Now we can access the members without concrete class!
-    Console.WriteLine("{0,8} {1}", r.f0101_an8, r.f0101_alph);
+    Console.WriteLine("{0,8} {1}", r[0], r[1]);
 }
 
 //LogDebug(JsonSerializer.Serialize(rq, new JsonSerializerOptions { WriteIndented = true }));

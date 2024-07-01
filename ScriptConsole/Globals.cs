@@ -12,7 +12,8 @@ namespace Celin;
 public delegate void ProcessEvent(string? msg);
 public class Globals
 {
-    public record FormResult : AIS.Form<AIS.FormData<AIS.DynamicJsonElement>>;
+    public record DynamicFormResult : AIS.Form<AIS.FormData<AIS.DynamicJsonElement>>;
+    public record ObjectFormResult : AIS.Form<AIS.FormData<IEnumerable<object>>>;
     public AIS.Request QL(string query)
         => Language.QL.Parse(query);
     public void LogInformation(string msg)
