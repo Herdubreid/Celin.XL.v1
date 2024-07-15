@@ -13,11 +13,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Celin.Query", "..\Celin.Que
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScriptConsole", "ScriptConsole\ScriptConsole.csproj", "{74B0F92F-2678-4F24-80E4-E59C36B90586}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Celin.Language", "Celin.Language\Celin.Language.csproj", "{2C9F9163-BAA7-43C0-AA24-215D29D8FF10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Celin.Language", "Celin.Language\Celin.Language.csproj", "{2C9F9163-BAA7-43C0-AA24-215D29D8FF10}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Celin.AIS.Data", "..\Celin.AIS.Data\Celin.AIS.Data.csproj", "{E4EC1E8E-DC0C-45C7-AC9B-CECB2BA26D68}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Celin.AIS.Form", "..\Celin.AIS.Form\Celin.AIS.Form.csproj", "{68BFC6DB-39C4-438E-808E-BB6BB922E911}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Celin.XL.CSharp", "Celin.XL.CSharp\Celin.XL.CSharp.csproj", "{7029BFB5-EA12-464A-BB7C-F8CD00961490}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{68BFC6DB-39C4-438E-808E-BB6BB922E911}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68BFC6DB-39C4-438E-808E-BB6BB922E911}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68BFC6DB-39C4-438E-808E-BB6BB922E911}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7029BFB5-EA12-464A-BB7C-F8CD00961490}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7029BFB5-EA12-464A-BB7C-F8CD00961490}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7029BFB5-EA12-464A-BB7C-F8CD00961490}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7029BFB5-EA12-464A-BB7C-F8CD00961490}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

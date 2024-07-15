@@ -1,0 +1,19 @@
+{
+  "name": "celin.xl.csharp",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "main",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@microsoft/dotnet-js-interop": "^8.0.0",
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/office-js": "^1.0.399",
+    "tslib": "^2.6.3"
+  }
+}
