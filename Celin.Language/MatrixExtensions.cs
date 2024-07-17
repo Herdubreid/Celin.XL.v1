@@ -9,7 +9,7 @@ public static class MatrixExtensions
     public static string ToMatrixString(this IEnumerable<IEnumerable<object?>> source)
     {
         StringBuilder sb = new StringBuilder();
-        foreach (var r in source)
+        foreach (var r in source ?? Enumerable.Empty<IEnumerable<IEnumerable<object?>>>())
         {
             sb.AppendLine(string.Join(", ", r));
         }

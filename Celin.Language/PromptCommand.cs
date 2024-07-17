@@ -17,7 +17,7 @@ public enum Cmds
 public record CmdType(
     Cmds Cmd,
     string? Argument,
-    AddresType? Address,
+    AddressType? Address,
     IEnumerable<IEnumerable<object>>? Value);
 
 public class PromptCommand

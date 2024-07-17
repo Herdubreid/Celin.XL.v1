@@ -40,7 +40,8 @@ static class TestScript
         var scriptOptions = ScriptOptions.Default
             .AddImports([
                 "System.Collections.Generic",
-                "Celin.Language"])
+                "Celin.Language",
+                "Celin.Language.XL"])
             .AddReferences([
                 typeof(Globals).Assembly]);
 

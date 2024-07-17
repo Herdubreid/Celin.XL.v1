@@ -19,15 +19,19 @@ public class Values
             .Or(Real.Cast<object?>()));
     static readonly Parser<char, IEnumerable<object?>> ARRAY
         = OneOf(STRING, NUMBER)
-            .SeparatedAtLeastOnce(Char(','));
+            .Optional()
+            .SeparatedAtLeastOnce(Char(','))
+            .Select(a => a
+                .Select(e => e.HasValue ? e.Value : null));
     static readonly Parser<char, IEnumerable<IEnumerable<object?>>> MATRIX
         = ARRAY
             .Between(Char('['), Char(']'))
             .SeparatedAtLeastOnce(Char(','));
     public static Parser<char, IEnumerable<IEnumerable<object?>>> Parser
-        => Try(ARRAY.Select(a =>
-        {
-            var l = new List<IEnumerable<object?>> { a };
-            return l.AsEnumerable();
-        })).Or(MATRIX);
+        => Try(MATRIX)
+            .Or(ARRAY.Select(a =>
+            {
+                var l = new List<IEnumerable<object?>> { a };
+                return l.AsEnumerable();
+            }));
 }
