@@ -10,12 +10,14 @@
 
   <ItemGroup>
     <Compile Remove="Scripts\script1.cs" />
+    <Compile Remove="Scripts\Script2.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Scripts\script1.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+    <None Include="Scripts\Script2.cs" />
   </ItemGroup>
 
   <ItemGroup>

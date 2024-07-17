@@ -61,7 +61,27 @@
             });
         }
     };
+    const xl = {
+        setRange: async (sheet, address, values) => await Excel.run(async (ctx) => {
+            const sh = sheet == null
+                ? ctx.workbook.worksheets.getActiveWorksheet()
+                : ctx.workbook.worksheets.getItem(sheet);
+            const range = sh.getRange(address);
+            range.values = values;
+            return ctx.sync();
+        }),
+        getRange: async (sheet, address) => Excel.run(async (ctx) => {
+            const sh = sheet == null
+                ? ctx.workbook.worksheets.getActiveWorksheet()
+                : ctx.workbook.worksheets.getItem(sheet);
+            const range = sh.getRange(address);
+            range.load();
+            await ctx.sync();
+            return range.values;
+        }),
+    };
 
     exports.app = app;
+    exports.xl = xl;
 
 }));

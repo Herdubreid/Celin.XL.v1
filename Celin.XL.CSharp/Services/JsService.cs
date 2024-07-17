@@ -13,31 +13,45 @@ public class JsService
     enum app
     {
         init,
-        initCommandPrompt
+        initCommandPrompt,
     }
     string App(app f) => $"{LIB}.{nameof(app)}.{f:g}";
     public ValueTask Init()
-        => JS.InvokeVoidAsync(App(app.init), Ref);
+        => _js.InvokeVoidAsync(App(app.init), _ref);
     public ValueTask InitCommandPrompt(string id)
-        => JS.InvokeVoidAsync(App(app.initCommandPrompt), id);
+        => _js.InvokeVoidAsync(App(app.initCommandPrompt), id);
+    #endregion
+    #region Excel
+    enum xl
+    {
+        setRange,
+        getRange,
+    }
+    string XL(xl f) => $"{LIB}.{nameof(xl)}.{f:g}";
+    public ValueTask SetRange(string? sheet, string address, IEnumerable<IEnumerable<object>> value)
+        => _js.InvokeVoidAsync(XL(xl.setRange), sheet, address, value);
+    public ValueTask<IEnumerable<IEnumerable<object>>> GetRange(string? sheet, string address)
+        => _js.InvokeAsync<IEnumerable<IEnumerable<object>>>(XL(xl.getRange), sheet, address);
     #endregion
     #region invokables
     [JSInvokable]
     public void PromptCommand(string prompt)
-        => Mediator.Send(new PromptCommandAction { PromptCommand = prompt });
+        => _mediator.Send(new PromptCommandAction { PromptCommand = prompt });
+    public void SetError(string msg)
+        => _mediator.Send(new SetErrorAction { ErrorMsg = msg });
     #endregion
 #pragma warning restore CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
 
-    readonly IJSRuntime JS;
-    readonly IMediator Mediator;
-    readonly DotNetObjectReference<JsService> Ref;
+    readonly IJSRuntime _js;
+    readonly IMediator _mediator;
+    readonly DotNetObjectReference<JsService> _ref;
     readonly IStore Store;
     AppState State => Store.GetState<AppState>();
     public JsService(IJSRuntime js, IMediator mediator, IStore store)
     {
-        JS = js;
-        Mediator = mediator;
-        Ref = DotNetObjectReference.Create(this);
+        _js = js;
+        _mediator = mediator;
+        _ref = DotNetObjectReference.Create(this);
         Store = store;
     }
 }

@@ -6,28 +6,28 @@ namespace Celin.Language.XL;
 
 public class Values
 {
-    static readonly Parser<char, object> STRING
+    static readonly Parser<char, object?> STRING
         = SkipWhitespaces
         .Then(OneOf(
             Literal.DoubleQuoted,
             Literal.SingleQuoted,
             Literal.Plain))
-        .Cast<object>();
-    static readonly Parser<char, object> NUMBER
+        .Cast<object?>();
+    static readonly Parser<char, object?> NUMBER
         = SkipWhitespaces
-        .Then(Try(DecimalNum.Cast<object>())
-            .Or(Real.Cast<object>()));
-    static readonly Parser<char, IEnumerable<object>> ARRAY
+        .Then(Try(DecimalNum.Cast<object?>())
+            .Or(Real.Cast<object?>()));
+    static readonly Parser<char, IEnumerable<object?>> ARRAY
         = OneOf(STRING, NUMBER)
             .SeparatedAtLeastOnce(Char(','));
-    static readonly Parser<char, IEnumerable<IEnumerable<object>>> MATRIX
+    static readonly Parser<char, IEnumerable<IEnumerable<object?>>> MATRIX
         = ARRAY
             .Between(Char('['), Char(']'))
             .SeparatedAtLeastOnce(Char(','));
-    public static Parser<char, IEnumerable<IEnumerable<object>>> Parser
+    public static Parser<char, IEnumerable<IEnumerable<object?>>> Parser
         => Try(ARRAY.Select(a =>
         {
-            var l = new List<IEnumerable<object>> { a };
+            var l = new List<IEnumerable<object?>> { a };
             return l.AsEnumerable();
         })).Or(MATRIX);
 }

@@ -8,4 +8,8 @@ public partial class AppState
     {
         public string PromptCommand { get; set; } = string.Empty;
     }
+    public class SetErrorAction : IAction
+    {
+        public string ErrorMsg { get; set; }
+    }
 }

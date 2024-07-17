@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Extensions.Logging;
+using Pidgin;
 using System.Dynamic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+using static Pidgin.Parser<char>;
 
 namespace Celin;
 
 public delegate void ProcessEvent(string? msg);
 public class Globals
 {
+    public Dictionary<string, object?> Variables { get; } = new Dictionary<string, object?>();
     public record DynamicFormResult : AIS.Form<AIS.FormData<AIS.DynamicJsonElement>>;
     public record ObjectFormResult : AIS.Form<AIS.FormData<IEnumerable<object>>>;
     public AIS.Request QL(string query)
@@ -24,6 +21,9 @@ public class Globals
     public event ProcessEvent OnProcess = null!;
     public void Process(string? msg)
         => OnProcess?.Invoke(msg);
+    public IEnumerable<IEnumerable<object?>> Range(string range)
+        => Language.XL.Values.Parser
+        .Before(End).ParseOrThrow(range);
     public AIS.Server E1 { get; }
     ILogger _logger { get; }
     public Globals(AIS.Server e1, ILogger logger)

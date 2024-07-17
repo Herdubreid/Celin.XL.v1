@@ -15,5 +15,5 @@ using var loggerFactory = LoggerFactory.Create(builder =>
 var logger = loggerFactory.CreateLogger<Program>();
 logger.LogInformation("Starting");
 
-//TestScript.Run(logger);
-TestParser.Run(logger);
+await TestScript.Run(logger);
+//TestParser.Run(logger);

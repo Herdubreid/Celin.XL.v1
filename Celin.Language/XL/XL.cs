@@ -18,11 +18,11 @@ public class Address
             .Then(Digit.AtLeastOnceString(), (l, r) => l + r);
     static readonly Parser<char, string> RANGE
         = Map((l, r) => r.HasValue
-                ? $"{l}:{r}"
+                ? $"{l}:{r.Value}"
                 : l,
             CELL,
-            CELL
-                .Before(Char(':'))
+            Char(':')
+                .Then(CELL)
                 .Optional());
     public static Parser<char, AddresType> Parser
         => Map((s, r) => new AddresType(s.HasValue ? s.Value : null, r),

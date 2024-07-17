@@ -11,9 +11,9 @@ Office.onReady(async (info) => {
 var blazorLib: DotNet.DotNetObject;
 
 export const app = {
-    init: (lib:DotNet.DotNetObject ) => {
+    init: (lib: DotNet.DotNetObject) => {
         blazorLib = lib;
-     },
+    },
     initCommandPrompt: (id: string) => {
         let txt = document.getElementById(id) as HTMLInputElement;
         txt.addEventListener('keydown', function (event) {
@@ -29,4 +29,26 @@ export const app = {
             }
         });
     }
+}
+
+export const xl = {
+    setRange: async (sheet: string, address: string, values: any[][]) =>
+        await Excel.run(async (ctx) => {
+            const sh = sheet == null
+                ? ctx.workbook.worksheets.getActiveWorksheet()
+                : ctx.workbook.worksheets.getItem(sheet);
+            const range = sh.getRange(address);
+            range.values = values;
+            return ctx.sync();
+        }),
+    getRange: async (sheet: string, address: string) =>
+        Excel.run(async (ctx) => {
+            const sh = sheet == null
+                ? ctx.workbook.worksheets.getActiveWorksheet()
+                : ctx.workbook.worksheets.getItem(sheet);
+            const range = sh.getRange(address);
+            range.load();
+            await ctx.sync();
+            return range.values;
+        }),
 }

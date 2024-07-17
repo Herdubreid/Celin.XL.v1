@@ -6,13 +6,13 @@ namespace Celin;
 
 static class TestScript
 {
-    public static async void Run(ILogger logger)
+    public static async Task Run(ILogger logger)
     {
         // E1
         var e1 = new Celin.AIS.Server("https://demo.steltix.com/jderest/v2/", logger);
         e1.AuthRequest.username = "DEMO";
         e1.AuthRequest.password = "DEMO";
-        await e1.AuthenticateAsync();
+        //await e1.AuthenticateAsync();
 
         /*
         var rq = Celin.Language.QL.Parse("f0101 (an8,alph)");
@@ -38,6 +38,9 @@ static class TestScript
 
         // Create a scripting environment
         var scriptOptions = ScriptOptions.Default
+            .AddImports([
+                "System.Collections.Generic",
+                "Celin.Language"])
             .AddReferences([
                 typeof(Globals).Assembly]);
 
@@ -50,26 +53,26 @@ static class TestScript
                 break;
             else
             {
-                sb = File.ReadAllText($"Scripts/{ln}.cs");
-            }
+                try
+                {
+                    sb = File.ReadAllText($"../../../Scripts/{ln}.cs");
 
-            // Run the user script
-            try
-            {
-                logger.LogInformation("Create script...");
-                var sc = CSharpScript.Create(sb, scriptOptions, globals.GetType());
-                logger.LogInformation("Run...");
-                await sc.RunAsync(globals);
-                logger.LogInformation($"Message: {globals.Message}");
-                //await CSharpScript.RunAsync(userScript, scriptOptions, globals);
-            }
-            catch (CompilationErrorException e)
-            {
-                Console.WriteLine($"Script compilation error: {e.Message}");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Script execution error: {e.Message}");
+                    // Run the user script
+                    logger.LogInformation("Create script...");
+                    var sc = CSharpScript.Create(sb, scriptOptions, globals.GetType());
+                    logger.LogInformation("Run...");
+                    await sc.RunAsync(globals);
+                    logger.LogInformation($"Message: {globals.Message}");
+                    //await CSharpScript.RunAsync(userScript, scriptOptions, globals);
+                }
+                catch (CompilationErrorException e)
+                {
+                    Console.WriteLine($"Script compilation error: {e.Message}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Script execution error: {e.Message}");
+                }
             }
         }
 
