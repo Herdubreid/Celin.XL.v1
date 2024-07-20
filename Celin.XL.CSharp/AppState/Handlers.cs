@@ -36,18 +36,18 @@ public partial class AppState
             State.Result = null;
             try
             {
-                var result = PromptCommand.Parser
+                var result = Expression.Parser
                         .Before(End).ParseOrThrow(aAction.PromptCommand);
 
                 switch (result.LeftHand!.Cmd)
                 {
-                    case Cmds.help:
+                    case Operand.help:
                         State.Result = "Help message [TODO]";
                         break;
-                    case Cmds.ls:
+                    case Operand.ls:
                         State.Result = "List... [TODO]";
                         break;
-                    case Cmds.xlrange:
+                    case Operand.xlrange:
                         try
                         {
                             var range = await _js.GetRange(
@@ -58,7 +58,7 @@ public partial class AppState
 
                                 switch (result.RightHand.Cmd)
                                 {
-                                    case Cmds.value:
+                                    case Operand.value:
                                         await _js.SetRange(
                                             result.LeftHand.Address!.sheet,
                                             result.LeftHand.Address!.range,
@@ -80,7 +80,7 @@ public partial class AppState
                             State.ErrorMsg = ex.Message;
                         }
                         break;
-                    case Cmds.variable:
+                    case Operand.variable:
                         try
                         {
 
@@ -90,7 +90,7 @@ public partial class AppState
                             {
                                 switch (result.RightHand.Cmd)
                                 {
-                                    case Cmds.value:
+                                    case Operand.value:
                                         State.Variables[result.LeftHand.Argument!] =
                                             result.RightHand.Value!;
                                         break;

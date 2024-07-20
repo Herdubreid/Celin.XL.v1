@@ -2,30 +2,38 @@
 using Celin.Language.XL;
 using Microsoft.Extensions.Logging;
 using Pidgin;
-using static Pidgin.Parser<char>;
+using System.Text;
 using static Pidgin.Parser;
+using static Pidgin.Parser<char>;
 
 namespace Celin;
 
 static class TestParser
 {
-    static Language.XL.AddressType Range(string cmd)
-        => Language.XL.Address.Parser
+    static AddressType Range(string cmd)
+        => Address.Parser
             .Before(End).ParseOrThrow(cmd);
-    static IEnumerable<IEnumerable<object?>> ParseValue(string value)
-        => Language.XL.Values.Parser
+    static object?[,] ParseValue(string value)
+        => Values.Parser
             .Before(End).ParseOrThrow(value);
-    static PromptCommand ParseCommand(string value)
-        => PromptCommand.Parser
+    static (string LH, Maybe<string> RH) ParseExpression(string value)
+        => Expression.Parser
             .Before(End).ParseOrThrow(value);
+    static ExpressionType ParseLH(string value)
+        => Expression.ParseLH
+            .Before(End).ParseOrThrow(value);
+    static ExpressionType ParseRH(string value)
+        => Expression.ParseRH
+            .Before(End).ParseOrThrow(value);
+    static string ParsePlaceHolders(string value)
+        => PlaceHolderString.Parser
+            .ParseOrThrow(value);
     static IEnumerable<Maybe<string>> Test(string value)
         => Any.AtLeastOnceString().Optional()
             .Separated(Char(','))
             .Before(End).ParseOrThrow(value);
     public static void Run(ILogger log)
     {
-        XL.Range(new AddressType(null, "")).Values
-            = Enumerable.Empty<IEnumerable<IEnumerable<object?>>>();
         while (true)
         {
             var ln = Console.ReadLine();
@@ -33,11 +41,66 @@ static class TestParser
                 break;
             try
             {
+                var s = ParsePlaceHolders(ln);
+                Console.WriteLine(s);
                 //var p = Range(ln);
                 //Console.WriteLine($"{(p.sheet.HasValue ? p.sheet.Value : string.Empty)}!{p.range}");
-                var m = ParseValue(ln);
-                Console.WriteLine(m.ToMatrixString());
-                //var c = ParseCommand(ln);
+                //var m = ParseValue(ln);
+                //Console.WriteLine(m);
+                /*var ex = ParseExpression(ln);
+                //Console.WriteLine($"'{ex.LH}'{(ex.RH.HasValue ? $" = '{ex.RH.Value}'" : string.Empty)}");
+                try
+                {
+                    var lh = ParseLH(ex.LH);
+                    Console.Write(lh.Operand);
+                }
+                catch
+                {
+                    Console.Write(ex.LH);
+                }
+                if (ex.RH.HasValue)
+                {
+                    Console.Write(" = ");
+                    try
+                    {
+                        var rh = ParseRH(ex.RH.Value);
+                        Console.Write(rh.Operand);
+                    }
+                    catch
+                    {
+                        Console.Write(ex.RH.Value);
+                    }
+                }
+                Console.WriteLine();*/
+                /*StringBuilder sb = new StringBuilder();
+                switch (c.LeftHand.Operand)
+                {
+                    case Operand.variable:
+                        sb.Append($"Variables[{c.LeftHand.Argument}]");
+                        break;
+                    case Operand.xlrange:
+                        string sheet = c.LeftHand.Address!.sheet == null
+                            ? string.Empty : $"{c.LeftHand.Address!.sheet}, ";
+                        sb.Append($"XL.Range({sheet}{c.LeftHand.Address.range}).Values");
+                        break;
+                }
+                if (c.RightHand != null)
+                    switch (c.RightHand.Operand)
+                    {
+                        case Operand.variable:
+                            sb.Append($"Variables[{c.LeftHand.Argument}]");
+                            break;
+                        case Operand.xlrange:
+                            string sheet = c.LeftHand.Address!.sheet == null
+                                ? string.Empty : $"{c.LeftHand.Address!.sheet}, ";
+                            sb.Append($"XL.Range({sheet}{c.LeftHand.Address.range}).Values");
+                            break;
+                        case Operand.value:
+                            sb.Append($"Values({}")
+                    }
+                {
+
+                }*/
                 //Console.WriteLine($"{c.LeftHand}, {c.RightHand}");
                 //var a = Test(ln);
                 //Console.WriteLine(string.Join(",", a

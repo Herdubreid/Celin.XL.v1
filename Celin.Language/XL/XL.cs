@@ -1,27 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Celin.Language.XL;
 
-namespace Celin.Language.XL;
-
+public delegate void SetRangeValue(AddressType address, object?[,] value);
+public delegate object?[,] GetRangeValue(AddressType address);
 public class XL
 {
     public class RangeObject
     {
+        public static SetRangeValue SetRangeValue { get; set; } = null!;
+        public static GetRangeValue GetRangeValue { get; set; } = null!;
         public AddressType Address { get; }
-        static IEnumerable<IEnumerable<object?>> _values = Enumerable.Empty<IEnumerable<object?>>();
-        public IEnumerable<IEnumerable<object?>> Values
+        public object?[,] Values
         {
-            get => _values;
-            set => _values = value;
+            get => GetRangeValue(Address);
+            set => SetRangeValue(Address, value);
         }
         internal RangeObject(AddressType addres)
         {
             Address = addres;
         }
+        internal RangeObject(string sheet, string range)
+            : this(new AddressType(sheet, range)) { }
+        internal RangeObject(string range)
+            : this(new AddressType(null, range)) { }
     }
     public static RangeObject Range(AddressType address)
         => new RangeObject(address);
+    public static RangeObject Range(string sheet, string range)
+        => new RangeObject(sheet, range);
+    public static RangeObject Range(string sheet)
+        => new RangeObject(sheet);
 }

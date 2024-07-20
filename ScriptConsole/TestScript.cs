@@ -1,13 +1,27 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
+﻿using Celin.Language.XL;
+using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.Extensions.Logging;
 
 namespace Celin;
 
+class RangeValue
+{
+    static Dictionary<string, object?[,]> _values
+        = new Dictionary<string, object?[,]>();
+    public static void Set(AddressType address, object?[,] value)
+        => _values[address.ToString()] = value;
+    public static object?[,] Get(AddressType address)
+        => _values[address.ToString()];
+}
+
 static class TestScript
 {
     public static async Task Run(ILogger logger)
     {
+        XL.RangeObject.SetRangeValue = RangeValue.Set;
+        XL.RangeObject.GetRangeValue = RangeValue.Get;
+
         // E1
         var e1 = new Celin.AIS.Server("https://demo.steltix.com/jderest/v2/", logger);
         e1.AuthRequest.username = "DEMO";
@@ -39,6 +53,7 @@ static class TestScript
         // Create a scripting environment
         var scriptOptions = ScriptOptions.Default
             .AddImports([
+                "System",
                 "System.Collections.Generic",
                 "Celin.Language",
                 "Celin.Language.XL"])

@@ -15,7 +15,19 @@ public static class MatrixExtensions
         }
         return sb.ToString();
     }
+    public static string ToMatrixString(this object?[,] source)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (int row = 0; row < source.GetLength(0); row++)
+        {
+            sb.Append($"{row,4}: {source[row, 0]}");
+            for (int col = 1; col < source.GetLength(1); col++)
+                sb.Append($", {source[row,col]}");
+            sb.AppendLine();
+        }
+        return sb.ToString();
+    }
     public static (int rows, int cols) MatrixCount(this IEnumerable<IEnumerable<object?>> source)
         => (source.Count(),
-            source.Count() > 0 ? source.First().Count() : 0);
+            source.Count() > 0 ? source.Max(m => m.Count()) : 0);
 }
