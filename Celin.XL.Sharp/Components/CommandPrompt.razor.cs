@@ -1,7 +1,7 @@
 ﻿using BlazorState;
 using Microsoft.AspNetCore.Components;
 
-namespace Celin.XL.CSharp.Components;
+namespace Celin.XL.Sharp.Components;
 
 public partial class CommandPrompt : BlazorStateComponent
 {

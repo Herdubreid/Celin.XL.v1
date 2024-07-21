@@ -15,4 +15,4 @@ Console.WriteLine(XL.Range("b7:b5").Values);
 
 var at1 = @b4
 
-$rs = f0101 (an8,alph) all(at1 = $at1)
+var rs = :cq f0101 (an8,alph) all(at1 = $at1)

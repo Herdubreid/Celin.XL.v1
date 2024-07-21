@@ -2,7 +2,6 @@
 using Celin.Language.XL;
 using Microsoft.Extensions.Logging;
 using Pidgin;
-using System.Text;
 using static Pidgin.Parser;
 using static Pidgin.Parser<char>;
 
@@ -25,9 +24,9 @@ static class TestParser
     static ExpressionType ParseRH(string value)
         => Expression.ParseRH
             .Before(End).ParseOrThrow(value);
-    static string ParsePlaceHolders(string value)
+    static Result<char, string> ParsePlaceHolders(string value)
         => PlaceHolderString.Parser
-            .ParseOrThrow(value);
+            .Parse(value);
     static IEnumerable<Maybe<string>> Test(string value)
         => Any.AtLeastOnceString().Optional()
             .Separated(Char(','))
@@ -41,13 +40,13 @@ static class TestParser
                 break;
             try
             {
-                var s = ParsePlaceHolders(ln);
-                Console.WriteLine(s);
+                //var s = ParsePlaceHolders(ln);
+                //Console.WriteLine(s);
                 //var p = Range(ln);
                 //Console.WriteLine($"{(p.sheet.HasValue ? p.sheet.Value : string.Empty)}!{p.range}");
                 //var m = ParseValue(ln);
                 //Console.WriteLine(m);
-                /*var ex = ParseExpression(ln);
+                var ex = ParseExpression(ln);
                 //Console.WriteLine($"'{ex.LH}'{(ex.RH.HasValue ? $" = '{ex.RH.Value}'" : string.Empty)}");
                 try
                 {
@@ -61,9 +60,11 @@ static class TestParser
                 if (ex.RH.HasValue)
                 {
                     Console.Write(" = ");
+                    
                     try
                     {
-                        var rh = ParseRH(ex.RH.Value);
+                        var ph = ParsePlaceHolders(ex.RH.Value);
+                        var rh = ParseRH(ph.Success ? ph.Value : ex.RH.Value);
                         Console.Write(rh.Operand);
                     }
                     catch
@@ -71,7 +72,7 @@ static class TestParser
                         Console.Write(ex.RH.Value);
                     }
                 }
-                Console.WriteLine();*/
+                Console.WriteLine();
                 /*StringBuilder sb = new StringBuilder();
                 switch (c.LeftHand.Operand)
                 {

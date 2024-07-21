@@ -1,6 +1,6 @@
 ﻿using BlazorState;
 
-namespace Celin.XL.CSharp;
+namespace Celin.XL.Sharp;
 
 public partial class AppState
 {

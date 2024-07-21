@@ -3,7 +3,7 @@ using Celin.Language;
 using Pidgin;
 using static Pidgin.Parser<char>;
 
-namespace Celin.XL.CSharp;
+namespace Celin.XL.Sharp;
 
 public partial class AppState
 {

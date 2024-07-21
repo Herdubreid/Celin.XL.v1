@@ -1,9 +1,9 @@
 ﻿using BlazorState;
 using MediatR;
 using Microsoft.JSInterop;
-using static Celin.XL.CSharp.AppState;
+using static Celin.XL.Sharp.AppState;
 
-namespace Celin.XL.CSharp;
+namespace Celin.XL.Sharp;
 
 public class JsService
 {

@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Celin.AIS.Data", "..\Celin.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Celin.AIS.Form", "..\Celin.AIS.Form\Celin.AIS.Form.csproj", "{68BFC6DB-39C4-438E-808E-BB6BB922E911}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Celin.XL.CSharp", "Celin.XL.CSharp\Celin.XL.CSharp.csproj", "{7029BFB5-EA12-464A-BB7C-F8CD00961490}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Celin.XL.Sharp", "Celin.XL.Sharp\Celin.XL.Sharp.csproj", "{7029BFB5-EA12-464A-BB7C-F8CD00961490}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
