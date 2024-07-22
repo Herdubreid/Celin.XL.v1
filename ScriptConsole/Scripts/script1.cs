@@ -8,9 +8,10 @@ record F0101 : Celin.AIS.FormResponse
     // Instead of defining row members, we use the DynamicJsonElment
     //public DynamicFormResult fs_DATABROWSE_F0101 { get; set; } = null!;
     public ObjectFormResult fs_DATABROWSE_F0101 { get; set; } = null!;
+    public [,] Data => fs_DATABROWSE_F0101.data.gridData;
 }
 
-LogInformation("Starting...");
+Console.WriteLine("Starting...");
 
 var rq = QL("f0101 (an8,alph)");
 
@@ -29,6 +30,4 @@ foreach (dynamic r in d.rowset)
 //LogDebug(JsonSerializer.Serialize(rq, new JsonSerializerOptions { WriteIndented = true }));
 //LogInformation("Waiting...");
 //await Task.Delay(5000);
-LogInformation("Done");
-
-Message = "Done!";
+Console.WriteLine("Done");

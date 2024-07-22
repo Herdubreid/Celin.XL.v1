@@ -11,6 +11,7 @@ public class Globals
     public Dictionary<string, object?> Variables { get; } = new Dictionary<string, object?>();
     public record DynamicFormResult : AIS.Form<AIS.FormData<AIS.DynamicJsonElement>>;
     public record ObjectFormResult : AIS.Form<AIS.FormData<IEnumerable<object>>>;
+    public record RecordFormResult<T> : AIS.Form<AIS.FormData<T>>;
     public AIS.Request QL(string query)
         => Language.QL.Parse(query);
     public void LogInformation(string msg)

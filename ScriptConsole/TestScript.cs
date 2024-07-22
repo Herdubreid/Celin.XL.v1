@@ -55,12 +55,15 @@ static class TestScript
             .AddImports([
                 "System",
                 "System.Collections.Generic",
+                "System.Linq",
                 "Celin.Language",
                 "Celin.Language.XL"])
             .AddReferences([
                 typeof(Globals).Assembly]);
 
-        string sb = string.Empty;
+        // Run the Init script
+        string sb = File.ReadAllText("../../../Scripts/init.cs");
+        var state = await CSharpScript.RunAsync(sb, scriptOptions, globals);
 
         while (true)
         {
@@ -74,20 +77,20 @@ static class TestScript
                     sb = File.ReadAllText($"../../../Scripts/{ln}.cs");
 
                     // Run the user script
-                    logger.LogInformation("Create script...");
-                    var sc = CSharpScript.Create(sb, scriptOptions, globals.GetType());
                     logger.LogInformation("Run...");
-                    await sc.RunAsync(globals);
-                    logger.LogInformation($"Message: {globals.Message}");
+                    state = await state.ContinueWithAsync(sb);
+                    //var sc = CSharpScript.Create(sb, scriptOptions, typeof(Globals));
+                    //await sc.RunAsync(globals);
+                    //logger.LogInformation($"Message: {globals.Message}");
                     //await CSharpScript.RunAsync(userScript, scriptOptions, globals);
                 }
-                catch (CompilationErrorException e)
+                catch (CompilationErrorException ex)
                 {
-                    Console.WriteLine($"Script compilation error: {e.Message}");
+                    logger.LogError(ex, nameof(CompilationErrorException));
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Console.WriteLine($"Script execution error: {e.Message}");
+                    logger.LogError(ex, nameof(Exception));
                 }
             }
         }
