@@ -28,10 +28,10 @@ public class JsService
         getRange,
     }
     string XL(xl f) => $"{LIB}.{nameof(xl)}.{f:g}";
-    public ValueTask SetRange(string? sheet, string address, IEnumerable<IEnumerable<object>> value)
-        => _js.InvokeVoidAsync(XL(xl.setRange), sheet, address, value);
-    public ValueTask<IEnumerable<IEnumerable<object>>> GetRange(string? sheet, string address)
-        => _js.InvokeAsync<IEnumerable<IEnumerable<object>>>(XL(xl.getRange), sheet, address);
+    public ValueTask SetRange(string? sheet, string cells, object?[,] value)
+        => _js.InvokeVoidAsync(XL(xl.setRange), sheet, cells, value);
+    public ValueTask<object?[,]> GetRange(string? sheet, string address)
+        => _js.InvokeAsync<object?[,]>(XL(xl.getRange), sheet, address);
     #endregion
     #region invokables
     [JSInvokable]

@@ -7,12 +7,12 @@ namespace Celin;
 
 class RangeValue
 {
-    static Dictionary<string, object?[,]> _values
-        = new Dictionary<string, object?[,]>();
-    public static void Set(AddressType address, object?[,] value)
-        => _values[address.ToString()] = value;
-    public static object?[,] Get(AddressType address)
-        => _values[address.ToString()];
+    static Dictionary<(string? address, string? cells, string? name), object?[,]> _values
+        = new Dictionary<(string? address, string? cells, string? name), object?[,]>();
+    public static void Set((string? sheet, string? cells, string? name) address, object?[,] value)
+        => _values[address] = value;
+    public static object?[,] Get((string? sheet, string? cells, string? name) address)
+        => _values[address];
 }
 
 static class TestScript

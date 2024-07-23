@@ -17,7 +17,7 @@ public enum Operand
 public record ExpressionType(
     Operand Operand,
     string? Argument = null,
-    AddressType? Address = null,
+    (string? sheet, string cells)? Address = null,
     object?[,]? Value = null,
     AIS.Request? DataRequest = null,
     StackFormRequestChain? FormRequest = null);
@@ -39,7 +39,7 @@ public class Expression
                 .Select(s => new ExpressionType(Operand.variable, s)));
     static readonly Parser<char, ExpressionType> XLRANGE =
         Base.Tok("@")
-            .Then(Address.Parser
+            .Then(CellReference.Parser
                 .Select(a => new ExpressionType(Operand.xlrange, null, a)));
     static readonly Parser<char, ExpressionType> VALUES =
         Values.Parser

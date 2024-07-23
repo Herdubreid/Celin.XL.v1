@@ -1,5 +1,6 @@
 ﻿using BlazorState;
 using Celin.Language;
+using Celin.XL.Sharp.Services;
 using Pidgin;
 using static Pidgin.Parser<char>;
 
@@ -34,102 +35,15 @@ public partial class AppState
         {
             State.ErrorMsg = null;
             State.Result = null;
-            try
-            {
-                var result = Expression.Parser
-                        .Before(End).ParseOrThrow(aAction.PromptCommand);
 
-                switch (result.LeftHand!.Cmd)
-                {
-                    case Operand.help:
-                        State.Result = "Help message [TODO]";
-                        break;
-                    case Operand.ls:
-                        State.Result = "List... [TODO]";
-                        break;
-                    case Operand.xlrange:
-                        try
-                        {
-                            var range = await _js.GetRange(
-                                result.LeftHand.Address!.sheet,
-                                result.LeftHand.Address!.range);
-                            if (result.RightHand != null)
-                            {
-
-                                switch (result.RightHand.Cmd)
-                                {
-                                    case Operand.value:
-                                        await _js.SetRange(
-                                            result.LeftHand.Address!.sheet,
-                                            result.LeftHand.Address!.range,
-                                            result.RightHand.Value!);
-                                        break;
-                                    default:
-                                        State.ErrorMsg = $"'{aAction.PromptCommand}' invalid expression!";
-                                        break;
-                                }
-                            }
-                            else
-                            {
-                                State.Result = string.Empty;
-                                SetResults(range);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            State.ErrorMsg = ex.Message;
-                        }
-                        break;
-                    case Operand.variable:
-                        try
-                        {
-
-                            var variable = State.Variables
-                                .GetValueOrDefault(result.LeftHand.Argument!);
-                            if (result.RightHand != null)
-                            {
-                                switch (result.RightHand.Cmd)
-                                {
-                                    case Operand.value:
-                                        State.Variables[result.LeftHand.Argument!] =
-                                            result.RightHand.Value!;
-                                        break;
-                                    default:
-                                        State.ErrorMsg = $"'{aAction.PromptCommand}' invalid expression!";
-                                        break;
-                                }
-                            }
-                            else
-                            {
-                                if (variable == null)
-                                {
-                                    State.ErrorMsg = $"'{result.LeftHand.Argument}' is not a known variable!";
-                                }
-                                else
-                                {
-                                    State.Result = string.Empty;
-                                    SetResults(variable);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            State.ErrorMsg = ex.Message;
-                        }
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                State.ErrorMsg = $"'{aAction.PromptCommand}'";
-                State.ErrorMsg += '\n';
-                State.ErrorMsg += ex.Message;
-            }
+            await _sharp.Submit(aAction.PromptCommand);
         }
         readonly JsService _js;
-        public PromptCommandHandler(IStore store, JsService js) : base(store)
+        readonly SharpService _sharp;
+        public PromptCommandHandler(IStore store, JsService js, SharpService sharp) : base(store)
         {
             _js = js;
+            _sharp = sharp;
         }
     }
 }

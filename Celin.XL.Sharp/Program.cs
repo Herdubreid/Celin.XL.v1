@@ -1,6 +1,7 @@
 using BlazorState;
 using Celin.XL.Sharp;
 using Celin.XL.Sharp.Components;
+using Celin.XL.Sharp.Services;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,7 +26,8 @@ builder.Services
         options.UseCloneStateBehavior = false;
         options.Assemblies = [typeof(Program).Assembly];
     })
-    .AddScoped<JsService>();
+    .AddScoped<JsService>()
+    .AddScoped<SharpService>();
 
 var app = builder.Build();
 

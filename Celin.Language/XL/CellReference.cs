@@ -5,7 +5,7 @@ using static Pidgin.Parser;
 namespace Celin.Language.XL;
 
 public record AddressType(string? sheet, string range);
-public class Address
+public class CellReference
 {
     static readonly Parser<char, string> SHEET
         = OneOf(
@@ -24,8 +24,8 @@ public class Address
             Char(':')
                 .Then(CELL)
                 .Optional());
-    public static Parser<char, AddressType> Parser
-        => Map((s, r) => new AddressType(s.HasValue ? s.Value : null, r),
+    public static Parser<char, (string? sheet, string cells)> Parser
+        => Map((s, r) => (s.HasValue ? s.Value : null, r),
             Try(SHEET).Optional(),
             RANGE);
 }

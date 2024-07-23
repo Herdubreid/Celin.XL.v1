@@ -9,8 +9,8 @@ namespace Celin;
 
 static class TestParser
 {
-    static AddressType Range(string cmd)
-        => Address.Parser
+    static (string? sheet, string cells) Range(string cmd)
+        => CellReference.Parser
             .Before(End).ParseOrThrow(cmd);
     static object?[,] ParseValue(string value)
         => Values.Parser

@@ -9,6 +9,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Blazor-State" Version="10.0.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.10.0" />
 		<PackageReference Include="MudBlazor" Version="7.1.1" />
 	</ItemGroup>
 
