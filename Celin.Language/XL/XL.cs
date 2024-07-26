@@ -1,17 +1,18 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace Celin.Language.XL;
 
-public delegate void SetRangeValue((string? sheet, string? cells, string? name) address, object?[,] value);
-public delegate object?[,] GetRangeValue((string? sheet, string? cells, string? name) address);
+public delegate Task SetRangeValueAsync((string? sheet, string? cells, string? name) address, IEnumerable<IEnumerable<object?>> values);
+public delegate Task<IEnumerable<IEnumerable<object?>>> GetRangeValueAsync((string? sheet, string? cells, string? name) address);
 public class XL
 {
     public class RangeObject
     {
         static readonly Regex CELLREF = new Regex(@"([a-zA-Z]+)(\d+)(?::([a-zA-Z]+)(\d+))?");
-        public static SetRangeValue SetRangeValue { get; set; } = null!;
-        public static GetRangeValue GetRangeValue { get; set; } = null!;
+        public static SetRangeValueAsync SetRangeValue { get; set; } = null!;
+        public static GetRangeValueAsync GetRangeValue { get; set; } = null!;
         public RangeObject Sheet(string sheet)
         {
             _sheet = sheet;
@@ -47,11 +48,12 @@ public class XL
             _name = name;
             return this;
         }
-        public object?[,] Values
-        {
-            get => GetRangeValue((_sheet, _cells, _name));
-            set => SetRangeValue((_sheet, _cells, _name), value);
-        }
+        public async Task<IEnumerable<IEnumerable<object?>>> GetValueAsync()
+            => await GetRangeValue((_sheet, _cells, _name));
+        public async Task SetValueAsync(IEnumerable<IEnumerable<object?>> value)
+            => await SetRangeValue((_sheet, _cells, _name), value);
+        public async Task SetValueAsync(string value)
+            => await SetRangeValue((_sheet, _cells, _name), value.ToMatrix());
         public override string ToString()
             => _name == null
             ? $"{_sheet}!{_cells}"

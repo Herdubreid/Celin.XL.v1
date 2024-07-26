@@ -18,7 +18,7 @@ public record ExpressionType(
     Operand Operand,
     string? Argument = null,
     (string? sheet, string cells)? Address = null,
-    object?[,]? Value = null,
+    IEnumerable<IEnumerable<object?>>? Value = null,
     AIS.Request? DataRequest = null,
     StackFormRequestChain? FormRequest = null);
 

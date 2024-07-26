@@ -59,26 +59,51 @@
                     }
                 }
             });
-        }
+        },
+        dummy: async () => {
+            let sheet = null;
+            let address = "B2";
+            console.log(`${sheet}, ${address}`);
+            let result = await Excel.run(async (ctx) => {
+                const sh = ctx.workbook.worksheets.getActiveWorksheet()
+                    ;
+                const range = sh.getRange(address);
+                range.load();
+                await ctx.sync();
+                return range.values;
+            });
+            let toreturn = JSON.stringify(result);
+            console.log(`Result: ${toreturn}`);
+            return toreturn;
+        },
     };
     const xl = {
-        setRange: async (sheet, address, values) => await Excel.run(async (ctx) => {
-            const sh = sheet == null
-                ? ctx.workbook.worksheets.getActiveWorksheet()
-                : ctx.workbook.worksheets.getItem(sheet);
-            const range = sh.getRange(address);
-            range.values = values;
-            return ctx.sync();
-        }),
-        getRange: async (sheet, address) => Excel.run(async (ctx) => {
-            const sh = sheet == null
-                ? ctx.workbook.worksheets.getActiveWorksheet()
-                : ctx.workbook.worksheets.getItem(sheet);
-            const range = sh.getRange(address);
-            range.load();
-            await ctx.sync();
-            return range.values;
-        }),
+        setRange: async (sheet, address, values) => {
+            console.log(`${sheet}, ${address}, ${values}`);
+            await Excel.run(async (ctx) => {
+                const sh = sheet == null
+                    ? ctx.workbook.worksheets.getActiveWorksheet()
+                    : ctx.workbook.worksheets.getItem(sheet);
+                const range = sh.getRange(address);
+                range.values = values;
+                await ctx.sync();
+            });
+        },
+        getRange: async (sheet, address) => {
+            console.log(`${sheet}, ${address}`);
+            let result = await Excel.run(async (ctx) => {
+                const sh = sheet == null
+                    ? ctx.workbook.worksheets.getActiveWorksheet()
+                    : ctx.workbook.worksheets.getItem(sheet);
+                const range = sh.getRange(address);
+                range.load();
+                await ctx.sync();
+                return range.values;
+            });
+            let toreturn = JSON.stringify(result);
+            console.log(`Result: ${toreturn}`);
+            return toreturn;
+        },
     };
 
     exports.app = app;

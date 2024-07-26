@@ -13,7 +13,12 @@ public static class MatrixExtensions
     }
     public static object? Single(this object?[,] source)
         => source[0, 0];
-
+    public static IEnumerable<IEnumerable<object?>> ToMatrix(this object? source) => source switch
+    {
+        string s => XL.Values.Parse(s),
+        IEnumerable<IEnumerable<object?>> e => e,
+        _ => Enumerable.Empty<IEnumerable<object?>>()
+    };
     public static string ToMatrixString(this object?[,] source)
     {
         StringBuilder sb = new StringBuilder();

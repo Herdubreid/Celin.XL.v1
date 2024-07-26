@@ -14,12 +14,15 @@ public class JsService
     {
         init,
         initCommandPrompt,
+        dummy,
     }
     string App(app f) => $"{LIB}.{nameof(app)}.{f:g}";
     public ValueTask Init()
         => _js.InvokeVoidAsync(App(app.init), _ref);
     public ValueTask InitCommandPrompt(string id)
         => _js.InvokeVoidAsync(App(app.initCommandPrompt), id);
+    public ValueTask<string> Dummy()
+        => _js.InvokeAsync<string>(App(app.dummy));
     #endregion
     #region Excel
     enum xl
@@ -28,10 +31,10 @@ public class JsService
         getRange,
     }
     string XL(xl f) => $"{LIB}.{nameof(xl)}.{f:g}";
-    public ValueTask SetRange(string? sheet, string cells, object?[,] value)
-        => _js.InvokeVoidAsync(XL(xl.setRange), sheet, cells, value);
-    public ValueTask<object?[,]> GetRange(string? sheet, string address)
-        => _js.InvokeAsync<object?[,]>(XL(xl.getRange), sheet, address);
+    public ValueTask SetRange(string? sheet, string cells, IEnumerable<IEnumerable<object?>> values)
+        => _js.InvokeVoidAsync(XL(xl.setRange), sheet, cells, values);
+    public ValueTask<string> GetRange(string? sheet, string address)
+        => _js.InvokeAsync<string>(XL(xl.getRange), sheet, address);
     #endregion
     #region invokables
     [JSInvokable]

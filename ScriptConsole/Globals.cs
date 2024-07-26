@@ -22,7 +22,7 @@ public class Globals
     public event ProcessEvent OnProcess = null!;
     public void Process(string? msg)
         => OnProcess?.Invoke(msg);
-    public object?[,] Values(string range)
+    public IEnumerable<IEnumerable<object?>> Values(string range)
         => Language.XL.Values.Parser
         .Before(End).ParseOrThrow(range);
     public AIS.Server E1 { get; }

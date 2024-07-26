@@ -1,6 +1,7 @@
 ﻿using Celin.AIS.Data;
 using Pidgin;
 using static Pidgin.Parser;
+using static Pidgin.Parser<char>;
 
 namespace Celin.Language.XL;
 
@@ -27,25 +28,21 @@ public class Values
         ARRAY
             .Between(Char('['), Char(']'))
             .SeparatedAtLeastOnce(Char(','));
-    public static Parser<char, object?[,]> Parser
+    public static Parser<char, IEnumerable<IEnumerable<object?>>> Parser
         => Try(MATRIX)
                 .Select(m =>
                 {
                     var sz = m.MatrixCount();
-                    var res = new object?[sz.rows, sz.cols];
-                    m.Select((a, row) => a.Select((e, col) => res[row, col] = e));
-                    for (int row = 0; row < sz.rows; row++)
-                        for (int col = 0; col < m.ElementAt(row).Count(); col++)
-                            res[row, col] = m.ElementAt(row).ElementAt(col);
+                    var res = m.Select(a => a.Concat(Enumerable.Repeat<object?>(null, sz.cols - a.Count())));
                     return res;
                 })
             .Or(ARRAY
                 .Select(a =>
                 {
-                    var res = new object?[1, a.Count()];
-                    a.Select((a, i) => res[1, i] = a);
-                    for (int col = 0; col < a.Count(); col++)
-                        res[0, col] = a.ElementAt(col);
-                    return res;
+                    var res = new List<IEnumerable<object?>> { a };
+                    return res.AsEnumerable();
                 }));
+    public static IEnumerable<IEnumerable<object?>> Parse(string value)
+        => Values.Parser
+            .Before(End).ParseOrThrow(value);
 }

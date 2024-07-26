@@ -12,7 +12,7 @@ static class TestParser
     static (string? sheet, string cells) Range(string cmd)
         => CellReference.Parser
             .Before(End).ParseOrThrow(cmd);
-    static object?[,] ParseValue(string value)
+    static IEnumerable<IEnumerable<object?>> ParseValue(string value)
         => Values.Parser
             .Before(End).ParseOrThrow(value);
     static (string LH, Maybe<string> RH) ParseExpression(string value)

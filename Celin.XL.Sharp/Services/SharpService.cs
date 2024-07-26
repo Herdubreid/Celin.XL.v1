@@ -1,5 +1,7 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
+﻿using Celin.Language;
+using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
+using System.Text.Json;
 
 namespace Celin.XL.Sharp.Services;
 
@@ -11,18 +13,13 @@ public class SharpService
         _logger.LogDebug("Submit: {0}", cmd);
         await CSharpScript.RunAsync(cmd, _scriptOptions);
     }
-    void Set((string? sheet, string? cells, string? name) address, object?[,] value)
+    async Task SetRangeValueAsync((string? sheet, string? cells, string? name) address, IEnumerable<IEnumerable<object?>> value)
+        => await _js.SetRange(address.sheet, address.cells!, value);
+    async Task<IEnumerable<IEnumerable<object?>>> GetRangeValueAsync((string? sheet, string? cells, string? name) address)
     {
-        _js.SetRange(address.sheet, address.cells!, value);
-    }
-    object?[,] Get((string? sheet, string? cells, string? name) address)
-    {
-        var res = _js.GetRange(address.sheet, address.cells!);
-        if (res.IsCompleted)
-        {
-            return res.Result;
-        }
-        return res.AsTask().Result;
+        var s = await _js.GetRange(address.sheet, address.cells!);
+        var e = JsonSerializer.Deserialize<IEnumerable<IEnumerable<object?>>>(s);
+        return e!;
     }
     readonly ILogger _logger;
     readonly JsService _js;
@@ -32,8 +29,8 @@ public class SharpService
         _logger = logger;
         _js = js;
 
-        Language.XL.XL.RangeObject.SetRangeValue = Set;
-        Language.XL.XL.RangeObject.GetRangeValue = Get;
+        Language.XL.XL.RangeObject.SetRangeValue = SetRangeValueAsync;
+        Language.XL.XL.RangeObject.GetRangeValue = GetRangeValueAsync;
 
         // Create a scripting environment
         _scriptOptions = ScriptOptions.Default

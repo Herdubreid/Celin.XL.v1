@@ -13,6 +13,7 @@ public partial class CommandPrompt : BlazorStateComponent
         if (firstRender)
         {
             await JS.InitCommandPrompt("commandPromptId");
+            //var v = await JS.Dummy();
         }
         await base.OnAfterRenderAsync(firstRender);
     }

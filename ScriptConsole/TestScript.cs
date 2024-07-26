@@ -7,12 +7,15 @@ namespace Celin;
 
 class RangeValue
 {
-    static Dictionary<(string? address, string? cells, string? name), object?[,]> _values
-        = new Dictionary<(string? address, string? cells, string? name), object?[,]>();
-    public static void Set((string? sheet, string? cells, string? name) address, object?[,] value)
-        => _values[address] = value;
-    public static object?[,] Get((string? sheet, string? cells, string? name) address)
-        => _values[address];
+    static readonly Dictionary<(string? address, string? cells, string? name), IEnumerable<IEnumerable<object?>>> _values
+        = new Dictionary<(string? address, string? cells, string? name), IEnumerable<IEnumerable<object?>>>();
+    public static Task Set((string? sheet, string? cells, string? name) address, IEnumerable<IEnumerable<object?>> values)
+    {
+        _values[address] = values;
+        return Task.CompletedTask;
+    }
+    public static Task<IEnumerable<IEnumerable<object?>>> Get((string? sheet, string? cells, string? name) address)
+        => Task.FromResult(_values[address]);
 }
 
 static class TestScript
@@ -23,7 +26,7 @@ static class TestScript
         XL.RangeObject.GetRangeValue = RangeValue.Get;
 
         // E1
-        var e1 = new Celin.AIS.Server("https://demo.steltix.com/jderest/v2/", logger);
+        var e1 = new AIS.Server("https://demo.steltix.com/jderest/v2/", logger);
         e1.AuthRequest.username = "DEMO";
         e1.AuthRequest.password = "DEMO";
         //await e1.AuthenticateAsync();
