@@ -22,8 +22,8 @@ static class TestScript
 {
     public static async Task Run(ILogger logger)
     {
-        XL.RangeObject.SetRangeValue = RangeValue.Set;
-        XL.RangeObject.GetRangeValue = RangeValue.Get;
+        RangeObject.SetRangeValue = RangeValue.Set;
+        RangeObject.GetRangeValue = RangeValue.Get;
 
         // E1
         var e1 = new AIS.Server("https://demo.steltix.com/jderest/v2/", logger);
@@ -47,7 +47,7 @@ static class TestScript
         }*/
 
         // Define the scripting API
-        var globals = new Globals(e1, logger);
+        var globals = new Globals(e1);
         globals.OnProcess += (string? msg) =>
         {
             logger.LogDebug($"Process: {msg}");

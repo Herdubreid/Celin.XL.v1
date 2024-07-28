@@ -1,11 +1,15 @@
-﻿using Celin.Language;
-using Microsoft.CodeAnalysis.CSharp.Scripting;
+﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using System.Text.Json;
+using Celin.Language.XL;
 
 namespace Celin.XL.Sharp.Services;
 
-class Globals { }
+class Globals
+{
+    public static RangeObject Range
+        => RangeObject.Range;
+}
 public class SharpService
 {
     public async Task Submit(string cmd)
@@ -29,8 +33,8 @@ public class SharpService
         _logger = logger;
         _js = js;
 
-        Language.XL.XL.RangeObject.SetRangeValue = SetRangeValueAsync;
-        Language.XL.XL.RangeObject.GetRangeValue = GetRangeValueAsync;
+        Language.XL.RangeObject.SetRangeValue = SetRangeValueAsync;
+        Language.XL.RangeObject.GetRangeValue = GetRangeValueAsync;
 
         // Create a scripting environment
         _scriptOptions = ScriptOptions.Default

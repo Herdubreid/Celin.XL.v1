@@ -3,18 +3,22 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-record F0101 : Celin.AIS.FormResponse
-{
-    // Instead of defining row members, we use the DynamicJsonElment
-    //public DynamicFormResult fs_DATABROWSE_F0101 { get; set; } = null!;
-    public ObjectFormResult fs_DATABROWSE_F0101 { get; set; } = null!;
-    public [,] Data => fs_DATABROWSE_F0101.data.gridData;
-}
-
 Console.WriteLine("Starting...");
 
-var rq = QL("f0101 (an8,alph)");
+var x = Range.Cells("a1:*");
+var m = "[E,2],[3],[,5]".ToMatrix();
+var s = m.FirstOrDefault().FirstOrDefault();
+Console.WriteLine($"String: {s}");
+Console.WriteLine(m.ToMatrix());
+Console.WriteLine(m.ToList());
+Console.WriteLine(m.ToSingle());
 
+var rq = await Query($"f0101 (an8,alph) all(at1={m.ToSingle()})")
+    .RunAsync();
+Console.WriteLine(rq.FormResponse.currentApp);
+Console.WriteLine(rq.GridRows.ToMatrix());
+/*
+Console.WriteLine(rq.DynamicRows);
 var rs = await E1.RequestAsync<F0101>(rq);
 // Simplify the return parameter
 var d = rs.fs_DATABROWSE_F0101.data.gridData;
@@ -31,3 +35,4 @@ foreach (dynamic r in d.rowset)
 //LogInformation("Waiting...");
 //await Task.Delay(5000);
 Console.WriteLine("Done");
+*/

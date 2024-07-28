@@ -1,4 +1,5 @@
-﻿record F0101 : Celin.AIS.FormResponse
+﻿
+record F0101 : Celin.AIS.FormResponse
 {
     public record Row(int f0101_an8, string f0101_alph);
     // Instead of defining row members, we use the DynamicJsonElment

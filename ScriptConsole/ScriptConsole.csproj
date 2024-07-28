@@ -9,21 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Scripts\init.cs" />
-    <Compile Remove="Scripts\script1.cs" />
-    <Compile Remove="Scripts\Script2.cs" />
-    <Compile Remove="Scripts\Script3.cs" />
-    <Compile Remove="Scripts\Script4.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Scripts\init.cs" />
-    <None Include="Scripts\script1.cs">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Script2.cs" />
-    <None Include="Scripts\Script3.cs" />
-    <None Include="Scripts\Script4.cs" />
+    <None Include="Scripts\*.cs" />
+    <Compile Remove="Scripts\*.cs" />
   </ItemGroup>
 
   <ItemGroup>
