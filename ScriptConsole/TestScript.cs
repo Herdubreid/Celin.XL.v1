@@ -1,30 +1,15 @@
-﻿using Celin.Language.XL;
+﻿using Celin.Language;
+using Celin.Language.XL;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.Extensions.Logging;
 
 namespace Celin;
 
-class RangeValue
-{
-    static readonly Dictionary<(string? address, string? cells, string? name), IEnumerable<IEnumerable<object?>>> _values
-        = new Dictionary<(string? address, string? cells, string? name), IEnumerable<IEnumerable<object?>>>();
-    public static Task Set((string? sheet, string? cells, string? name) address, IEnumerable<IEnumerable<object?>> values)
-    {
-        _values[address] = values;
-        return Task.CompletedTask;
-    }
-    public static Task<IEnumerable<IEnumerable<object?>>> Get((string? sheet, string? cells, string? name) address)
-        => Task.FromResult(_values[address]);
-}
-
 static class TestScript
 {
     public static async Task Run(ILogger logger)
     {
-        RangeObject.SetRangeValue = RangeValue.Set;
-        RangeObject.GetRangeValue = RangeValue.Get;
-
         // E1
         var e1 = new AIS.Server("https://demo.steltix.com/jderest/v2/", logger);
         e1.AuthRequest.username = "DEMO";
@@ -47,12 +32,8 @@ static class TestScript
         }*/
 
         // Define the scripting API
-        var globals = new Globals(e1);
-        globals.OnProcess += (string? msg) =>
-        {
-            logger.LogDebug($"Process: {msg}");
-        };
-
+        var shell = new ScriptShell(e1);
+ 
         // Create a scripting environment
         var scriptOptions = ScriptOptions.Default
             .AddImports([
@@ -62,11 +43,11 @@ static class TestScript
                 "Celin.Language",
                 "Celin.Language.XL"])
             .AddReferences([
-                typeof(Globals).Assembly]);
+                typeof(ScriptShell).Assembly]);
 
         // Run the Init script
         string sb = File.ReadAllText("../../../Scripts/init.cs");
-        var state = await CSharpScript.RunAsync(sb, scriptOptions, globals);
+        var state = await CSharpScript.RunAsync(sb, scriptOptions, shell);
 
         while (true)
         {

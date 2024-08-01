@@ -41,6 +41,13 @@
         delete history.replaceState;
     });
     var blazorLib;
+    function assignNonNullProperties(source, target) {
+        Object.keys(source).forEach(key => {
+            if (source[key] !== null) {
+                target[key] = source[key];
+            }
+        });
+    }
     const app = {
         init: (lib) => {
             blazorLib = lib;
@@ -78,6 +85,30 @@
         },
     };
     const xl = {
+        syncSheetFrom: async (key) => {
+            let result = await Excel.run(async (ctx) => {
+                const sh = name == null
+                    ? ctx.workbook.worksheets.getActiveWorksheet()
+                    : ctx.workbook.worksheets.getItem(key);
+                sh.load();
+                await ctx.sync();
+                console.log(`SheetFrom:${JSON.stringify(sh)}`);
+                return sh;
+            });
+            return result;
+        },
+        syncSheetTo: async (key, values) => {
+            let result = await Excel.run(async (ctx) => {
+                const sh = ctx.workbook.worksheets.getItem(key);
+                assignNonNullProperties(values, sh);
+                await ctx.sync();
+                sh.load();
+                await ctx.sync();
+                console.log(`SheetFrom:${JSON.stringify(sh)}`);
+                return sh;
+            });
+            return result;
+        },
         setRange: async (sheet, address, values) => {
             console.log(`${sheet}, ${address}, ${values}`);
             await Excel.run(async (ctx) => {

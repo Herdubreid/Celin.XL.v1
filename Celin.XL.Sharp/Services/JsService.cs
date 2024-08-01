@@ -1,4 +1,5 @@
 ﻿using BlazorState;
+using Celin.Language.XL;
 using MediatR;
 using Microsoft.JSInterop;
 using static Celin.XL.Sharp.AppState;
@@ -29,8 +30,15 @@ public class JsService
     {
         setRange,
         getRange,
+        syncSheetFrom,
+        syncSheetTo,
     }
     string XL(xl f) => $"{LIB}.{nameof(xl)}.{f:g}";
+
+    public ValueTask<SheetProperties> SyncFromSheet(string key)
+        => _js.InvokeAsync<SheetProperties>(XL(xl.syncSheetFrom), key);
+    public ValueTask<SheetProperties> SyncToSheet(string key, SheetProperties values)
+        => _js.InvokeAsync<SheetProperties>(XL(xl.syncSheetTo), key, values);
     public ValueTask SetRange(string? sheet, string cells, IEnumerable<IEnumerable<object?>> values)
         => _js.InvokeVoidAsync(XL(xl.setRange), sheet, cells, values);
     public ValueTask<string> GetRange(string? sheet, string address)

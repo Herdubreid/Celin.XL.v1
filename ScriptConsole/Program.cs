@@ -1,4 +1,10 @@
-﻿using Celin;
+﻿global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using Celin.Language;
+global using Celin.Language.XL;
+using Celin;
+using Celin.AIS;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -14,6 +20,14 @@ using var loggerFactory = LoggerFactory.Create(builder =>
 });
 var logger = loggerFactory.CreateLogger<Program>();
 logger.LogInformation("Starting");
+
+var e1 = new Server("demo.steltix.com/v2/", logger);
+
+XLObject<SheetObject>.SyncFromDelegate = Matrix.Sync;
+RangeObject.SetRangeValue = Matrix.Set;
+RangeObject.GetRangeValue = Matrix.Get;
+
+//await Script1.Run(e1);
 
 await TestScript.Run(logger);
 //TestParser.Run(logger);

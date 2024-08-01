@@ -50,15 +50,26 @@ public class RangeObject
         => await GetRangeValue((_sheet, _cells, _name));
     public async Task SetValueAsync(IEnumerable<IEnumerable<object?>> value) =>
         await SetRangeValue((_sheet,
-            AdjustCells(_cells, value.Count(), 
-                value.FirstOrDefault()?.Count() ?? 0) , _name), value);
+            AdjustCells(_cells, value.Count(),
+                value.FirstOrDefault()?.Count() ?? 0), _name), value);
     public async Task SetValueAsync(string value)
         => await SetValueAsync(value.ToMatrix());
     public override string ToString()
         => _name == null
         ? $"{_sheet}!{_cells}"
         : _name;
-    static string AdjustCells(string? cells, int rows,  int cols)
+    public static (int Left, int Top, int Right, int Bottom) ToRef(string cells)
+    {
+        var m = CELLREF.Match(cells ?? throw new ArgumentNullException(nameof(Cells)));
+        int left = ColumnToNumber(m.Groups[1].Value);
+        int top = int.Parse(m.Groups[2].Value);
+        int right = string.IsNullOrEmpty(m.Groups[3].Value)
+            ? left : ColumnToNumber(m.Groups[3].Value);
+        int bottom = string.IsNullOrEmpty(m.Groups[4].Value)
+            ? top : int.Parse(m.Groups[4].Value);
+        return (left, top, right, bottom);
+    }
+    static string AdjustCells(string? cells, int rows, int cols)
     {
         var m = CELLREF.Match(cells ?? throw new ArgumentNullException(nameof(Cells)));
         if (m.Success)

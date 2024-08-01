@@ -5,9 +5,10 @@ namespace Celin.Language;
 public class ScriptShell
 {
     public static RangeObject Range => RangeObject.Range;
+    public static SheetObject Sheet(string name) => SheetObject.Sheet(name);
     public QueryObject Query(string query) => QueryObject.Query(_e1, query);
     AIS.Server _e1;
-    protected ScriptShell(AIS.Server e1)
+    public ScriptShell(AIS.Server e1)
     {
         _e1 = e1;
     }

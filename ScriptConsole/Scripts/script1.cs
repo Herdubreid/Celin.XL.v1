@@ -15,8 +15,11 @@ Console.WriteLine(m.ToSingle());
 
 var rq = await Query($"f0101 (an8,alph) all(at1={m.ToSingle()})")
     .RunAsync();
+await Range.Cells("d2").SetValueAsync(rq.GridRows);
+
 Console.WriteLine(rq.FormResponse.currentApp);
-Console.WriteLine(rq.GridRows.ToMatrix());
+var v = await Range.Cells("d2:e101").GetValueAsync();
+Console.WriteLine(v.ToMatrix());
 /*
 Console.WriteLine(rq.DynamicRows);
 var rs = await E1.RequestAsync<F0101>(rq);

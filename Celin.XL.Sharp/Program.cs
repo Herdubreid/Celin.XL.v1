@@ -1,4 +1,5 @@
 using BlazorState;
+using Celin.AIS;
 using Celin.XL.Sharp;
 using Celin.XL.Sharp.Components;
 using Celin.XL.Sharp.Services;
@@ -26,6 +27,7 @@ builder.Services
         options.UseCloneStateBehavior = false;
         options.Assemblies = [typeof(Program).Assembly];
     })
+    .AddScoped<E1Service>()
     .AddScoped<JsService>()
     .AddScoped<SharpService>();
 
