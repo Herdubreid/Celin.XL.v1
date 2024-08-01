@@ -18,6 +18,13 @@ function assignNonNullProperties(source: any, target: any) {
     });
 }
 
+function parseRangeAddress(address: string) {
+    let m = address.match(/('?([^']+)'?!)?(.+)/);
+    let sheet: string = m ? m[1] : null;
+    let cells: string = m ? m[3] : null;
+    return { sheet, cells };
+}
+
 export const app = {
     init: (lib: DotNet.DotNetObject) => {
         blazorLib = lib;
@@ -57,9 +64,35 @@ export const app = {
 }
 
 export const xl = {
-    syncSheetFrom: async (key: string) => {
+    getRange: async (key: string) => {
+        let a = parseRangeAddress(key);
+        console.log(`Address:${a.sheet},${a.cells}`);
         let result = await Excel.run(async (ctx) => {
-            const sh = name == null
+            const sh = a.sheet == null
+            ? ctx.workbook.worksheets.getActiveWorksheet()
+            : ctx.workbook.worksheets.getItem(a.sheet);
+            const range = sh.getRange(a.cells);
+            range.load();
+            await ctx.sync();
+            return range;
+        });
+        return JSON.stringify(result);
+    },
+    setRange: async (key: string, values: string) => {
+        let result = await Excel.run(async (ctx) => {
+            const sh = ctx.workbook.worksheets.getItem(key);
+            assignNonNullProperties(JSON.parse(values), sh);
+            await ctx.sync();
+            sh.load();
+            await ctx.sync();
+            console.log(`SheetFrom:${JSON.stringify(sh)}`);
+            return sh;
+        });
+        return JSON.stringify(result);
+    },
+    getSheet: async (key: string) => {
+        let result = await Excel.run(async (ctx) => {
+            const sh = key == null
             ? ctx.workbook.worksheets.getActiveWorksheet()
             : ctx.workbook.worksheets.getItem(key);
             sh.load();
@@ -69,7 +102,7 @@ export const xl = {
         });
         return result;
     },
-    syncSheetTo: async (key: string, values: Excel.Worksheet) => {
+    setSheet: async (key: string, values: Excel.Worksheet) => {
         let result = await Excel.run(async (ctx) => {
             const sh = ctx.workbook.worksheets.getItem(key);
             assignNonNullProperties(values, sh);
@@ -81,7 +114,7 @@ export const xl = {
         });
         return result;
     },
-    setRange: async (sheet: string, address: string, values: any) => {
+    /*setRange: async (sheet: string, address: string, values: any) => {
         console.log(`${sheet}, ${address}, ${values}`);
         await Excel.run(async (ctx) => {
             const sh = sheet == null
@@ -106,5 +139,5 @@ export const xl = {
         let toreturn = JSON.stringify(result);
         console.log(`Result: ${toreturn}`);
         return toreturn;
-    },
+    },*/
 }

@@ -23,7 +23,7 @@ logger.LogInformation("Starting");
 
 var e1 = new Server("demo.steltix.com/v2/", logger);
 
-XLObject<SheetObject>.SyncFromDelegate = Matrix.Sync;
+BaseObject<SheetObject>.SyncFromDelegate = Matrix.Sync;
 RangeObject.SetRangeValue = Matrix.Set;
 RangeObject.GetRangeValue = Matrix.Get;
 

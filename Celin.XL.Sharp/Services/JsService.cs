@@ -30,19 +30,25 @@ public class JsService
     {
         setRange,
         getRange,
-        syncSheetFrom,
-        syncSheetTo,
+        getSheet,
+        setSheet,
+        syncRangeFrom,
+        syncRangeTo,
     }
     string XL(xl f) => $"{LIB}.{nameof(xl)}.{f:g}";
 
-    public ValueTask<SheetProperties> SyncFromSheet(string key)
-        => _js.InvokeAsync<SheetProperties>(XL(xl.syncSheetFrom), key);
-    public ValueTask<SheetProperties> SyncToSheet(string key, SheetProperties values)
-        => _js.InvokeAsync<SheetProperties>(XL(xl.syncSheetTo), key, values);
-    public ValueTask SetRange(string? sheet, string cells, IEnumerable<IEnumerable<object?>> values)
+    public ValueTask<string> getRange(string key)
+        => _js.InvokeAsync<string>(XL(xl.getRange), key);
+    public ValueTask<string> setRange(string key, string values)
+        => _js.InvokeAsync<string>(XL(xl.setRange), key, values);
+    public ValueTask<SheetProperties> getSheet(string key)
+        => _js.InvokeAsync<SheetProperties>(XL(xl.getSheet), key);
+    public ValueTask<SheetProperties> setSheet(string key, SheetProperties values)
+        => _js.InvokeAsync<SheetProperties>(XL(xl.setSheet), key, values);
+    /*public ValueTask SetRange(string? sheet, string cells, IEnumerable<IEnumerable<object?>> values)
         => _js.InvokeVoidAsync(XL(xl.setRange), sheet, cells, values);
     public ValueTask<string> GetRange(string? sheet, string address)
-        => _js.InvokeAsync<string>(XL(xl.getRange), sheet, address);
+        => _js.InvokeAsync<string>(XL(xl.getRange), sheet, address);*/
     #endregion
     #region invokables
     [JSInvokable]

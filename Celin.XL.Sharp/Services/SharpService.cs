@@ -20,18 +20,18 @@ public class SharpService
             _logger.LogError(ex, nameof(Submit));
         }
     }
-    async Task SetRangeValueAsync((string? sheet, string? cells, string? name) address, IEnumerable<IEnumerable<object?>> value)
-        => await _js.SetRange(address.sheet, address.cells!, value);
-    async Task<IEnumerable<IEnumerable<object?>>> GetRangeValueAsync((string? sheet, string? cells, string? name) address)
+    async ValueTask<RangeProperties> GetRange(string key)
     {
-        var s = await _js.GetRange(address.sheet, address.cells!);
-        var e = JsonSerializer.Deserialize<IEnumerable<IEnumerable<object?>>>(s);
-        return e!;
+        var s = await _js.getRange(key);
+        var p = JsonSerializer.Deserialize<RangeProperties>(s);
+        return p;
     }
-    async Task<SheetProperties> SyncFrom(string key, SheetProperties value, bool fromExcel)
+    async ValueTask<RangeProperties> SetRange(string key, RangeProperties values)
     {
-        var result = await _js.SyncFromSheet(key);
-        return result;
+        string ps = JsonSerializer.Serialize(values);
+        var s = await _js.setRange(key, ps);
+        var p = JsonSerializer.Deserialize<RangeProperties>(s);
+        return p;
     }
     readonly ScriptShell _shell;
     readonly ILogger _logger;
@@ -43,10 +43,10 @@ public class SharpService
         _logger = logger;
         _js = js;
 
-        XLObject<SheetProperties>.SyncFromDelegate = _js.SyncFromSheet;
-        XLObject<SheetProperties>.SyncToDelegate = _js.SyncToSheet;
-        RangeObject.SetRangeValue = SetRangeValueAsync;
-        RangeObject.GetRangeValue = GetRangeValueAsync;
+        BaseObject<RangeProperties>.SetAsyncDelegate = SetRange;
+        BaseObject<RangeProperties>.GetAsyncDelegate = GetRange;
+        BaseObject<SheetProperties>.SetAsyncDelegate = _js.setSheet;
+        BaseObject<SheetProperties>.GetAsyncDelegate = _js.getSheet;
 
         // Create a scripting environment
         _scriptOptions = ScriptOptions.Default

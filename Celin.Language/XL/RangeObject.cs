@@ -3,12 +3,39 @@ using System.Text.RegularExpressions;
 
 namespace Celin.Language.XL;
 
+public record RangeProperties(
+string? address = null,
+int? cellCount = null,
+int? columnCount = null,
+bool? columnHidden = null,
+int? columnIndex = null,
+IEnumerable<IEnumerable<object>>? formulas = null,
+bool? hasSpill = null,
+decimal? height = null,
+bool? hidden = null,
+bool? isEntireColumn = null,
+bool? isEntireRow = null,
+IEnumerable<IEnumerable<string>>? numberFormat = null,
+int? rowCount = null,
+bool? rowHidden = null,
+int? rowIndex = null,
+string? style = null,
+IEnumerable<IEnumerable<string>>? text = null,
+IEnumerable<IEnumerable<object>>? values = null,
+IEnumerable<IEnumerable<string>>? valueTypes = null);
+
 public delegate Task SetRangeValueAsync((string? sheet, string? cells, string? name) address, IEnumerable<IEnumerable<object?>> values);
 public delegate Task<IEnumerable<IEnumerable<object?>>> GetRangeValueAsync((string? sheet, string? cells, string? name) address);
 
-public class RangeObject
+public class RangeObject : BaseObject<RangeProperties>
 {
-    static readonly Regex CELLREF = new Regex(@"([a-zA-Z]+)(\d+)(?::([a-zA-Z]+)(\d+))?");
+    public override string Key => _xl.address ?? _local.address ?? string.Empty;
+    public override RangeProperties Properties
+    {
+        get => _xl;
+        set => _xl = value;
+    }
+    public override RangeProperties LocalProperties => _local;
     public static SetRangeValueAsync SetRangeValue { get; set; } = null!;
     public static GetRangeValueAsync GetRangeValue { get; set; } = null!;
     public RangeObject Sheet(string sheet)
@@ -106,10 +133,17 @@ public class RangeObject
         }
         return number;
     }
+    static readonly Regex CELLREF = new Regex(@"([a-zA-Z]+)(\d+)(?::([a-zA-Z]+)(\d+))?");
     string? _cells;
     string? _sheet;
     string? _name;
-    RangeObject() { }
-    public static RangeObject Range
-        => new();
+    RangeProperties _local;
+    RangeProperties _xl;
+    RangeObject(string address)
+    {
+        _xl = new RangeProperties();
+        _local = new RangeProperties(address: address);
+    }
+    public static RangeObject Range(string address)
+        => new(address);
 }

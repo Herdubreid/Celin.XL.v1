@@ -1,12 +1,10 @@
-﻿var sh = Sheet("Sheet1");
-await sh.Sync();
+﻿var sh = Sheet("Sheet Numer 2");
+await sh.GetAsync();
 Console.WriteLine($"Sheet: {sh.Key}");
-sh.Name = "Test1";
-await sh.Sync(false);
+sh.Name = "Test2";
+await sh.SetAsync();
 Console.WriteLine($"Sheet: {sh.Name}");
-//var x = Range.Cells("b2");
-//await x.SetValueAsync("[100,120],[10]");
-//var v = await Range.Cells("b2:c3").GetValueAsync();
-//Console.WriteLine(v.ToMatrix());
-//Console.WriteLine((await x.GetValueAsync()).ToMatrixString());
-//XL.Range.Cells("b2").Values = "10";
+
+var x = Range("c1:h9");
+await x.GetAsync();
+Console.WriteLine(x.Properties);

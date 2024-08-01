@@ -12,7 +12,7 @@ public record SheetProperties(
     string? tabColor = null,
     int? tabId = null,
     string? visibility = null);
-public class SheetObject : XLObject<SheetProperties>
+public class SheetObject : BaseObject<SheetProperties>
 {
     public override string Key => _xl.id ?? _local.name ?? string.Empty;
     public override SheetProperties Properties
