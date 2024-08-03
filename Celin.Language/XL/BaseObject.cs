@@ -1,20 +1,16 @@
 ﻿namespace Celin.Language.XL;
 
-public delegate ValueTask<T> GetAsyncDelegate<T>(string key);
-public delegate ValueTask<T> SetAsyncDelegate<T>(string key, T values);
+public delegate ValueTask<T> SyncAsyncDelegate<T>(string key, T values);
 public abstract class BaseObject<T>
+    where T : new()
 {
     public abstract string Key { get; }
-    public abstract T Properties { get; set; }
-    public abstract T LocalProperties { get; }
-    public static GetAsyncDelegate<T> GetAsyncDelegate { get; set; } = null!;
-    public static SetAsyncDelegate<T> SetAsyncDelegate { get; set; } = null!;
-    public async Task GetAsync()
+    public abstract T Properties { get; protected set; }
+    public abstract T LocalProperties { get; protected set; }
+    public static SyncAsyncDelegate<T> SyncAsyncDelegate { get; set; } = null!;
+    public async Task Sync()
     {
-        Properties = await GetAsyncDelegate(Key);
-    }
-    public async Task SetAsync()
-    {
-        Properties = await SetAsyncDelegate(Key, LocalProperties);
+        Properties = await SyncAsyncDelegate(Key, LocalProperties);
+        LocalProperties = new();
     }
 }

@@ -11,16 +11,23 @@ public record SheetProperties(
     decimal? standardWidth = null,
     string? tabColor = null,
     int? tabId = null,
-    string? visibility = null);
+    string? visibility = null)
+{
+    public SheetProperties() : this(id: null) { }
+};
 public class SheetObject : BaseObject<SheetProperties>
 {
     public override string Key => _xl.id ?? _local.name ?? string.Empty;
     public override SheetProperties Properties
     {
         get => _xl;
-        set => _xl = value;
+        protected set => _xl = value;
     }
-    public override SheetProperties LocalProperties => _local;
+    public override SheetProperties LocalProperties
+    {
+        get => _local;
+        protected set => _local = value;
+    }
     public string? Name
     {
         get => Properties.name;

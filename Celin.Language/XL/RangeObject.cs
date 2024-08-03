@@ -4,28 +4,28 @@ using System.Text.RegularExpressions;
 namespace Celin.Language.XL;
 
 public record RangeProperties(
-string? address = null,
-int? cellCount = null,
-int? columnCount = null,
-bool? columnHidden = null,
-int? columnIndex = null,
-IEnumerable<IEnumerable<object>>? formulas = null,
-bool? hasSpill = null,
-decimal? height = null,
-bool? hidden = null,
-bool? isEntireColumn = null,
-bool? isEntireRow = null,
-IEnumerable<IEnumerable<string>>? numberFormat = null,
-int? rowCount = null,
-bool? rowHidden = null,
-int? rowIndex = null,
-string? style = null,
-IEnumerable<IEnumerable<string>>? text = null,
-IEnumerable<IEnumerable<object>>? values = null,
-IEnumerable<IEnumerable<string>>? valueTypes = null);
-
-public delegate Task SetRangeValueAsync((string? sheet, string? cells, string? name) address, IEnumerable<IEnumerable<object?>> values);
-public delegate Task<IEnumerable<IEnumerable<object?>>> GetRangeValueAsync((string? sheet, string? cells, string? name) address);
+    string? address = null,
+    int? cellCount = null,
+    int? columnCount = null,
+    bool? columnHidden = null,
+    int? columnIndex = null,
+    IEnumerable<IEnumerable<object>>? formulas = null,
+    bool? hasSpill = null,
+    decimal? height = null,
+    bool? hidden = null,
+    bool? isEntireColumn = null,
+    bool? isEntireRow = null,
+    IEnumerable<IEnumerable<string>>? numberFormat = null,
+    int? rowCount = null,
+    bool? rowHidden = null,
+    int? rowIndex = null,
+    string? style = null,
+    IEnumerable<IEnumerable<string>>? text = null,
+    List<List<object>>? values = null,
+    IEnumerable<IEnumerable<string>>? valueTypes = null)
+{
+    public RangeProperties() : this(address: null) { }
+};
 
 public class RangeObject : BaseObject<RangeProperties>
 {
@@ -33,79 +33,56 @@ public class RangeObject : BaseObject<RangeProperties>
     public override RangeProperties Properties
     {
         get => _xl;
-        set => _xl = value;
+        protected set => _xl = value;
     }
-    public override RangeProperties LocalProperties => _local;
-    public static SetRangeValueAsync SetRangeValue { get; set; } = null!;
-    public static GetRangeValueAsync GetRangeValue { get; set; } = null!;
-    public RangeObject Sheet(string sheet)
+    public override RangeProperties LocalProperties
     {
-        _sheet = sheet;
-        return this;
+        get => _local;
+        protected set => _local = value;
     }
-    public RangeObject Cells(string cells)
-    {
-        _cells = cells.ToUpper();
-        return this;
-    }
+    public string? Address => _xl.address;
+    public ValuesObject<object?> Values => new(Address, _xl.values, _local.values);
     public RangeObject Resize(int deltaRows, int deltaColumns)
     {
-        var m = CELLREF.Match(_cells ?? throw new ArgumentNullException(nameof(Cells)));
+        var m = CELLREF.Match(Address ?? throw new ArgumentNullException(nameof(Address)));
         if (m.Success)
         {
             int row = int.Parse(
-                string.IsNullOrEmpty(m.Groups[4].Value)
-                ? m.Groups[2].Value : m.Groups[4].Value)
+                string.IsNullOrEmpty(m.Groups[5].Value)
+                ? m.Groups[3].Value : m.Groups[5].Value)
                 + deltaRows;
             int col = ColumnToNumber(
-                string.IsNullOrEmpty(m.Groups[3].Value)
-                ? m.Groups[1].Value : m.Groups[3].Value)
+                string.IsNullOrEmpty(m.Groups[4].Value)
+                ? m.Groups[1].Value : m.Groups[4].Value)
                 + deltaColumns;
-            _cells = $"{m.Groups[1].Value}{m.Groups[2].Value}:{NumberToColumn(col)}{row}";
+            var _cells = $"{m.Groups[1].Value}{m.Groups[3].Value}:{NumberToColumn(col)}{row}";
         }
         else
-            throw new ArgumentException($"Invalid Cell Reference: {_cells}");
+            throw new ArgumentException($"Invalid Cell Reference: {Address}");
 
         return this;
     }
-    public RangeObject Name(string name)
+    public static (int Left, int Top, int Right, int Bottom) ToRef(string address)
     {
-        _name = name;
-        return this;
-    }
-    public async Task<IEnumerable<IEnumerable<object?>>> GetValueAsync()
-        => await GetRangeValue((_sheet, _cells, _name));
-    public async Task SetValueAsync(IEnumerable<IEnumerable<object?>> value) =>
-        await SetRangeValue((_sheet,
-            AdjustCells(_cells, value.Count(),
-                value.FirstOrDefault()?.Count() ?? 0), _name), value);
-    public async Task SetValueAsync(string value)
-        => await SetValueAsync(value.ToMatrix());
-    public override string ToString()
-        => _name == null
-        ? $"{_sheet}!{_cells}"
-        : _name;
-    public static (int Left, int Top, int Right, int Bottom) ToRef(string cells)
-    {
-        var m = CELLREF.Match(cells ?? throw new ArgumentNullException(nameof(Cells)));
-        int left = ColumnToNumber(m.Groups[1].Value);
-        int top = int.Parse(m.Groups[2].Value);
-        int right = string.IsNullOrEmpty(m.Groups[3].Value)
-            ? left : ColumnToNumber(m.Groups[3].Value);
-        int bottom = string.IsNullOrEmpty(m.Groups[4].Value)
-            ? top : int.Parse(m.Groups[4].Value);
+        var m = CELLREF.Match(address ?? throw new ArgumentNullException(nameof(Address)));
+        int left = ColumnToNumber(m.Groups[2].Value);
+        int top = int.Parse(m.Groups[3].Value);
+        int right = string.IsNullOrEmpty(m.Groups[4].Value)
+            ? left : ColumnToNumber(m.Groups[4].Value);
+        int bottom = string.IsNullOrEmpty(m.Groups[5].Value)
+            ? top : int.Parse(m.Groups[5].Value);
         return (left, top, right, bottom);
     }
     static string AdjustCells(string? cells, int rows, int cols)
     {
-        var m = CELLREF.Match(cells ?? throw new ArgumentNullException(nameof(Cells)));
+        var m = CELLREF.Match(cells ?? throw new ArgumentNullException(nameof(Address)));
         if (m.Success)
         {
             if (!string.IsNullOrEmpty(m.Groups[3].Value))
                 return cells;
             int startCol = ColumnToNumber(m.Groups[1].Value);
             int startRow = int.Parse(m.Groups[2].Value);
-            return $"{m.Groups[1].Value}{m.Groups[2].Value}:{NumberToColumn(startCol + cols - 1)}{startRow + rows - 1}";
+            return $"{m.Groups[1].Value}{m.Groups[3].Value}:{NumberToColumn(startCol + cols - 1)}{startRow + rows - 1}";
         }
         else
             throw new ArgumentException($"Invalid Cell Reference: {cells}");
@@ -133,16 +110,13 @@ public class RangeObject : BaseObject<RangeProperties>
         }
         return number;
     }
-    static readonly Regex CELLREF = new Regex(@"([a-zA-Z]+)(\d+)(?::([a-zA-Z]+)(\d+))?");
-    string? _cells;
-    string? _sheet;
-    string? _name;
+    static readonly Regex CELLREF = new Regex(@"(?:'?([^']+)'?!)?([a-zA-Z]+)(\d+)(?::([a-zA-Z]+)(\d+))?");
     RangeProperties _local;
     RangeProperties _xl;
     RangeObject(string address)
     {
-        _xl = new RangeProperties();
-        _local = new RangeProperties(address: address);
+        _local = new RangeProperties();
+        _xl = new RangeProperties(address: address);
     }
     public static RangeObject Range(string address)
         => new(address);
