@@ -4,10 +4,9 @@ class Script1 : ScriptShell
     public async Task Run()
     {
         Console.WriteLine("Starting...");
-        var range = Range.Cells("b2");
+        var range = Range("b2");
         var v1 = "[100,120],[10]".ToMatrix();
-        await range.SetValueAsync(v1);
-        var v = await Range.Cells("b2:b3").GetValueAsync();
+        var v = Range("b2:b3");
         Console.WriteLine($"Result: {v.ToMatrix()}");
     }
     Script1(AIS.Server e1) : base(e1) { }

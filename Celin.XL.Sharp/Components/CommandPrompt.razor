@@ -1,12 +1,11 @@
 ﻿@inherits BlazorStateComponent
 
 <MudStack
-    Style="font-family: Consolas; height: 100%;"
+    Style="font-family: Consolas;"
     StretchItems="StretchItems.End"
     Spacing="0">
     <MudTextField
         id="commandPromptId"
-        Margin="0"
         Style="font-family: inherit; margin: 0 12px"
         T="string"
         FullWidth
@@ -16,20 +15,4 @@
         AutoGrow="true"
         AutoFocus="true"
         spellcheck="false"/>
-    <MudStack
-        Spacing="0"
-        Style="margin: 0 12px; overflow-y:auto;">
-        @if (State.ErrorMsg != null)
-        {
-            <MudPaper>
-                <pre>@State.ErrorMsg</pre>
-            </MudPaper>
-        }
-        @if (State.Result != null)
-        {
-            <MudPaper>
-                <pre>@State.Result</pre>
-            </MudPaper>
-        }
-    </MudStack>
 </MudStack>

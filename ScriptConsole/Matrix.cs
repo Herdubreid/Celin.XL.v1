@@ -8,7 +8,6 @@ static class Matrix
         = new Dictionary<(int col, int row), object?>();
     public static Task<SheetObject> Sync(SheetObject value, bool FromExcel)
     {
-        value.id = "Synced...";
         return Task.FromResult(value);
     }
     public static Task Set((string? sheet, string? cells, string? name) address, IEnumerable<IEnumerable<object?>> values)

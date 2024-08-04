@@ -9,20 +9,20 @@ public record RangeProperties(
     int? columnCount = null,
     bool? columnHidden = null,
     int? columnIndex = null,
-    IEnumerable<IEnumerable<object>>? formulas = null,
+    IEnumerable<IEnumerable<object?>>? formulas = null,
     bool? hasSpill = null,
     decimal? height = null,
     bool? hidden = null,
     bool? isEntireColumn = null,
     bool? isEntireRow = null,
-    IEnumerable<IEnumerable<string>>? numberFormat = null,
+    List<List<string?>>? numberFormat = null,
     int? rowCount = null,
     bool? rowHidden = null,
     int? rowIndex = null,
     string? style = null,
-    IEnumerable<IEnumerable<string>>? text = null,
-    List<List<object>>? values = null,
-    IEnumerable<IEnumerable<string>>? valueTypes = null)
+    IEnumerable<IEnumerable<string?>>? text = null,
+    List<List<object?>>? values = null,
+    IEnumerable<IEnumerable<string?>>? valueTypes = null)
 {
     public RangeProperties() : this(address: null) { }
 };
@@ -42,6 +42,7 @@ public class RangeObject : BaseObject<RangeProperties>
     }
     public string? Address => _xl.address;
     public ValuesObject<object?> Values => new(Address, _xl.values, _local.values);
+    public ValuesObject<string?> NumberFormat => new(Address, _xl.numberFormat, _local.numberFormat);
     public RangeObject Resize(int deltaRows, int deltaColumns)
     {
         var m = CELLREF.Match(Address ?? throw new ArgumentNullException(nameof(Address)));

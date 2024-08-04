@@ -9,24 +9,9 @@ namespace Celin;
 
 static class TestParser
 {
-    static (string? sheet, string cells) Range(string cmd)
-        => CellReference.Parser
-            .Before(End).ParseOrThrow(cmd);
     static IEnumerable<IEnumerable<object?>> ParseValue(string value)
         => Values.Parser
             .Before(End).ParseOrThrow(value);
-    static (string LH, Maybe<string> RH) ParseExpression(string value)
-        => Expression.Parser
-            .Before(End).ParseOrThrow(value);
-    static ExpressionType ParseLH(string value)
-        => Expression.ParseLH
-            .Before(End).ParseOrThrow(value);
-    static ExpressionType ParseRH(string value)
-        => Expression.ParseRH
-            .Before(End).ParseOrThrow(value);
-    static Result<char, string> ParsePlaceHolders(string value)
-        => PlaceHolderString.Parser
-            .Parse(value);
     static IEnumerable<Maybe<string>> Test(string value)
         => Any.AtLeastOnceString().Optional()
             .Separated(Char(','))

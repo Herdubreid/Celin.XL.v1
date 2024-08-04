@@ -28,8 +28,15 @@ public class ValuesObject<T> : BaseObject<ValuesProperties<T>>
     public override ValuesProperties<T> LocalProperties
     {
         get => new ValuesProperties<T>(local: _local);
-        protected set => _local = value.local!;
+        protected set => _local = value.local ?? Init;
     }
+    public (int Left, int Top, int Right, int Bottom) Dim { get; protected set; }
+    List<List<T>> Init =>
+        Enumerable.Range(0, Dim.Bottom - Dim.Top + 1)!
+            .Select(_ => Enumerable.Range(0, Dim.Right - Dim.Left + 1)!
+               .Select(_ => default(T)!)
+               .ToList())
+            .ToList();
     string _address;
     IEnumerable<IEnumerable<T>> _xl;
     List<List<T>> _local;
@@ -40,11 +47,7 @@ public class ValuesObject<T> : BaseObject<ValuesProperties<T>>
     {
         _address = address ?? throw new NullReferenceException("null Range address!");
         _xl = xl ?? Enumerable.Empty<IEnumerable<T>>();
-        (int Left, int Top, int Right, int Bottom) sz = RangeObject.ToRef(address);
-        _local = local ?? Enumerable.Range(0, sz.Bottom - sz.Top + 1)!
-            .Select(_ => Enumerable.Range(0, sz.Right - sz.Left + 1)!
-               .Select(_ => default(T)!)
-               .ToList())
-            .ToList();
+        Dim = RangeObject.ToRef(_address);
+        _local = local ?? Init;
     }
 }

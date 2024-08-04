@@ -18,5 +18,6 @@ var x = Range("d5:g12");
 await x.Sync();
 var v = x.Values;
 v[1,1] = 20;
-v[1,2] = 30;
+v[1,2] = "Hello";
 await v.Sync();
+Console.WriteLine(v.Properties);

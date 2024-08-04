@@ -23,11 +23,14 @@ logger.LogInformation("Starting");
 
 var e1 = new Server("demo.steltix.com/v2/", logger);
 
-BaseObject<SheetObject>.SyncFromDelegate = Matrix.Sync;
-RangeObject.SetRangeValue = Matrix.Set;
-RangeObject.GetRangeValue = Matrix.Get;
+//BaseObject<SheetObject>.SyncFromDelegate = Matrix.Sync;
 
 //await Script1.Run(e1);
 
+var orgOut = Console.Out;
+TextWriter textWriter = new StringWriter();
+Console.SetOut(textWriter);
 await TestScript.Run(logger);
+Console.SetOut(orgOut);
+Console.WriteLine(textWriter.ToString());
 //TestParser.Run(logger);

@@ -6,8 +6,9 @@ public partial class AppState : State<AppState>
 {
     public string? Result { get; set; }
     public string? ErrorMsg { get; set; }
-    public Dictionary<string, object> Variables { get; set; } = new Dictionary<string, object>();
+    public StringWriter Output { get; set; } = new StringWriter();
     public override void Initialize()
     {
+        Console.SetOut(Output);
     }
 }

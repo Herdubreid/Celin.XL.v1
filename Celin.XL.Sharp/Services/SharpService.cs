@@ -8,12 +8,16 @@ namespace Celin.XL.Sharp.Services;
 
 public class SharpService
 {
+    public ScriptState? ScriptState { get; protected set; }
     public async Task Submit(string cmd)
     {
         _logger.LogDebug("Submit: {0}", cmd);
         try
         {
-            await CSharpScript.RunAsync(cmd, _scriptOptions, _shell);
+            if (ScriptState == null)
+                ScriptState = await CSharpScript.RunAsync(cmd, _scriptOptions, _shell);
+            else
+                ScriptState = await ScriptState.ContinueWithAsync(cmd);
         }
         catch (Exception ex)
         {

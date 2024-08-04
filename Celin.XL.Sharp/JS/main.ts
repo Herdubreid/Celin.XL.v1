@@ -38,7 +38,7 @@ export const app = {
     initCommandPrompt: (id: string) => {
         let txt = document.getElementById(id) as HTMLInputElement;
         txt.addEventListener('keydown', function (event) {
-            if (event.key === 'Enter') {
+            if (event.key === 'Enter' && event.shiftKey) {
                 if (TestStringComplete(txt.value)) {
                     if (txt.value.trim()) {
                         blazorLib.invokeMethodAsync('PromptCommand', txt.value);
@@ -72,7 +72,6 @@ export const app = {
 export const xl = {
     syncValues: async (key: string, values: any) => {
         let a = parseRangeAddress(key);
-        console.log(`Address:${a.sheet},${a.cells},${values}`);
         let result = await Excel.run(async (ctx) => {
             const sh = a.sheet == null
                 ? ctx.workbook.worksheets.getActiveWorksheet()
@@ -88,7 +87,6 @@ export const xl = {
     },
     syncRange: async (key: string, values: Excel.Range) => {
         let a = parseRangeAddress(key);
-        console.log(`Address:${a.sheet},${a.cells}`);
         let result = await Excel.run(async (ctx) => {
             const sh = a.sheet == null
                 ? ctx.workbook.worksheets.getActiveWorksheet()
@@ -113,35 +111,8 @@ export const xl = {
             }
             sh.load();
             await ctx.sync();
-            console.log(`SheetFrom:${JSON.stringify(sh)}`);
             return sh;
         });
         return result;
     },
-    /*setRange: async (sheet: string, address: string, values: any) => {
-        console.log(`${sheet}, ${address}, ${values}`);
-        await Excel.run(async (ctx) => {
-            const sh = sheet == null
-                ? ctx.workbook.worksheets.getActiveWorksheet()
-                : ctx.workbook.worksheets.getItem(sheet);
-            const range = sh.getRange(address);
-            range.values = values;
-            await ctx.sync();
-        });
-    },
-    getRange: async (sheet: string, address: string) => {
-        console.log(`${sheet}, ${address}`);
-        let result = await Excel.run(async (ctx) => {
-            const sh = sheet == null
-                ? ctx.workbook.worksheets.getActiveWorksheet()
-                : ctx.workbook.worksheets.getItem(sheet);
-            const range = sh.getRange(address);
-            range.load();
-            await ctx.sync();
-            return range.values;
-        });
-        let toreturn = JSON.stringify(result);
-        console.log(`Result: ${toreturn}`);
-        return toreturn;
-    },*/
 }
