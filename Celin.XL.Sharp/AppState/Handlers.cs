@@ -5,29 +5,33 @@ namespace Celin.XL.Sharp;
 
 public partial class AppState
 {
-    public class SetErrorHandler : ActionHandler<SetErrorAction>
-    {
-        AppState State => Store.GetState<AppState>();
-
-        public override Task Handle(SetErrorAction aAction, CancellationToken aCancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-        public SetErrorHandler(IStore store) : base(store) { }
-    }
     public class PromptCommandHandler : ActionHandler<PromptCommandAction>
     {
         AppState State => Store.GetState<AppState>();
         public override async Task Handle(PromptCommandAction aAction, CancellationToken aCancellationToken)
         {
-            await _sharp.Submit(aAction.PromptCommand);
+            _logger.LogDebug("Submit: {0}", State.Command);
+            if (string.IsNullOrEmpty(State.Command))
+                return;
+
+            State.CommandError = string.Empty;
+            try
+            {
+                await _sharp.Submit(State.Command);
+                State.Command = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                State.CommandError = ex.Message;
+                _logger.LogError(ex, nameof(Handle));
+            }
         }
-        readonly JsService _js;
+        readonly ILogger _logger;
         readonly SharpService _sharp;
-        public PromptCommandHandler(IStore store, JsService js, SharpService sharp) : base(store)
+        public PromptCommandHandler(IStore store, ILogger<PromptCommandHandler> logger, SharpService sharp) : base(store)
         {
-            _js = js;
             _sharp = sharp;
+            _logger = logger;
         }
     }
 }

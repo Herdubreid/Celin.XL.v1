@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.Scripting;
 using System.Text.Json;
 using Celin.Language.XL;
 using Celin.Language;
+using Celin.XL.Sharp.Service;
 
 namespace Celin.XL.Sharp.Services;
 
@@ -11,18 +12,10 @@ public class SharpService
     public ScriptState? ScriptState { get; protected set; }
     public async Task Submit(string cmd)
     {
-        _logger.LogDebug("Submit: {0}", cmd);
-        try
-        {
-            if (ScriptState == null)
-                ScriptState = await CSharpScript.RunAsync(cmd, _scriptOptions, _shell);
-            else
-                ScriptState = await ScriptState.ContinueWithAsync(cmd);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, nameof(Submit));
-        }
+        if (ScriptState == null)
+            ScriptState = await CSharpScript.RunAsync(cmd, _scriptOptions, _shell);
+        else
+            ScriptState = await ScriptState.ContinueWithAsync(cmd);
     }
     async ValueTask<RangeProperties> SyncRange(string key, RangeProperties values)
     {
@@ -40,11 +33,12 @@ public class SharpService
     readonly ILogger _logger;
     readonly JsService _js;
     readonly ScriptOptions _scriptOptions;
-    public SharpService(ILogger<SharpService> logger, JsService js, E1Service e1)
+    public SharpService(ILogger<SharpService> logger, OutputWriterService writer, JsService js, E1Service e1)
     {
         _shell = new ScriptShell(e1);
         _logger = logger;
         _js = js;
+        Console.SetOut(writer);
 
         BaseObject<ValuesProperties<object?>>.SyncAsyncDelegate = SyncValues;
         BaseObject<RangeProperties>.SyncAsyncDelegate = SyncRange;

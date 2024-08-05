@@ -71,10 +71,10 @@
                 if (event.key === 'Enter' && event.shiftKey) {
                     if (TestStringComplete(txt.value)) {
                         if (txt.value.trim()) {
-                            blazorLib.invokeMethodAsync('PromptCommand', txt.value);
+                            blazorLib.invokeMethodAsync('PromptCommand');
                         }
-                        txt.style.height = '19px';
-                        txt.value = '';
+                        //txt.style.height = '19px';
+                        //txt.value = '';
                         event.preventDefault();
                     }
                 }

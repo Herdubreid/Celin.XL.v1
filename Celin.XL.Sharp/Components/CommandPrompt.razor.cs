@@ -8,6 +8,7 @@ public partial class CommandPrompt : BlazorStateComponent
     [Inject]
     JsService JS { get; set; } = null!;
     AppState State => GetState<AppState>();
+    bool HasError => !string.IsNullOrEmpty(State.CommandError);
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)

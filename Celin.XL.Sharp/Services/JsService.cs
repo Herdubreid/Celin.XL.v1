@@ -42,10 +42,8 @@ public class JsService
     #endregion
     #region invokables
     [JSInvokable]
-    public void PromptCommand(string prompt)
-        => _mediator.Send(new PromptCommandAction { PromptCommand = prompt });
-    public void SetError(string msg)
-        => _mediator.Send(new SetErrorAction { ErrorMsg = msg });
+    public void PromptCommand()
+        => _mediator.Send(new PromptCommandAction());
     #endregion
 #pragma warning restore CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
 

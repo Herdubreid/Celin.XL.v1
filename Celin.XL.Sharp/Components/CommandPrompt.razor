@@ -1,18 +1,19 @@
 ﻿@inherits BlazorStateComponent
 
-<MudStack
-    Style="font-family: Consolas;"
-    StretchItems="StretchItems.End"
-    Spacing="0">
-    <MudTextField
-        id="commandPromptId"
-        Style="font-family: inherit; margin: 0 12px"
-        T="string"
-        FullWidth
-        Variant="Variant.Text"
-        Placeholder="Enter Command..."
-        Lines="1"
-        AutoGrow="true"
-        AutoFocus="true"
-        spellcheck="false"/>
-</MudStack>
+<MudTextField
+    @bind-Value="State.Command"
+    Immediate="true"
+    TextUpdateSuppression="false"
+    Clearable="true"
+    ErrorText="@State.CommandError"
+    Error="HasError"
+    id="commandPromptId"
+    Style="font-family: Consolas; margin: 0 12px"
+    T="string"
+    FullWidth
+    Variant="Variant.Text"
+    Placeholder="Enter Command..."
+    Lines="1"
+    AutoGrow="true"
+    AutoFocus="true"
+    spellcheck="false"/>

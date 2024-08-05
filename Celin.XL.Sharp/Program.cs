@@ -2,6 +2,7 @@ using BlazorState;
 using Celin.AIS;
 using Celin.XL.Sharp;
 using Celin.XL.Sharp.Components;
+using Celin.XL.Sharp.Service;
 using Celin.XL.Sharp.Services;
 using MudBlazor.Services;
 
@@ -29,7 +30,8 @@ builder.Services
     })
     .AddScoped<E1Service>()
     .AddScoped<JsService>()
-    .AddScoped<SharpService>();
+    .AddScoped<SharpService>()
+    .AddScoped<OutputWriterService>();
 
 var app = builder.Build();
 
