@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Celin.Language.XL;
+﻿namespace Celin.Language.XL;
 
 public record ValuesProperties<T>(
     IEnumerable<IEnumerable<T>>? xl = null,
@@ -14,6 +8,15 @@ public record ValuesProperties<T>(
 }
 public class ValuesObject<T> : BaseObject<ValuesProperties<T>>
 {
+    public ValuesObject<T> Set(string value)
+    {
+        var v = Values<T>.Parse(value);
+        for (int row = 0; row < v.Count(); row++)
+            for (int col = 0; col < v.ElementAt(row).Count(); col++)
+                _local[row][col] = v.ElementAt(row).ElementAt(col);
+
+        return this;
+    }
     public T this[int row, int col]
     {
         get => _xl.ElementAt(row)!.ElementAt(col)!;
@@ -38,6 +41,7 @@ public class ValuesObject<T> : BaseObject<ValuesProperties<T>>
                .ToList())
             .ToList();
     string _address;
+
     IEnumerable<IEnumerable<T>> _xl;
     List<List<T>> _local;
     public ValuesObject(
@@ -47,7 +51,7 @@ public class ValuesObject<T> : BaseObject<ValuesProperties<T>>
     {
         _address = address ?? throw new NullReferenceException("null Range address!");
         _xl = xl ?? Enumerable.Empty<IEnumerable<T>>();
-        Dim = RangeObject.ToRef(_address);
+        Dim = RangeObject.Dim(_address);
         _local = local ?? Init;
     }
 }

@@ -18,6 +18,7 @@ public partial class AppState
             try
             {
                 await _sharp.Submit(State.Command);
+                State.History.Add(State.Command);
                 State.Command = string.Empty;
             }
             catch (Exception ex)

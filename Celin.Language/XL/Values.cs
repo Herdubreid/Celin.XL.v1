@@ -5,44 +5,44 @@ using static Pidgin.Parser<char>;
 
 namespace Celin.Language.XL;
 
-public class Values
+public class Values<T>
 {
-    static readonly Parser<char, object?> STRING =
+    static readonly Parser<char, T> STRING =
         SkipWhitespaces
             .Then(OneOf(
                 Literal.DoubleQuoted,
                 Literal.SingleQuoted,
                 Literal.Plain))
-            .Cast<object?>();
-    static readonly Parser<char, object?> NUMBER =
+            .Cast<T>();
+    static readonly Parser<char, T> NUMBER =
         SkipWhitespaces
-            .Then(Try(DecimalNum.Cast<object?>())
-            .Or(Real.Cast<object?>()));
-    static readonly Parser<char, IEnumerable<object?>> ARRAY =
+            .Then(Try(DecimalNum.Cast<T>())
+            .Or(Real.Cast<T>()));
+    static readonly Parser<char, IEnumerable<T>> ARRAY =
         OneOf(STRING, NUMBER)
             .Optional()
             .SeparatedAtLeastOnce(Char(','))
             .Select(a => a
-                .Select(e => e.HasValue ? e.Value : null));
-    static readonly Parser<char, IEnumerable<IEnumerable<object?>>> MATRIX =
+                .Select(e => e.HasValue ? e.Value : default!));
+    static readonly Parser<char, IEnumerable<IEnumerable<T>>> MATRIX =
         ARRAY
             .Between(Char('['), Char(']'))
             .SeparatedAtLeastOnce(Char(','));
-    public static Parser<char, IEnumerable<IEnumerable<object?>>> Parser
+    public static Parser<char, IEnumerable<IEnumerable<T>>> Parser
         => Try(MATRIX)
                 .Select(m =>
                 {
                     var sz = m.MatrixCount();
-                    var res = m.Select(a => a.Concat(Enumerable.Repeat<object?>(null, sz.cols - a.Count())));
+                    var res = m.Select(a => a.Concat(Enumerable.Repeat<T>(default!, sz.cols - a.Count())));
                     return res;
                 })
-            .Or(ARRAY
-                .Select(a =>
+            .Or(ARRAY.Separated(EndOfLine)
+                /*.Select(a =>
                 {
-                    var res = new List<IEnumerable<object?>> { a };
+                    var res = new List<IEnumerable<T>> { a };
                     return res.AsEnumerable();
-                }));
-    public static IEnumerable<IEnumerable<object?>> Parse(string value)
-        => Values.Parser
+                })*/);
+    public static IEnumerable<IEnumerable<T>> Parse(string value)
+        => Values<T>.Parser
             .Before(End).ParseOrThrow(value);
 }

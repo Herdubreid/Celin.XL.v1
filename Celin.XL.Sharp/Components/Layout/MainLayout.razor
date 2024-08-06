@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider IsDarkMode="true" />
+<MudThemeProvider Theme="Theme" IsDarkMode="true" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
@@ -50,4 +50,15 @@
         }
         await base.OnAfterRenderAsync(firstRender);
     }
+    MudTheme Theme = new MudTheme()
+    {
+        Typography = new Typography()
+        {
+            Default = new Default()
+            {
+                FontSize = ".75rem",
+                FontFamily = new[] { "Calibri", "Helvetica", "Arial", "sans-serif" },
+            }
+        }
+    };
 }

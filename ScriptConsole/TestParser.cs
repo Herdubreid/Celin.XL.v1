@@ -10,7 +10,7 @@ namespace Celin;
 static class TestParser
 {
     static IEnumerable<IEnumerable<object?>> ParseValue(string value)
-        => Values.Parser
+        => Values<object?>.Parser
             .Before(End).ParseOrThrow(value);
     static IEnumerable<Maybe<string>> Test(string value)
         => Any.AtLeastOnceString().Optional()

@@ -37,11 +37,23 @@ public class RangeObject : BaseObject<RangeProperties>
     }
     public override RangeProperties LocalProperties
     {
-        get => _local;
-        protected set => _local = value;
+        get => _local with { values = _values?.LocalProperties.local };
+        protected set
+        {
+            _local = value;
+            _values = new ValuesObject<object?>(Address, value.values, null);
+        }
     }
     public string? Address => _xl.address;
-    public ValuesObject<object?> Values => new(Address, _xl.values, _local.values);
+    public ValuesObject<object?> Values
+    {
+        get
+        {
+            if (_values == null)
+                _values = new(Address, _xl.values, _local.values);
+            return _values;
+        }
+    }
     public ValuesObject<string?> NumberFormat => new(Address, _xl.numberFormat, _local.numberFormat);
     public RangeObject Resize(int deltaRows, int deltaColumns)
     {
@@ -63,16 +75,20 @@ public class RangeObject : BaseObject<RangeProperties>
 
         return this;
     }
-    public static (int Left, int Top, int Right, int Bottom) ToRef(string address)
+    public static (int Left, int Top, int Right, int Bottom) Dim(string address)
     {
         var m = CELLREF.Match(address ?? throw new ArgumentNullException(nameof(Address)));
-        int left = ColumnToNumber(m.Groups[2].Value);
-        int top = int.Parse(m.Groups[3].Value);
-        int right = string.IsNullOrEmpty(m.Groups[4].Value)
-            ? left : ColumnToNumber(m.Groups[4].Value);
-        int bottom = string.IsNullOrEmpty(m.Groups[5].Value)
-            ? top : int.Parse(m.Groups[5].Value);
-        return (left, top, right, bottom);
+        if (m.Success)
+        {
+            int left = ColumnToNumber(m.Groups[2].Value) - 1;
+            int top = int.Parse(m.Groups[3].Value) - 1;
+            int right = string.IsNullOrEmpty(m.Groups[4].Value)
+                ? left : ColumnToNumber(m.Groups[4].Value) - 1;
+            int bottom = string.IsNullOrEmpty(m.Groups[5].Value)
+                ? top : int.Parse(m.Groups[5].Value) - 1;
+            return (left, top, right, bottom);
+        }
+        throw new ArgumentException($"Invalid Cell Reference: '{address}'");
     }
     static string AdjustCells(string? cells, int rows, int cols)
     {
@@ -112,12 +128,14 @@ public class RangeObject : BaseObject<RangeProperties>
         return number;
     }
     static readonly Regex CELLREF = new Regex(@"(?:'?([^']+)'?!)?([a-zA-Z]+)(\d+)(?::([a-zA-Z]+)(\d+))?");
+    ValuesObject<object?>? _values;
     RangeProperties _local;
     RangeProperties _xl;
     RangeObject(string address)
     {
+        _ = Dim(address.ToUpper());
         _local = new RangeProperties();
-        _xl = new RangeProperties(address: address);
+        _xl = new RangeProperties(address: address.ToUpper());
     }
     public static RangeObject Range(string address)
         => new(address);

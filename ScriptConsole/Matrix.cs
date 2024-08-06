@@ -12,7 +12,7 @@ static class Matrix
     }
     public static Task Set((string? sheet, string? cells, string? name) address, IEnumerable<IEnumerable<object?>> values)
     {
-        var c = RangeObject.ToRef(address.cells!);
+        var c = RangeObject.Dim(address.cells!);
         for (int row = 0; row < values.Count(); row++)
             for (int col = 0; col < values.ElementAt(row).Count(); col++)
                 _values[(col + c.Left, row + c.Top)] = values.ElementAt(row).ElementAt(col);
@@ -20,7 +20,7 @@ static class Matrix
     }
     public static Task<IEnumerable<IEnumerable<object?>>> Get((string? sheet, string? cells, string? name) address)
     {
-        var c = RangeObject.ToRef(address.cells!);
+        var c = RangeObject.Dim(address.cells!);
         var m = Enumerable.Range(0, c.Bottom - c.Top + 1)
             .Select((_, row) => Enumerable.Range(0, c.Right - c.Left + 1)
                .Select((_, col) =>

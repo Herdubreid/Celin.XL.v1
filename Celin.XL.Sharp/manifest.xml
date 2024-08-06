@@ -16,8 +16,8 @@
 	<ProviderName>BRAGASON AND ASSOCIATES PTY LTD</ProviderName>
 	<DefaultLocale>en-US</DefaultLocale>
 	<!-- The display name of your add-in. Used on the store and various places of the Office UI such as the add-ins dialog. -->
-	<DisplayName DefaultValue="celin.xl.csharp" />
-	<Description DefaultValue="C# Snippet Builder"/>
+	<DisplayName DefaultValue="Celin.XL.Sharp" />
+	<Description DefaultValue="A C# Builder for Excel"/>
 
 	<!-- Icon for your add-in. Used on installation screens and the add-ins dialog. -->
 	<IconUrl DefaultValue="https://localhost:7287/assets/icon-32.png" />
@@ -91,13 +91,13 @@
 								</Icon>
 
 								<!-- Control. It can be of type "Button" or "Menu". -->
-								<Control xsi:type="Button" id="Celin.CSharp.Button">
-									<Label resid="Celin.CSharp.Button.Label" />
+								<Control xsi:type="Button" id="Celin.Sharp.Button">
+									<Label resid="Celin.Sharp.Button.Label" />
 									<Supertip>
 										<!-- ToolTip title. resid must point to a ShortString resource. -->
-										<Title resid="Celin.CSharp.Button.Label" />
+										<Title resid="Celin.Sharp.Button.Label" />
 										<!-- ToolTip description. resid must point to a LongString resource. -->
-										<Description resid="Celin.CSharp.Button.Tooltip" />
+										<Description resid="Celin.Sharp.Button.Tooltip" />
 									</Supertip>
 									<Icon>
 										<bt:Image size="16" resid="Icon.16x16" />
@@ -107,7 +107,7 @@
 
 									<!-- This is what happens when the command is triggered (E.g. click on the Ribbon). Supported actions are ExecuteFunction or ShowTaskpane. -->
 									<Action xsi:type="ShowTaskpane">
-										<TaskpaneId>Celin.CSharp.Id</TaskpaneId>
+										<TaskpaneId>Celin.Sharp.Id</TaskpaneId>
 										<!-- Provide a url resource id for the location that will be displayed on the task pane. -->
 										<SourceLocation resid="Taskpane.Url" />
 									</Action>
@@ -132,14 +132,14 @@
 			</bt:Urls>
 			<!-- ShortStrings max characters==125. -->
 			<bt:ShortStrings>
-				<bt:String id="GetStarted.Title" DefaultValue="Get started with CSharp" />
+				<bt:String id="GetStarted.Title" DefaultValue="Get started with Celin XL Sharp" />
 				<bt:String id="Celin.Label" DefaultValue="Celin" />
-				<bt:String id="Celin.CSharp.Button.Label" DefaultValue="CSharp" />
+				<bt:String id="Celin.Sharp.Button.Label" DefaultValue="Sharp" />
 			</bt:ShortStrings>
 			<!-- LongStrings max characters==250. -->
 			<bt:LongStrings>
-				<bt:String id="GetStarted.Description" DefaultValue="Celin.CSharp Add-ins is loaded. Go to the Data Tab to find it." />
-				<bt:String id="Celin.CSharp.Button.Tooltip" DefaultValue="Click to open CSharp" />
+				<bt:String id="GetStarted.Description" DefaultValue="Celin.Sharp Add-ins is loaded. Go to the Data Tab to find it." />
+				<bt:String id="Celin.Sharp.Button.Tooltip" DefaultValue="Click to open Celin XL Sharp" />
 			</bt:LongStrings>
 		</Resources>
 	</VersionOverrides>

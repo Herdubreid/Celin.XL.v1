@@ -19,15 +19,15 @@ public static class ValuesExtensions
     }
     public static IEnumerable<IEnumerable<object?>> ToMatrix(this object? source) => source switch
     {
-        string s => XL.Values.Parse(s),
+        string s => XL.Values<object?>.Parse(s),
         IEnumerable<IEnumerable<object?>> e => e,
         _ => Enumerable.Empty<IEnumerable<object?>>()
     };
     public static IEnumerable<IEnumerable<object?>> ToMatrix(this string source)
-        => XL.Values.Parse(source);
+        => XL.Values<object?>.Parse(source);
     public static IEnumerable<object?> Flatten(this IEnumerable<IEnumerable<object?>> source)
         => source.SelectMany(x => x);
-    public static (int rows, int cols) MatrixCount(this IEnumerable<IEnumerable<object?>> source)
+    public static (int rows, int cols) MatrixCount<T>(this IEnumerable<IEnumerable<T>> source)
         => (source.Count(),
             source.Count() > 0 ? source.Max(m => m.Count()) : 0);
 }
