@@ -1,15 +1,14 @@
 {
+    "extends": "@tsconfig/svelte/tsconfig.json",
     "compilerOptions": {
         "rootDir": "./",
-        "noImplicitAny": true,
-        "module": "es2020",
-        "target": "es2020",
-        "allowJs": true,
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true
     },
-    "exclude": ["./node_modules"],
-    "include": ["**/*.ts"]
+    "exclude": [
+        "./node_modules"
+    ],
+    "include": [
+        "**/*.ts",
+        "**/*.svelte",
+        "global.d.ts"
+    ]
 }

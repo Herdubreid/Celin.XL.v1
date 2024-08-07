@@ -15,15 +15,21 @@ public class JsService
     {
         init,
         initCommandPrompt,
-        dummy,
+        openLoginDlg,
+        messageDlg,
+        closeDlg,
     }
     string App(app f) => $"{LIB}.{nameof(app)}.{f:g}";
     public ValueTask Init()
         => _js.InvokeVoidAsync(App(app.init), _ref);
     public ValueTask InitCommandPrompt(string id)
         => _js.InvokeVoidAsync(App(app.initCommandPrompt), id);
-    public ValueTask<string> Dummy()
-        => _js.InvokeAsync<string>(App(app.dummy));
+    public ValueTask Login(string title, string? user)
+        => _js.InvokeVoidAsync(App(app.openLoginDlg), title, user);
+    public ValueTask MessageDlg(string msg)
+        => _js.InvokeVoidAsync(App(app.messageDlg), msg);
+    public ValueTask CloseDlg()
+        => _js.InvokeVoidAsync(App(app.closeDlg));
     #endregion
     #region Excel
     enum xl
@@ -44,6 +50,12 @@ public class JsService
     [JSInvokable]
     public void PromptCommand()
         => _mediator.Send(new PromptCommandAction());
+    [JSInvokable]
+    public void Authenticate(string username, string password)
+        => _mediator.Send(new AuthenticateAction { Username = username, Password = password });
+    [JSInvokable]
+    public void CancelDlg()
+        => _mediator.Send(new CancelDialogAction());
     #endregion
 #pragma warning restore CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
 

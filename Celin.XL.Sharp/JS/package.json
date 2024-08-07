@@ -2,7 +2,6 @@
   "name": "celin.xl.csharp",
   "version": "1.0.0",
   "type": "module",
-  "main": "main",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w"
@@ -12,8 +11,19 @@
     "@microsoft/dotnet-js-interop": "^8.0.0",
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
+    "@tsconfig/svelte": "^5.0.4",
+    "@types/node": "^22.1.0",
     "@types/office-js": "^1.0.399",
-    "tslib": "^2.6.3"
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.41",
+    "rollup": "^4.20.0",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-svelte": "^7.2.2",
+    "svelte": "^4.2.18",
+    "tailwindcss": "^3.4.7",
+    "tslib": "^2.6.3",
+    "typescript": "^5.5.4"
   }
 }

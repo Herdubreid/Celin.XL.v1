@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {}
+
+body {
+    font-family: Calibri, Roboto, Arial, sans-serif
+}

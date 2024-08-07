@@ -33,7 +33,7 @@ public class SharpService
     readonly ILogger _logger;
     readonly JsService _js;
     readonly ScriptOptions _scriptOptions;
-    public SharpService(ILogger<SharpService> logger, OutputWriterService writer, JsService js, E1Service e1)
+    public SharpService(ILogger<SharpService> logger, OutputWriterService writer, JsService js, E1Services e1)
     {
         _shell = new ScriptShell(e1);
         _logger = logger;

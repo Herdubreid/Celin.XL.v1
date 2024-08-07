@@ -28,7 +28,7 @@ builder.Services
         options.UseCloneStateBehavior = false;
         options.Assemblies = [typeof(Program).Assembly];
     })
-    .AddScoped<E1Service>()
+    .AddScoped<E1Services>()
     .AddScoped<JsService>()
     .AddScoped<SharpService>()
     .AddScoped<OutputWriterService>();

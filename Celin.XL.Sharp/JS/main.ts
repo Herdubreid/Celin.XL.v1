@@ -1,14 +1,17 @@
 import { DotNet } from "@microsoft/dotnet-js-interop";
 import { TestStringComplete } from "./utils"
+import { openLoginDlg, messageDlg, closeDlg } from "./dialog";
 
 Office.onReady(async (info) => {
     console.log(info);
     // Workaround for https://github.com/OfficeDev/office-js/issues/429
+    // @ts-ignore
     delete history.pushState;
+    // @ts-ignore
     delete history.replaceState;
 });
 
-var blazorLib: DotNet.DotNetObject;
+export let blazorLib: DotNet.DotNetObject;
 
 function assignNonNullProperties(source: any, target: any) {
     if (Object.values(target).some(value => value !== null)) {
@@ -26,8 +29,8 @@ function assignNonNullProperties(source: any, target: any) {
 
 function parseRangeAddress(address: string) {
     let m = address.match(/(?:'?([^']+)'?!)?(.+)/);
-    let sheet: string = m ? m[1] : null;
-    let cells: string = m ? m[2] : null;
+    let sheet: string|null = m ? m[1] : null;
+    let cells: string|null = m ? m[2] : null;
     return { sheet, cells };
 }
 
@@ -50,22 +53,17 @@ export const app = {
             }
         });
     },
-    dummy: async () => {
-        let sheet = null;
-        let address = "B2";
-        console.log(`${sheet}, ${address}`);
-        let result = await Excel.run(async (ctx) => {
-            const sh = sheet == null
-                ? ctx.workbook.worksheets.getActiveWorksheet()
-                : ctx.workbook.worksheets.getItem(sheet);
-            const range = sh.getRange(address);
-            range.load();
-            await ctx.sync();
-            return range.values;
-        });
-        let toreturn = JSON.stringify(result);
-        console.log(`Result: ${toreturn}`);
-        return toreturn;
+    openLoginDlg: (title: string, username: string) => {
+        console.log(`Login: ${title}, ${username}`);
+        openLoginDlg(title, username);
+    },
+    messageDlg: (notice: string) => {
+        console.log(`Msg: ${notice}`);
+        messageDlg(notice);
+    },
+    closeDlg: () => {
+        console.log("Close Dialog");
+        closeDlg();
     },
 }
 
@@ -76,7 +74,7 @@ export const xl = {
             const sh = a.sheet == null
                 ? ctx.workbook.worksheets.getActiveWorksheet()
                 : ctx.workbook.worksheets.getItem(a.sheet);
-            const range = sh.getRange(a.cells);
+            const range = sh.getRange(a.cells!);
             range.values = values;
             await ctx.sync();
             range.load("values")
@@ -91,7 +89,7 @@ export const xl = {
             const sh = a.sheet == null
                 ? ctx.workbook.worksheets.getActiveWorksheet()
                 : ctx.workbook.worksheets.getItem(a.sheet);
-            const range = sh.getRange(a.cells);
+            const range = sh.getRange(a.cells!);
             if (assignNonNullProperties(values, range)) {
                 await ctx.sync();
             }
