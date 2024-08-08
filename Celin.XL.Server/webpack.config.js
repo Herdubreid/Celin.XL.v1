@@ -59,7 +59,6 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        include: /JS/,
         use: [
           {
             loader: MiniCssExtractPlugin.loader

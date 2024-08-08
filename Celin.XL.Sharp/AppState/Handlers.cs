@@ -10,6 +10,7 @@ public partial class AppState
 {
     public class AuthenticateHandler : ActionHandler<AuthenticateAction>
     {
+        AppState State => Store.GetState<AppState>();
         public override async Task Handle(AuthenticateAction aAction, CancellationToken aCancellationToken)
         {
             var host = _e1.Default.Server;
@@ -26,6 +27,14 @@ public partial class AppState
                 host.AuthRequest.username = aAction.Username;
                 host.AuthRequest.password = aAction.Password;
                 await host.AuthenticateAsync();
+
+                await _js.CloseDlg();
+
+                if (State.NextAction is not null)
+                {
+                    await _mediator.Send(State.NextAction);
+                    State.NextAction = null;
+                }
             }
             catch (AisException ex)
             {
@@ -45,11 +54,13 @@ public partial class AppState
         }
         readonly E1Services _e1;
         readonly JsService _js;
-        public AuthenticateHandler(IStore store, E1Services e1, JsService js)
+        readonly IMediator _mediator;
+        public AuthenticateHandler(IStore store, E1Services e1, JsService js, IMediator mediator)
             : base(store)
         {
             _e1 = e1;
             _js = js;
+            _mediator = mediator;
         }
     }
     public class PromptCommandHandler : ActionHandler<PromptCommandAction>
@@ -73,6 +84,7 @@ public partial class AppState
                 if (ex.HttpStatusCode == System.Net.HttpStatusCode.Forbidden ||
                     ex.HttpStatusCode == (System.Net.HttpStatusCode)444)
                 {
+                    State.NextAction = aAction;
                     await _mediator.Send(new AuthenticateAction());
                 }
                 else

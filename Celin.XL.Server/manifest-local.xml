@@ -16,7 +16,7 @@
 	<ProviderName>BRAGASON AND ASSOCIATES PTY LTD</ProviderName>
 	<DefaultLocale>en-US</DefaultLocale>
 	<!-- The display name of your add-in. Used on the store and various places of the Office UI such as the add-ins dialog. -->
-	<DisplayName DefaultValue="celin.xl.server" />
+	<DisplayName DefaultValue="Celin.XL.Server" />
 	<Description DefaultValue="Databrowser and script engine for Oracle E1"/>
 
 	<!-- Icon for your add-in. Used on installation screens and the add-ins dialog. -->
@@ -152,9 +152,9 @@
 			<!-- ShortStrings max characters==125. -->
 			<bt:ShortStrings>
 				<bt:String id="Functions.Namespace" DefaultValue="Celin"/>
-				<bt:String id="GetStarted.Title" DefaultValue="Get started with your sample add-in!" />
+				<bt:String id="GetStarted.Title" DefaultValue="Get started with Celin.XL.Server" />
 				<bt:String id="Celin.Label" DefaultValue="Celin" />
-				<bt:String id="Celin.Tools.Button.Label" DefaultValue="Tools" />
+				<bt:String id="Celin.Tools.Button.Label" DefaultValue="XL.Server" />
 			</bt:ShortStrings>
 			<!-- LongStrings max characters==250. -->
 			<bt:LongStrings>
