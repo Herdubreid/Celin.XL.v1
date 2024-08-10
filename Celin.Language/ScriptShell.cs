@@ -14,7 +14,7 @@ public class E1
 }
 public class ScriptShell
 {
-    public static RangeObject Range(string address) =>
+    public static RangeObject Range(string? address = null) =>
         RangeObject.Range(address);
     public static SheetObject Sheet(string name) =>
         SheetObject.Sheet(name);

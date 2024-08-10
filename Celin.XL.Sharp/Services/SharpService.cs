@@ -17,18 +17,6 @@ public class SharpService
         else
             ScriptState = await ScriptState.ContinueWithAsync(cmd);
     }
-    async ValueTask<RangeProperties> SyncRange(string key, RangeProperties values)
-    {
-        var s = await _js.syncRange(key, values);
-        var p = JsonSerializer.Deserialize<RangeProperties>(s);
-        return p;
-    }
-    async ValueTask<ValuesProperties<object?>> SyncValues(string key, ValuesProperties<object?> values)
-    {
-        var s = await _js.syncValues(key, values);
-        var p = JsonSerializer.Deserialize<IEnumerable<IEnumerable<object?>>>(s);
-        return new ValuesProperties<object?>(xl: p);
-    }
     readonly ScriptShell _shell;
     readonly ILogger _logger;
     readonly JsService _js;
@@ -40,8 +28,8 @@ public class SharpService
         _js = js;
         Console.SetOut(writer);
 
-        BaseObject<ValuesProperties<object?>>.SyncAsyncDelegate = SyncValues;
-        BaseObject<RangeProperties>.SyncAsyncDelegate = SyncRange;
+        BaseObject<ValuesProperties<object?>>.SyncAsyncDelegate = _js.syncValues;
+        BaseObject<RangeProperties>.SyncAsyncDelegate = _js.syncRange;
         BaseObject<SheetProperties>.SyncAsyncDelegate = _js.syncSheet;
 
         // Create a scripting environment

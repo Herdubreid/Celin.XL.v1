@@ -131,12 +131,13 @@ public class RangeObject : BaseObject<RangeProperties>
     ValuesObject<object?>? _values;
     RangeProperties _local;
     RangeProperties _xl;
-    RangeObject(string address)
+    RangeObject(string? address)
     {
-        _ = Dim(address.ToUpper());
+        if (address != null)
+            _ = Dim(address.ToUpper());
         _local = new RangeProperties();
-        _xl = new RangeProperties(address: address.ToUpper());
+        _xl = new RangeProperties(address: address?.ToUpper());
     }
-    public static RangeObject Range(string address)
+    public static RangeObject Range(string? address = null)
         => new(address);
 }

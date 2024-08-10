@@ -39,11 +39,11 @@ public class JsService
         syncValues,
     }
     string XL(xl f) => $"{LIB}.{nameof(xl)}.{f:g}";
-    public ValueTask<string> syncValues(string key, ValuesProperties<object?> values)
-        => _js.InvokeAsync<string>(XL(xl.syncValues), key, values.local);
-    public ValueTask<string> syncRange(string key, RangeProperties values)
-        => _js.InvokeAsync<string>(XL(xl.syncRange), key, values);
-    public ValueTask<SheetProperties> syncSheet(string key, SheetProperties values)
+    public ValueTask<ValuesProperties<object?>> syncValues(string? key, ValuesProperties<object?> values)
+        => _js.InvokeAsync<ValuesProperties<object?>>(XL(xl.syncValues), key, values.local);
+    public ValueTask<RangeProperties> syncRange(string? key, RangeProperties values)
+        => _js.InvokeAsync<RangeProperties>(XL(xl.syncRange), key, values);
+    public ValueTask<SheetProperties> syncSheet(string? key, SheetProperties values)
         => _js.InvokeAsync<SheetProperties>(XL(xl.syncSheet), key, values);
     #endregion
     #region invokables

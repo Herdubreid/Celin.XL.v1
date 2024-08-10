@@ -14,12 +14,13 @@ export default [
             dir: '../wwwroot/assets',
             format: 'umd',
             name: 'lib',
+            sourcemap: true,
             plugins: [terser()],
         },
         plugins: [
             commonjs(),
             nodeResolve(),
-            typescript()],
+            typescript({ sourceMap: true })],
     },
     {
         input: './login.ts',
@@ -28,11 +29,11 @@ export default [
             sourcemap: true,
             format: 'iife',
             name: 'app',
+            sourcemap: true,
             plugins: [terser()],
         },
         plugins: [
             commonjs(),
-            typescript(),
             nodeResolve({
                 browser: true,
                 exportConditions: ['svelte'],
@@ -51,6 +52,7 @@ export default [
                     autoprefixer(),
                 ],
                 extract: true,
-            })],
+            }),
+            typescript({ sourceMap: true })],
     }
 ];

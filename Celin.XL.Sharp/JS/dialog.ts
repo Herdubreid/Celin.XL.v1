@@ -1,13 +1,11 @@
-import { blazorLib } from "./main";
-
-export let dialog: Office.Dialog;
+import { globalState } from "./common";
 
 export function closeDlg() {
-    dialog?.close();
+    globalState.dialog?.close();
 }
 
 export function messageDlg(notice: string) {
-    dialog?.messageChild(JSON.stringify({ notice }))
+    globalState.dialog?.messageChild(JSON.stringify({ notice }))
 }
 
 export function openLoginDlg(title: string, username: string) {
@@ -29,14 +27,14 @@ export function openLoginDlg(title: string, username: string) {
             if (result.status === Office.AsyncResultStatus.Failed) {
                 console.error(`${result.error.code} ${result.error.message}`);
             } else {
-                dialog = result.value;
-                dialog.addEventHandler(
+                globalState.dialog = result.value;
+                globalState.dialog.addEventHandler(
                     Office.EventType.DialogMessageReceived,
                     async (ev: any) => {
                         const msg = JSON.parse(ev.message);
                         switch (true) {
                             case msg.loaded:
-                                dialog.messageChild(
+                                globalState.dialog!.messageChild(
                                     JSON.stringify({
                                         username,
                                         title,
@@ -44,25 +42,25 @@ export function openLoginDlg(title: string, username: string) {
                                 );
                                 break;
                             case msg.ok:
-                                await blazorLib.invokeMethodAsync(
+                                await globalState.blazorLib!.invokeMethodAsync(
                                     "Authenticate",
                                     msg.username,
                                     msg.password,
                                 );
                                 break;
                             case msg.cancel:
-                                blazorLib.invokeMethodAsync("DialogCancelled");
-                                dialog.close();
+                                globalState.blazorLib!.invokeMethodAsync("DialogCancelled");
+                                globalState.dialog!.close();
                                 break;
                         }
                     },
                 );
-                dialog.addEventHandler(
+                globalState.dialog.addEventHandler(
                     Office.EventType.DialogEventReceived,
                     (ev: any) => {
                         if (ev.error === 12006) {
-                            blazorLib.invokeMethodAsync("DialogCancelled");
-                            dialog.close();
+                            globalState.blazorLib!.invokeMethodAsync("DialogCancelled");
+                            globalState.dialog!.close();
                         }
                     },
                 );

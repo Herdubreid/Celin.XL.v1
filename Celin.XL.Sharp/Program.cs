@@ -1,5 +1,4 @@
 using BlazorState;
-using Celin.AIS;
 using Celin.XL.Sharp;
 using Celin.XL.Sharp.Components;
 using Celin.XL.Sharp.Service;
@@ -13,6 +12,10 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents(options =>
     {
         options.DetailedErrors = true;
+    })
+    .AddHubOptions(options =>
+    {
+        options.MaximumReceiveMessageSize = 10 * 1024 * 1024;
     });
 
 builder.Services
