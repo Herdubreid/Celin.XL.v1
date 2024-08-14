@@ -4,32 +4,32 @@ using System.Text.RegularExpressions;
 namespace Celin.Language.XL;
 
 public record RangeProperties(
-    string? address = null,
-    int? cellCount = null,
-    int? columnCount = null,
-    bool? columnHidden = null,
-    int? columnIndex = null,
-    IEnumerable<IEnumerable<object?>>? formulas = null,
-    bool? hasSpill = null,
-    decimal? height = null,
-    bool? hidden = null,
-    bool? isEntireColumn = null,
-    bool? isEntireRow = null,
-    List<List<string?>>? numberFormat = null,
-    int? rowCount = null,
-    bool? rowHidden = null,
-    int? rowIndex = null,
-    string? style = null,
-    IEnumerable<IEnumerable<string?>>? text = null,
-    List<List<object?>>? values = null,
-    IEnumerable<IEnumerable<string?>>? valueTypes = null)
+    string? Address = null,
+    int? CellCount = null,
+    int? ColumnCount = null,
+    bool? ColumnHidden = null,
+    int? ColumnIndex = null,
+    IEnumerable<IEnumerable<object?>>? Formulas = null,
+    bool? HasSpill = null,
+    decimal? Height = null,
+    bool? Hidden = null,
+    bool? IsEntireColumn = null,
+    bool? IsEntireRow = null,
+    List<List<string?>>? NumberFormat = null,
+    int? RowCount = null,
+    bool? RowHidden = null,
+    int? RowIndex = null,
+    string? Style = null,
+    IEnumerable<IEnumerable<string?>>? Text = null,
+    List<List<object?>>? Values = null,
+    IEnumerable<IEnumerable<string?>>? ValueTypes = null)
 {
-    public RangeProperties() : this(address: null) { }
+    public RangeProperties() : this(Address: null) { }
 };
 
 public class RangeObject : BaseObject<RangeProperties>
 {
-    public override string Key => _xl.address ?? _local.address ?? string.Empty;
+    public override string Key => _xl.Address ?? _local.Address ?? string.Empty;
     public override RangeProperties Properties
     {
         get => _xl;
@@ -37,24 +37,24 @@ public class RangeObject : BaseObject<RangeProperties>
     }
     public override RangeProperties LocalProperties
     {
-        get => _local with { values = _values?.LocalProperties.local };
+        get => _local with { Values = _values?.LocalProperties.Local };
         protected set
         {
             _local = value;
-            _values = new ValuesObject<object?>(Address, value.values, null);
+            _values = new ValuesObject<object?>(Address, value.Values, null);
         }
     }
-    public string? Address => _xl.address;
+    public string? Address => _xl.Address;
     public ValuesObject<object?> Values
     {
         get
         {
             if (_values == null)
-                _values = new(Address, _xl.values, _local.values);
+                _values = new(Address, _xl.Values, _local.Values);
             return _values;
         }
     }
-    public ValuesObject<string?> NumberFormat => new(Address, _xl.numberFormat, _local.numberFormat);
+    public ValuesObject<string?> NumberFormat => new(Address, _xl.NumberFormat, _local.NumberFormat);
     public RangeObject Resize(int deltaRows, int deltaColumns)
     {
         var m = CELLREF.Match(Address ?? throw new ArgumentNullException(nameof(Address)));
@@ -136,7 +136,7 @@ public class RangeObject : BaseObject<RangeProperties>
         if (address != null)
             _ = Dim(address.ToUpper());
         _local = new RangeProperties();
-        _xl = new RangeProperties(address: address?.ToUpper());
+        _xl = new RangeProperties(Address: address?.ToUpper());
     }
     public static RangeObject Range(string? address = null)
         => new(address);

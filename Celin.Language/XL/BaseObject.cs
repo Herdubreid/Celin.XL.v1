@@ -1,6 +1,6 @@
 ﻿namespace Celin.Language.XL;
 
-public delegate ValueTask<T> SyncAsyncDelegate<T>(string key, T values);
+public delegate ValueTask<T> SyncAsyncDelegate<T>(string? key, T values);
 public abstract class BaseObject<T>
     where T : new()
 {

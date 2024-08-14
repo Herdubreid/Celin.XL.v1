@@ -34,6 +34,7 @@ builder.Services
     .AddScoped<E1Services>()
     .AddScoped<JsService>()
     .AddScoped<SharpService>()
+    .AddScoped<ScriptService>()
     .AddScoped<OutputWriterService>();
 
 var app = builder.Build();

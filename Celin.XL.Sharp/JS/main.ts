@@ -1,6 +1,6 @@
 import { DotNet } from "@microsoft/dotnet-js-interop";
 import { TestStringComplete } from "./utils"
-import { openLoginDlg, messageDlg, closeDlg } from "./dialog";
+import { openEditorDlg, openLoginDlg, messageDlg, closeDlg } from "./dialog";
 import { globalState } from "./common";
 
 Office.onReady(async (info) => {
@@ -52,6 +52,10 @@ export const app = {
                 }
             }
         });
+    },
+    openEditorDlg: (title: string, doc: string) => {
+        console.log(`Edit: ${title}, ${doc}`);
+        openEditorDlg(title, doc);
     },
     openLoginDlg: (title: string, username: string) => {
         console.log(`Login: ${title}, ${username}`);

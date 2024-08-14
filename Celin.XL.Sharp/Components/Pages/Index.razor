@@ -1,3 +1,28 @@
 ﻿@page "/"
+@inherits BlazorStateComponent
 
 <PageTitle>Home</PageTitle>
+
+<MudPaper>
+    <MudStack Spacing="4">
+        @foreach (var script in State.Scripts)
+        {
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">@script.Value.Title</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" @onclick="@(() => EditScript(script.Key))" />
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText>@script.Value.Description</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Outlined">Submit</MudButton> 
+                </MudCardActions>
+            </MudCard>
+        }
+    </MudStack>
+</MudPaper>

@@ -2,12 +2,38 @@
 using Celin.AIS;
 using Celin.XL.Sharp.Services;
 using MediatR;
+using Microsoft.JSInterop;
 using System.Text;
 
 namespace Celin.XL.Sharp;
 
 public partial class AppState
 {
+    public class EditScriptHandler : ActionHandler<EditScriptAction>
+    {
+        AppState State => Store.GetState<AppState>();
+        public override async Task Handle(EditScriptAction aAction, CancellationToken aCancellationToken)
+        {
+            var sc = State.Scripts[aAction.Key!];
+            await _js.Editor(sc.Title, sc.Content);
+        }
+        readonly JsService _js;
+        public EditScriptHandler(IStore store, JsService js) : base(store)
+        {
+            _js = js;
+        }
+    }
+    public class UpdateScriptHandler : ActionHandler<UpdateScriptAction>
+    {
+        AppState State => Store.GetState<AppState>();
+        public override Task Handle(UpdateScriptAction aAction, CancellationToken aCancellationToken)
+        {
+            Console.WriteLine(aAction.Script);
+
+            return Task.CompletedTask;
+        }
+        public UpdateScriptHandler(IStore store) : base(store) { }
+    }
     public class AuthenticateHandler : ActionHandler<AuthenticateAction>
     {
         AppState State => Store.GetState<AppState>();

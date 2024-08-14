@@ -16,6 +16,7 @@ public class JsService
         init,
         initCommandPrompt,
         openLoginDlg,
+        openEditorDlg,
         messageDlg,
         closeDlg,
     }
@@ -26,6 +27,8 @@ public class JsService
         => _js.InvokeVoidAsync(App(app.initCommandPrompt), id);
     public ValueTask Login(string title, string? user)
         => _js.InvokeVoidAsync(App(app.openLoginDlg), title, user);
+    public ValueTask Editor(string title, string content)
+        => _js.InvokeVoidAsync(App(app.openEditorDlg), title, content);
     public ValueTask MessageDlg(string msg)
         => _js.InvokeVoidAsync(App(app.messageDlg), msg);
     public ValueTask CloseDlg()
@@ -40,7 +43,7 @@ public class JsService
     }
     string XL(xl f) => $"{LIB}.{nameof(xl)}.{f:g}";
     public ValueTask<ValuesProperties<object?>> syncValues(string? key, ValuesProperties<object?> values)
-        => _js.InvokeAsync<ValuesProperties<object?>>(XL(xl.syncValues), key, values.local);
+        => _js.InvokeAsync<ValuesProperties<object?>>(XL(xl.syncValues), key, values.Local);
     public ValueTask<RangeProperties> syncRange(string? key, RangeProperties values)
         => _js.InvokeAsync<RangeProperties>(XL(xl.syncRange), key, values);
     public ValueTask<SheetProperties> syncSheet(string? key, SheetProperties values)
@@ -50,6 +53,9 @@ public class JsService
     [JSInvokable]
     public void PromptCommand()
         => _mediator.Send(new PromptCommandAction());
+    [JSInvokable]
+    public void UpdateScript(string script)
+        => _mediator.Send(new UpdateScriptAction { Script = script });
     [JSInvokable]
     public void Authenticate(string username, string password)
         => _mediator.Send(new AuthenticateAction { Username = username, Password = password });

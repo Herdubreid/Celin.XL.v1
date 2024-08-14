@@ -10,7 +10,7 @@ public class E1Services : E1
         public string Name { get; set; } = null!;
         public string BaseUrl { get; set; } = null!;
     }
-    static readonly string SERVICES = "Services";
+    const string SERVICES = "Services";
     static IReadOnlyCollection<Host> hosts(IConfiguration config, ILogger logger)
     {
         var services = config.GetRequiredSection(SERVICES)

@@ -1,8 +1,8 @@
 ﻿namespace Celin.Language.XL;
 
 public record ValuesProperties<T>(
-    IEnumerable<IEnumerable<T>>? xl = null,
-    List<List<T>>? local = null)
+    IEnumerable<IEnumerable<T>>? Xl = null,
+    List<List<T>>? Local = null)
 {
     public ValuesProperties() : this(null, null) { }
 }
@@ -25,13 +25,13 @@ public class ValuesObject<T> : BaseObject<ValuesProperties<T>>
     public override string Key => _address ?? string.Empty;
     public override ValuesProperties<T> Properties
     {
-        get => new ValuesProperties<T>(xl: _xl);
-        protected set => _xl = value.xl!;
+        get => new ValuesProperties<T>(Xl: _xl);
+        protected set => _xl = value.Xl!;
     }
     public override ValuesProperties<T> LocalProperties
     {
-        get => new ValuesProperties<T>(local: _local);
-        protected set => _local = value.local ?? Init;
+        get => new ValuesProperties<T>(Local: _local);
+        protected set => _local = value.Local ?? Init;
     }
     public (int Left, int Top, int Right, int Bottom) Dim { get; protected set; }
     List<List<T>> Init =>

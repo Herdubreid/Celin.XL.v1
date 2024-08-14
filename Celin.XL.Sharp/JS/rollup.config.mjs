@@ -54,5 +54,32 @@ export default [
                 extract: true,
             }),
             typescript({ sourceMap: true })],
+    },
+    {
+        input: './editor.ts',
+        output: {
+            dir: '../wwwroot/assets',
+            sourcemap: true,
+            format: 'iife',
+            name: 'app',
+            sourcemap: true,
+            plugins: [terser()],
+        },
+        plugins: [
+            commonjs(),
+            nodeResolve({
+                browser: true,
+                exportConditions: ['svelte'],
+                extensions: ['.svelte']
+            }),
+            svelte(),
+            postcss({
+                plugins: [
+                    tailwindcss(),
+                    autoprefixer(),
+                ],
+                extract: true,
+            }),
+            typescript({ sourceMap: true })],
     }
 ];

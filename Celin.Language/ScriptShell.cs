@@ -16,7 +16,7 @@ public class ScriptShell
 {
     public static RangeObject Range(string? address = null) =>
         RangeObject.Range(address);
-    public static SheetObject Sheet(string name) =>
+    public static SheetObject Sheet(string? name = null) =>
         SheetObject.Sheet(name);
     public QueryObject Query(string query) => QueryObject.Query(E1.Default.Server, query);
     public E1 E1 { get; }
