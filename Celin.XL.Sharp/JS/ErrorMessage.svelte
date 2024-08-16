@@ -1,12 +1,12 @@
 <!-- ErrorMessage.svelte -->
-<script>
+<script lang="ts">
     import { fade } from "svelte/transition";
     import { afterUpdate, createEventDispatcher } from "svelte";
 
     const dispatch = createEventDispatcher();
 
-    export let message = null;
-    let errorMessageElement;
+    export let message: string | null = null;
+    let errorMessageElement: HTMLElement;
     let isVisible = false;
 
     $: isVisible = message !== null;
@@ -33,7 +33,7 @@
         class="bg-red-200 text-red-900 text-sm p-2.5 rounded-md my-2 flex justify-between items-center"
         bind:this={errorMessageElement}
     >
-        <pre class="w-full max-h-[240px] overflow-auto">{message}</pre>
+        <pre class="w-full max-h-[240px] whitespace-pre-wrap overflow-y-auto">{message}</pre>
         <button
             class="self-baseline bg-none border-none text-base cursor-pointer pl-2"
             on:click={close}>✖</button

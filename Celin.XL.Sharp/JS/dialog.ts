@@ -37,6 +37,7 @@ export function openEditorDlg(title: string, doc: string)
                             case msg.loaded:
                                 globalState.dialog!.messageChild(
                                     JSON.stringify({
+                                        update: true,
                                         title,
                                         doc,
                                     }),
@@ -44,7 +45,7 @@ export function openEditorDlg(title: string, doc: string)
                                 break;
                             case msg.save:
                                 await globalState.blazorLib!.invokeMethodAsync(
-                                    "UpdateScript",
+                                    "UpdateDoc",
                                     msg.doc,
                                 );
                                 break;

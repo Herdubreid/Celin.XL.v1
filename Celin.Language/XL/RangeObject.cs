@@ -29,6 +29,43 @@ public record RangeProperties(
 
 public class RangeObject : BaseObject<RangeProperties>
 {
+    public RangeObject Rows(int rows)
+    {
+        var m = CELLREF.Match(_xl.Address ?? "A1");
+        if (m.Success)
+        {
+            var row = string.IsNullOrEmpty(m.Groups[3].Value)
+                ? 1 : int.Parse(m.Groups[3].Value);
+            _xl = _xl with
+            {
+                Address = $"{ToSheet(m.Groups[1].Value)}{m.Groups[2]}{row}:{(m.Groups[4].Success ? m.Groups[4].Value : m.Groups[2].Value)}{row + rows - 1}"
+            };
+        }
+        else
+        {
+            throw InvalidCells(_xl.Address!);
+        }
+
+        return this;
+    }
+    public RangeObject Cols(int cols)
+    {
+        var m = CELLREF.Match(_xl.Address ?? "A1");
+        if (m.Success)
+        {
+            var col = ColumnToNumber(m.Groups[4].Success ? m.Groups[4].Value : m.Groups[2].Value);
+            _xl = _xl with
+            {
+                Address = $"{ToSheet(m.Groups[1].Value)}{m.Groups[2]}{m.Groups[3]}:{NumberToColumn(col + cols - 1)}{m.Groups[5].Value}"
+            };
+        }
+        else
+        {
+            throw InvalidCells(_xl.Address!);
+        }
+
+        return this;
+    }
     public override string Key => _xl.Address ?? _local.Address ?? string.Empty;
     public override RangeProperties Properties
     {
@@ -71,7 +108,7 @@ public class RangeObject : BaseObject<RangeProperties>
             var _cells = $"{m.Groups[1].Value}{m.Groups[3].Value}:{NumberToColumn(col)}{row}";
         }
         else
-            throw new ArgumentException($"Invalid Cell Reference: {Address}");
+            throw InvalidCells(Address);
 
         return this;
     }
@@ -80,15 +117,18 @@ public class RangeObject : BaseObject<RangeProperties>
         var m = CELLREF.Match(address ?? throw new ArgumentNullException(nameof(Address)));
         if (m.Success)
         {
-            int left = ColumnToNumber(m.Groups[2].Value) - 1;
-            int top = int.Parse(m.Groups[3].Value) - 1;
-            int right = string.IsNullOrEmpty(m.Groups[4].Value)
-                ? left : ColumnToNumber(m.Groups[4].Value) - 1;
+            int left = m.Groups[2].Success ? ColumnToNumber(m.Groups[2].Value) - 1 : 0;
+            int top = string.IsNullOrEmpty(m.Groups[3].Value)
+                ? 0 : int.Parse(m.Groups[3].Value) - 1;
+            int right = m.Groups[4].Success
+                ? ColumnToNumber(m.Groups[4].Value) - 1
+                : left;
             int bottom = string.IsNullOrEmpty(m.Groups[5].Value)
-                ? top : int.Parse(m.Groups[5].Value) - 1;
+                ? top
+                : int.Parse(m.Groups[5].Value) - 1;
             return (left, top, right, bottom);
         }
-        throw new ArgumentException($"Invalid Cell Reference: '{address}'");
+        throw InvalidCells(address);
     }
     static string AdjustCells(string? cells, int rows, int cols)
     {
@@ -102,7 +142,7 @@ public class RangeObject : BaseObject<RangeProperties>
             return $"{m.Groups[1].Value}{m.Groups[3].Value}:{NumberToColumn(startCol + cols - 1)}{startRow + rows - 1}";
         }
         else
-            throw new ArgumentException($"Invalid Cell Reference: {cells}");
+            throw InvalidCells(cells);
     }
     static string NumberToColumn(int number)
     {
@@ -127,7 +167,11 @@ public class RangeObject : BaseObject<RangeProperties>
         }
         return number;
     }
-    static readonly Regex CELLREF = new Regex(@"(?:'?([^']+)'?!)?([a-zA-Z]+)(\d+)(?::([a-zA-Z]+)(\d+))?");
+    static ArgumentException InvalidCells(string cells) => new ArgumentException($"Invalid Cell Reference: {cells}");
+    static string? ToSheet(string? sheet) => string.IsNullOrEmpty(sheet)
+        ? null
+        : $"'{sheet}'!";
+    static readonly Regex CELLREF = new Regex(@"^(?:'?([^']+)'?!)?([a-zA-Z]{1,3})(\d*)(?::([a-zA-Z]{1,3})(\d*))?$");
     ValuesObject<object?>? _values;
     RangeProperties _local;
     RangeProperties _xl;

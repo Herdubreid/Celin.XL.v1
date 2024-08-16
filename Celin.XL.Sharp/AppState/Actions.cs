@@ -4,13 +4,17 @@ namespace Celin.XL.Sharp;
 
 public partial class AppState
 {
+    public class RunScriptAction : IAction
+    {
+        public string? Key { get; set; }
+    }
     public class EditScriptAction : IAction
     {
         public string? Key { get; set; }
     }
-    public class UpdateScriptAction : IAction
+    public class UpdateDocAction : IAction
     {
-        public string? Script { get; set; }
+        public string? Doc { get; set; }
     }
     public class AuthenticateAction : IAction
     {

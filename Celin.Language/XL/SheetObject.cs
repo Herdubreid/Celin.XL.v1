@@ -17,6 +17,11 @@ public record SheetProperties(
 };
 public class SheetObject : BaseObject<SheetProperties>
 {
+    public RangeObject Range(string? address = null)
+    {
+        string? name = _xl.Name ?? _local.Name;
+        return RangeObject.Range($"{(string.IsNullOrEmpty(name) ? "" : $"'{name}'!")}{address}");
+    }
     public override string Key => _xl.Id ?? _local.Name ?? string.Empty;
     public override SheetProperties Properties
     {

@@ -54,8 +54,8 @@ public class JsService
     public void PromptCommand()
         => _mediator.Send(new PromptCommandAction());
     [JSInvokable]
-    public void UpdateScript(string script)
-        => _mediator.Send(new UpdateScriptAction { Script = script });
+    public void UpdateDoc(string doc)
+        => _mediator.Send(new UpdateDocAction { Doc = doc });
     [JSInvokable]
     public void Authenticate(string username, string password)
         => _mediator.Send(new AuthenticateAction { Username = username, Password = password });

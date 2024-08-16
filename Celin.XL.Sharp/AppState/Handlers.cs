@@ -2,37 +2,51 @@
 using Celin.AIS;
 using Celin.XL.Sharp.Services;
 using MediatR;
-using Microsoft.JSInterop;
 using System.Text;
 
 namespace Celin.XL.Sharp;
 
 public partial class AppState
 {
-    public class EditScriptHandler : ActionHandler<EditScriptAction>
+    public class RunScriptHandler(IStore store, SharpService sharp)
+        : ActionHandler<RunScriptAction>(store)
+    {
+        AppState State => Store.GetState<AppState>();
+        public override async Task Handle(RunScriptAction aAction, CancellationToken aCancellationToken)
+        {
+            var sc = State.Scripts[aAction.Key!];
+            await sharp.Submit(sc.Doc);
+        }
+    }
+    public class EditScriptHandler(IStore store, JsService js) : ActionHandler<EditScriptAction>(store)
     {
         AppState State => Store.GetState<AppState>();
         public override async Task Handle(EditScriptAction aAction, CancellationToken aCancellationToken)
         {
             var sc = State.Scripts[aAction.Key!];
-            await _js.Editor(sc.Title, sc.Content);
-        }
-        readonly JsService _js;
-        public EditScriptHandler(IStore store, JsService js) : base(store)
-        {
-            _js = js;
+            await js.Editor(sc.Title, sc.Doc);
+            State.ScriptKey = aAction.Key!;
         }
     }
-    public class UpdateScriptHandler : ActionHandler<UpdateScriptAction>
+    public class UpdateDocHandler(IStore store, JsService js, SharpService sharp, ScriptService scripts)
+        : ActionHandler<UpdateDocAction>(store)
     {
         AppState State => Store.GetState<AppState>();
-        public override Task Handle(UpdateScriptAction aAction, CancellationToken aCancellationToken)
+        public override async Task Handle(UpdateDocAction aAction, CancellationToken aCancellationToken)
         {
-            Console.WriteLine(aAction.Script);
-
-            return Task.CompletedTask;
+            try
+            {
+                await sharp.Validate(aAction.Doc!);
+                await js.CloseDlg();
+                var sc = State.Scripts[State.ScriptKey!];
+                State.Scripts[State.ScriptKey!] = sc with { Doc = aAction.Doc! };
+                scripts.SaveScript(State.ScriptKey!, State.Scripts[State.ScriptKey!]);
+            }
+            catch (Exception ex)
+            {
+                await js.MessageDlg(ex.Message);
+            }
         }
-        public UpdateScriptHandler(IStore store) : base(store) { }
     }
     public class AuthenticateHandler : ActionHandler<AuthenticateAction>
     {

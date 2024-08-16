@@ -7,6 +7,7 @@ public partial class AppState : State<AppState>
 {
     public bool Busy { get; set; }
     public IAction? NextAction { get; set; }
+    public string? ScriptKey { get; set; }
     public string? Command { get; set; }
     public Dictionary<string, Services.Script> Scripts { get; set; } = new Dictionary<string, Services.Script>();
     public List<string> History { get; } = new List<string>();

@@ -6,6 +6,7 @@ import svelte from 'rollup-plugin-svelte';
 import postcss from 'rollup-plugin-postcss';
 import tailwindcss from 'tailwindcss';
 import autoprefixer from 'autoprefixer';
+import { sveltePreprocess } from 'svelte-preprocess';
 
 export default [
     {
@@ -72,7 +73,9 @@ export default [
                 exportConditions: ['svelte'],
                 extensions: ['.svelte']
             }),
-            svelte(),
+            svelte({
+                preprocess: sveltePreprocess()
+            }),
             postcss({
                 plugins: [
                     tailwindcss(),

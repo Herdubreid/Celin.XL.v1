@@ -20,7 +20,7 @@
                     <MudText>@script.Value.Description</MudText>
                 </MudCardContent>
                 <MudCardActions>
-                    <MudButton Variant="Variant.Outlined">Submit</MudButton> 
+                    <MudIconButton Icon="@Icons.Material.Outlined.RunCircle" @onclick="@(() => RunScript(script.Key))" />
                 </MudCardActions>
             </MudCard>
         }

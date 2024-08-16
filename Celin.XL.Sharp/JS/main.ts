@@ -4,7 +4,6 @@ import { openEditorDlg, openLoginDlg, messageDlg, closeDlg } from "./dialog";
 import { globalState } from "./common";
 
 Office.onReady(async (info) => {
-    console.log(info);
     // Workaround for https://github.com/OfficeDev/office-js/issues/429
     // @ts-ignore
     delete history.pushState;

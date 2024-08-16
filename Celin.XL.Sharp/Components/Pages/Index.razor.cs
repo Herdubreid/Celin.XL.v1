@@ -9,6 +9,7 @@ namespace Celin.XL.Sharp.Components.Pages;
 public partial class Index : BlazorStateComponent
 {
     void EditScript(string key) => Mediator.Send(new EditScriptAction {  Key = key });
+    void RunScript(string key) => Mediator.Send(new RunScriptAction { Key = key });
     [Inject]
     public ScriptService ScriptService { get; set; } = null!;
     AppState State => GetState<AppState>();

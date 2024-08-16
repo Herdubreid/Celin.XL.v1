@@ -16,6 +16,8 @@ public class SharpService
         else
             ScriptState = await ScriptState.ContinueWithAsync(cmd);
     }
+    public async Task Validate(string cmd)
+        => await CSharpScript.EvaluateAsync(cmd, _scriptOptions, _shell);
     readonly ScriptShell _shell;
     readonly ILogger _logger;
     readonly JsService _js;
