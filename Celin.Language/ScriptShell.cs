@@ -20,6 +20,7 @@ public class ScriptShell
         SheetObject.Sheet(name);
     public QueryObject Query(string query) => QueryObject.Query(E1.Default.Server, query);
     public E1 E1 { get; }
+    public CancellationToken Cancel { get; set; }
     public ScriptShell(E1 e1)
     {
         E1 = e1;

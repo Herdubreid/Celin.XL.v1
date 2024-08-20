@@ -1,33 +1,43 @@
 ﻿using Celin.Language;
 using Celin.Language.XL;
 using Celin.XL.Sharp.Service;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
+using System.Text;
 
 namespace Celin.XL.Sharp.Services;
 
 public class SharpService
 {
     public ScriptState? ScriptState { get; protected set; }
-    public async Task Submit(string cmd)
+    public async Task Submit(string cmd, CancellationToken cancel = default)
     {
+        _shell.Cancel = cancel;
         if (ScriptState == null)
-            ScriptState = await CSharpScript.RunAsync(cmd, _scriptOptions, _shell);
+            ScriptState = await CSharpScript.RunAsync(cmd, _scriptOptions, _shell, typeof(ScriptShell), cancel);
         else
-            ScriptState = await ScriptState.ContinueWithAsync(cmd);
+            ScriptState = await ScriptState.ContinueWithAsync(cmd, _scriptOptions, cancel);
     }
-    public async Task Validate(string cmd)
-        => await CSharpScript.EvaluateAsync(cmd, _scriptOptions, _shell);
+    public void Validate(string cmd)
+    {
+        var script = CSharpScript.Create(cmd, _scriptOptions, typeof(ScriptShell));
+        var diag = script.Compile();
+        if (diag.Any(d => d.Severity == DiagnosticSeverity.Error))
+        {
+            var s = diag.Aggregate(new StringBuilder(), (c, n) => c.AppendLine(n.ToString()));
+            throw new Exception(s.ToString());
+        }
+    }
     readonly ScriptShell _shell;
-    readonly ILogger _logger;
     readonly JsService _js;
     readonly ScriptOptions _scriptOptions;
-    public SharpService(ILogger<SharpService> logger, OutputWriterService writer, JsService js, E1Services e1)
+    public SharpService(OutputWriterService ow, ErrorWriterService ew, JsService js, E1Services e1)
     {
         _shell = new ScriptShell(e1);
-        _logger = logger;
         _js = js;
-        Console.SetOut(writer);
+        Console.SetOut(ow);
+        Console.SetError(ew);
 
         BaseObject<ValuesProperties<object?>>.SyncAsyncDelegate = _js.syncValues;
         BaseObject<RangeProperties>.SyncAsyncDelegate = _js.syncRange;

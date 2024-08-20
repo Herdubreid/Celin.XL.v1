@@ -7,7 +7,7 @@
          MinimumTabWidth="100"
          AlwaysShowScrollButtons="true">
     <MudTabPanel Text="History">
-        <MudContainer Style="height: calc(100vh - 318px); overflow: auto;">
+        <MudContainer Class="overflow-auto" Style="height: calc(100vh - 318px);">
             <MudText>
                 @foreach (var h in State.History)
                 {                    
@@ -19,7 +19,6 @@
     <MudTabPanel Text="Output">
         <MudContainer Style="height: calc(100vh - 318px); overflow: auto;">
             <MudText>
-                <pre>@State.Output.ToString()</pre>
             </MudText>
         </MudContainer>
     </MudTabPanel>

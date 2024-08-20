@@ -1,0 +1,8 @@
+﻿@inherits BlazorStateComponent
+
+<MudExpansionPanels>
+    @foreach (var script in State.Scripts)
+    {
+        <ScriptComponent Script="script" />
+    }
+</MudExpansionPanels>
