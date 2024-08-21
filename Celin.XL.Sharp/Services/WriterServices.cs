@@ -13,19 +13,24 @@ public class WriterService
     public record Output(WriteTypes Type, string? Text);
     public List<Output> Outputs { get; set; } = new List<Output>();
     public Action? OnChange;
+    public void Clear()
+    {
+        Outputs.Clear();
+        NotifyChange();
+    }
     public void Highlight(string? text)
     {
-        Outputs.Add(new Output(WriteTypes.Highlight, text + '\n'));
+        Outputs.Insert(0, new Output(WriteTypes.Highlight, text + '\n'));
         NotifyChange();
     }
     public void Normal(string? text)
     {
-        Outputs.Add(new Output(WriteTypes.Normal, text));
+        Outputs.Insert(0, new Output(WriteTypes.Normal, text));
         NotifyChange();
     }
     public void Error(string? text)
     {
-        Outputs.Add(new Output(WriteTypes.Error, text));
+        Outputs.Insert(0, new Output(WriteTypes.Error, text));
         NotifyChange();
     }
     void NotifyChange() => OnChange?.Invoke();

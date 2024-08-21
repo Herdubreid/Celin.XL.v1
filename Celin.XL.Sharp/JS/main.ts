@@ -52,20 +52,16 @@ export const app = {
             }
         });
     },
-    openEditorDlg: (title: string, doc: string) => {
-        console.log(`Edit: ${title}, ${doc}`);
-        openEditorDlg(title, doc);
+    openEditorDlg: (key: string, title: string, doc: string) => {
+        openEditorDlg(key, title, doc);
     },
     openLoginDlg: (title: string, username: string) => {
-        console.log(`Login: ${title}, ${username}`);
         openLoginDlg(title, username);
     },
     messageDlg: (notice: string) => {
-        console.log(`Msg: ${notice}`);
         messageDlg(notice);
     },
     closeDlg: () => {
-        console.log("Close Dialog");
         closeDlg();
     },
 }

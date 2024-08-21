@@ -1,8 +1,11 @@
 ﻿using BlazorState;
 using Celin.Language.XL;
+using Celin.XL.Sharp.Services;
 using MediatR;
+using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.JSInterop;
 using static Celin.XL.Sharp.AppState;
+using static MudBlazor.Icons.Material;
 
 namespace Celin.XL.Sharp;
 
@@ -27,8 +30,8 @@ public class JsService
         => _js.InvokeVoidAsync(App(app.initCommandPrompt), id);
     public ValueTask Login(string title, string? user)
         => _js.InvokeVoidAsync(App(app.openLoginDlg), title, user);
-    public ValueTask Editor(string title, string content)
-        => _js.InvokeVoidAsync(App(app.openEditorDlg), title, content);
+    public ValueTask Editor(string key, string title, string content)
+        => _js.InvokeVoidAsync(App(app.openEditorDlg), key, title, content);
     public ValueTask MessageDlg(string msg)
         => _js.InvokeVoidAsync(App(app.messageDlg), msg);
     public ValueTask CloseDlg()
@@ -54,8 +57,22 @@ public class JsService
     public void PromptCommand()
         => _mediator.Send(new PromptCommandAction());
     [JSInvokable]
-    public void UpdateDoc(string doc)
-        => _mediator.Send(new UpdateDocAction { Doc = doc });
+    public async void UpdateDoc(string key, string doc)
+    {
+        try
+        {
+            _sharp.Validate(doc!);
+            await CloseDlg();
+            var script = _scripts.Scripts[key];
+            script.Doc = doc;
+            _scripts.SaveScript(key, script);
+        }
+        catch (Exception ex)
+        {
+            await MessageDlg(ex.Message);
+        }
+
+    }
     [JSInvokable]
     public void Authenticate(string username, string password)
         => _mediator.Send(new AuthenticateAction { Username = username, Password = password });
@@ -67,14 +84,22 @@ public class JsService
 
     readonly IJSRuntime _js;
     readonly IMediator _mediator;
+    readonly ScriptService _scripts;
+    readonly SharpService _sharp;
     readonly DotNetObjectReference<JsService> _ref;
     readonly IStore Store;
     AppState State => Store.GetState<AppState>();
-    public JsService(IJSRuntime js, IMediator mediator, IStore store)
+    public JsService(IJSRuntime js, ScriptService scripts, SharpService sharp, IMediator mediator, IStore store)
     {
         _js = js;
+        _scripts = scripts;
+        _sharp = sharp;
         _mediator = mediator;
         _ref = DotNetObjectReference.Create(this);
         Store = store;
+
+        BaseObject<ValuesProperties<object?>>.SyncAsyncDelegate = syncValues;
+        BaseObject<RangeProperties>.SyncAsyncDelegate = syncRange;
+        BaseObject<SheetProperties>.SyncAsyncDelegate = syncSheet;
     }
 }

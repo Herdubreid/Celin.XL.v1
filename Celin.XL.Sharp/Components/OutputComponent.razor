@@ -1,5 +1,5 @@
 ﻿
-<MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start">
+<MudStack Row="true" Spacing="0" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start">
     <MudText Typo="Typo.body2" Class="pl-4">
         <pre style="white-space: pre-wrap; overflow-x: auto;">
             @foreach (var o in Writer.Outputs)
@@ -19,4 +19,5 @@
             }
         </pre>
     </MudText>
+    <MudIconButton Icon="@Icons.Material.Filled.Clear" @onclick="Clear" />
 </MudStack>

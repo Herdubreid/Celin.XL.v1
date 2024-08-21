@@ -15,7 +15,7 @@ export function messageDlg(notice: string) {
     globalState.dialog?.messageChild(JSON.stringify({ notice }))
 }
 
-export function openEditorDlg(title: string, doc: string)
+export function openEditorDlg(key: string, title: string, doc: string)
 {
     Office.context.ui.displayDialogAsync(
         dialogUrl("editor"),
@@ -46,11 +46,11 @@ export function openEditorDlg(title: string, doc: string)
                             case msg.save:
                                 await globalState.blazorLib!.invokeMethodAsync(
                                     "UpdateDoc",
+                                    key,
                                     msg.doc,
                                 );
                                 break;
                             case msg.cancel:
-                                globalState.blazorLib!.invokeMethodAsync("CancelDlg");
                                 globalState.dialog!.close();
                                 break;
                         }

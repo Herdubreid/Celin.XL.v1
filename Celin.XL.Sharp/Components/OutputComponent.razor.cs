@@ -7,6 +7,7 @@ public partial class OutputComponent
 {
     [Inject]
     public WriterService Writer { get; set; } = null!;
+    void Clear() => Writer.Clear();
     protected override void OnInitialized()
     {
         base.OnInitialized();

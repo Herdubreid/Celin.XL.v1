@@ -3,11 +3,13 @@
 
 <PageTitle>Home</PageTitle>
 
-<MudStack Style="height: 100%;" Justify="Justify.SpaceBetween">
-    <MudPaper Class="overflow-auto">
-        <ScriptPanelComponent />
-    </MudPaper>
-    <MudPaper Class="overflow-x-auto" MaxHeight="60%">
+<MudTabs Elevation="4" MinimumTabWidth="100">
+    <MudTabPanel Text="Scripts">
+        <MudPaper Class="overflow-auto">
+            <ScriptPanelComponent />
+        </MudPaper>
+    </MudTabPanel>
+    <MudTabPanel Text="Console">
         <OutputComponent />
-    </MudPaper>
-</MudStack>
+    </MudTabPanel>
+</MudTabs>

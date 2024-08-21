@@ -30,18 +30,16 @@ public class SharpService
         }
     }
     readonly ScriptShell _shell;
-    readonly JsService _js;
     readonly ScriptOptions _scriptOptions;
-    public SharpService(OutputWriterService ow, ErrorWriterService ew, JsService js, E1Services e1)
+    public SharpService(OutputWriterService ow, ErrorWriterService ew, E1Services e1)
     {
         _shell = new ScriptShell(e1);
-        _js = js;
         Console.SetOut(ow);
         Console.SetError(ew);
 
-        BaseObject<ValuesProperties<object?>>.SyncAsyncDelegate = _js.syncValues;
+        /*BaseObject<ValuesProperties<object?>>.SyncAsyncDelegate = _js.syncValues;
         BaseObject<RangeProperties>.SyncAsyncDelegate = _js.syncRange;
-        BaseObject<SheetProperties>.SyncAsyncDelegate = _js.syncSheet;
+        BaseObject<SheetProperties>.SyncAsyncDelegate = _js.syncSheet;*/
 
         // Create a scripting environment
         _scriptOptions = ScriptOptions.Default
