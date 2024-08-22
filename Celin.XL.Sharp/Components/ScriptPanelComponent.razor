@@ -1,40 +1,33 @@
-﻿]<MudExpansionPanels>
-    @foreach (var script in Scripts.Scripts)
-    {
-        <MudExpansionPanel>
-            <TitleContent>
-                <MudStack Row="true" AlignItems="AlignItems.Center">
-                    @if (script.Value.IsRunning)
-                    {                        
-                        <MudIconButton Icon="@Icons.Material.Filled.StopCircle" Color="@Color.Error" @onclick="@(() => CancelRun(script.Value))" Disabled="script.Value.Cancellation.IsCancellationRequested" />
-                    }
-                    else
-                    {
-                        <MudIconButton Icon="@Icons.Material.Filled.PlayCircle" Color="@(script.Value.ErrorMessage == null ? Color.Primary : Color.Error)" @onclick="@(() => RunCode(script.Value))" Disabled="script.Value.IsRunning" />
-                    }
-                    <MudText Typo="Typo.subtitle1">@script.Value.Title</MudText>
-                </MudStack>
-            </TitleContent>
-            <ChildContent>
-                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start">
-                    <MudStack>
-                        <MudText>@script.Value.Description</MudText>
-                        <MudText Color="Color.Error">
-                            <pre style="font-family: monospace; font-size: .75rem; white-space: pre-wrap;">@script.Value.ErrorMessage</pre>
-                        </MudText>
+﻿<MudPaper Height="calc(100vh - 112px)" Class="overflow-auto">
+    <MudExpansionPanels>
+        @foreach (var script in Scripts.Scripts)
+        {
+            <MudExpansionPanel>
+                <TitleContent>
+                    <MudStack Row="true" AlignItems="AlignItems.Center">
+                        @if (script.Value.IsRunning)
+                        {                        
+                            <MudIconButton Icon="@Icons.Material.Filled.StopCircle" Color="@Color.Error" @onclick="@(() => CancelRun(script.Value))" Disabled="script.Value.Cancellation.IsCancellationRequested" />
+                        }
+                        else
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.PlayCircle" Color="@(script.Value.ErrorMessage == null ? Color.Primary : Color.Error)" @onclick="@(() => RunCode(script.Value))" Disabled="script.Value.IsRunning" />
+                        }
+                        <MudText Typo="Typo.subtitle1">@script.Value.Title</MudText>
                     </MudStack>
-                    <MudIconButton Icon="@Icons.Material.Filled.Code" @onclick="@(() => EditCode(script))" />
-                </MudStack>
-            </ChildContent>
-        </MudExpansionPanel>
-    }
-</MudExpansionPanels>
-
-<style>
-    .fade-enter-active, .fade-leave-active {
-        transition: opacity 0.5s;
-    }
-    .fade-enter, .fade-leave-to {
-        opacity: 0;
-    }
-</style>
+                </TitleContent>
+                <ChildContent>
+                    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start">
+                        <MudStack>
+                            <MudText>@script.Value.Description</MudText>
+                            <MudText Color="Color.Error">
+                                <pre style="font-family: monospace; font-size: .75rem; white-space: pre-wrap;">@script.Value.ErrorMessage</pre>
+                            </MudText>
+                        </MudStack>
+                        <MudIconButton Icon="@Icons.Material.Filled.Code" @onclick="@(() => EditCode(script))" />
+                    </MudStack>
+                </ChildContent>
+            </MudExpansionPanel>
+        }
+    </MudExpansionPanels>
+</MudPaper>

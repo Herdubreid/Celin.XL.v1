@@ -1,21 +1,21 @@
-﻿@inherits BlazorStateComponent
-
-<MudPaper Style=" margin: 0 12px;">
+﻿<MudPaper Style=" margin: 0 12px;">
     <MudTextField
-        @bind-Value="State.Command"
+        @ref="_input"
+        @bind-Value="_command"
         Immediate="true"
         TextUpdateSuppression="false"
         Clearable="true"
-        ErrorText="@State.CommandError"
-        Error="HasError"
+        ErrorText="@_error"
+        Error="_hasError"
         id="commandPromptId"
         Style="font-family: Consolas;"
         T="string"
         FullWidth
         Variant="Variant.Text"
-        Placeholder="Enter Command + Shift-Enter..."
+        Placeholder="Shift-Enter to run..."
         Lines="1"
         AutoGrow="true"
         AutoFocus="true"
-        spellcheck="false"/>
+        spellcheck="false"
+        @onkeydown="_handleKeyDown"/>
 </MudPaper>

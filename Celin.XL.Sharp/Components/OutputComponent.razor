@@ -1,23 +1,28 @@
 ﻿
-<MudStack Row="true" Spacing="0" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start">
-    <MudText Typo="Typo.body2" Class="pl-4">
-        <pre style="white-space: pre-wrap; overflow-x: auto;">
-            @foreach (var o in Writer.Outputs)
-            {
-                switch (o.Type)
+<MudStack Spacing="1" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start">
+    <MudPaper Height="calc(100vh - 306px)" Width="100%" Class="overflow-auto">
+        <MudText Typo="Typo.body2" Class="pl-4">
+            <pre style="white-space: pre-wrap;">
+                @foreach (var o in Writer.Outputs)
                 {
-                    case Service.WriterService.WriteTypes.Highlight:
-                        <MudElement HtmlTag="span" Style="color: yellow;">@o.Text</MudElement>
-                        break;
-                    case Service.WriterService.WriteTypes.Normal:
-                        <MudElement HtmlTag="span">@o.Text</MudElement>
-                        break;
-                    case Service.WriterService.WriteTypes.Error:
-                        <MudElement HtmlTag="span" Style="color: red;">@o.Text</MudElement>
-                        break;
+                    switch (o.Type)
+                    {
+                        case Service.WriterService.WriteTypes.Highlight:
+                            <MudElement HtmlTag="span" Style="color: yellow;">@o.Text</MudElement>
+                            break;
+                        case Service.WriterService.WriteTypes.Normal:
+                            <MudElement HtmlTag="span">@o.Text</MudElement>
+                            break;
+                        case Service.WriterService.WriteTypes.Error:
+                            <MudElement HtmlTag="span" Style="color: red;">@o.Text</MudElement>
+                            break;
+                    }
                 }
-            }
-        </pre>
-    </MudText>
-    <MudIconButton Icon="@Icons.Material.Filled.Clear" @onclick="Clear" />
+            </pre>
+        </MudText>
+    </MudPaper>
+    <MudPaper Height="190px" Width="100%" Class="overflow-auto">
+        <InteractiveComponent />
+    </MudPaper>
 </MudStack>
+ 

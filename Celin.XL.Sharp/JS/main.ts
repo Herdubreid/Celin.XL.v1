@@ -1,5 +1,4 @@
 import { DotNet } from "@microsoft/dotnet-js-interop";
-import { TestStringComplete } from "./utils"
 import { openEditorDlg, openLoginDlg, messageDlg, closeDlg } from "./dialog";
 import { globalState } from "./common";
 
@@ -41,14 +40,7 @@ export const app = {
         let txt = document.getElementById(id) as HTMLInputElement;
         txt.addEventListener('keydown', function (event) {
             if (event.key === 'Enter' && event.shiftKey) {
-                if (TestStringComplete(txt.value)) {
-                    if (txt.value.trim()) {
-                        globalState.blazorLib!.invokeMethodAsync('PromptCommand');
-                    }
-                    //txt.style.height = '19px';
-                    //txt.value = '';
-                    event.preventDefault();
-                }
+                event.preventDefault();
             }
         });
     },

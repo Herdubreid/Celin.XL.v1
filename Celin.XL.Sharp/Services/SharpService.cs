@@ -37,10 +37,6 @@ public class SharpService
         Console.SetOut(ow);
         Console.SetError(ew);
 
-        /*BaseObject<ValuesProperties<object?>>.SyncAsyncDelegate = _js.syncValues;
-        BaseObject<RangeProperties>.SyncAsyncDelegate = _js.syncRange;
-        BaseObject<SheetProperties>.SyncAsyncDelegate = _js.syncSheet;*/
-
         // Create a scripting environment
         _scriptOptions = ScriptOptions.Default
             .AddImports([
