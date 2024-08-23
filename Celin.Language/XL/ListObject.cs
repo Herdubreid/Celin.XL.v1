@@ -1,6 +1,6 @@
 ﻿namespace Celin.Language.XL;
 
-public class ListObject<T> : BaseObject<List<List<T>>>
+public class ListObject<T> : BaseObject<List<List<T>>?>
 {
     public ListObject<T> Set(string value)
     {

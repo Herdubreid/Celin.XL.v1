@@ -31,7 +31,7 @@ public class RangeObject : BaseObject<RangeProperties>
 {
     public RangeObject Rows(int rows)
     {
-        var m = CELLREF.Match(_xl.Address ?? "A1");
+        var m = CELLREF.Match(_xl.Address?.ToUpper() ?? "A1");
         if (m.Success)
         {
             var row = string.IsNullOrEmpty(m.Groups[3].Value)
@@ -50,7 +50,7 @@ public class RangeObject : BaseObject<RangeProperties>
     }
     public RangeObject Cols(int cols)
     {
-        var m = CELLREF.Match(_xl.Address ?? "A1");
+        var m = CELLREF.Match(_xl.Address?.ToUpper() ?? "A1");
         if (m.Success)
         {
             var col = ColumnToNumber(m.Groups[4].Success ? m.Groups[4].Value : m.Groups[2].Value);
@@ -84,13 +84,19 @@ public class RangeObject : BaseObject<RangeProperties>
         new("text", this, _getLocalText, _setLocalText, _getXlText, _setXlText);
     public ListObject<object?> Formulas =>
         new("values", this, _getLocalFormulas, _setLocalFormulas, _getXlFormulas, _setXlFormulas);
-    public ListObject<object?> Values =>
-        new("values", this, _getLocalValues, _setLocalValues, _getXlValues, _setXlValues);
+    public ListObject<object?> Values
+    {
+        get => new("values", this, _getLocalValues, _setLocalValues, _getXlValues, _setXlValues);
+        set
+        {
+            _local = _local with { Values = value.Properties };
+        }
+    }
     public ListObject<string?> NumberFormat =>
         new("numberFormat", this, _getLocalNumerFormat, _setLocalNumberFormat, _getXlNumberFormat, _setXlNumberFormat);
     public RangeObject Resize(int deltaRows, int deltaColumns)
     {
-        var m = CELLREF.Match(Address ?? throw new ArgumentNullException(nameof(Address)));
+        var m = CELLREF.Match(Address?.ToUpper() ?? throw new ArgumentNullException(nameof(Address)));
         if (m.Success)
         {
             int row = int.Parse(
@@ -110,7 +116,7 @@ public class RangeObject : BaseObject<RangeProperties>
     }
     public static (int Left, int Top, int Right, int Bottom) Dim(string address)
     {
-        var m = CELLREF.Match(address ?? throw new ArgumentNullException(nameof(Address)));
+        var m = CELLREF.Match(address?.ToUpper() ?? throw new ArgumentNullException(nameof(Address)));
         if (m.Success)
         {
             int left = m.Groups[2].Success ? ColumnToNumber(m.Groups[2].Value) - 1 : 0;
@@ -128,7 +134,7 @@ public class RangeObject : BaseObject<RangeProperties>
     }
     static string AdjustCells(string? cells, int rows, int cols)
     {
-        var m = CELLREF.Match(cells ?? throw new ArgumentNullException(nameof(Address)));
+        var m = CELLREF.Match(cells?.ToUpper() ?? throw new ArgumentNullException(nameof(Address)));
         if (m.Success)
         {
             if (!string.IsNullOrEmpty(m.Groups[3].Value))
@@ -167,7 +173,7 @@ public class RangeObject : BaseObject<RangeProperties>
     static string? ToSheet(string? sheet) => string.IsNullOrEmpty(sheet)
         ? null
         : $"'{sheet}'!";
-    static readonly Regex CELLREF = new Regex(@"^(?:'?([^']+)'?!)?([a-zA-Z]{1,3})(\d*)(?::([a-zA-Z]{1,3})(\d*))?$");
+    static readonly Regex CELLREF = new Regex(@"^(?:'?([^']+)'?!)?([a-zA-Z]{0,3})(\d*)(?::([a-zA-Z]{1,3})(\d*))?$");
     #region delegates
     List<List<string?>>? _getLocalValueTypes() => _local.ValueTypes;
     List<List<string?>>? _getXlValueTypes() => _xl.ValueTypes;
@@ -205,9 +211,9 @@ public class RangeObject : BaseObject<RangeProperties>
     RangeObject(string? address)
     {
         if (address != null)
-            _ = Dim(address.ToUpper());
+            _ = Dim(address);
         _local = new RangeProperties();
-        _xl = new RangeProperties(Address: address?.ToUpper());
+        _xl = new RangeProperties(Address: address);
     }
     public static RangeObject Range(string? address = null)
         => new(address);
