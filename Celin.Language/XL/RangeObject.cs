@@ -9,7 +9,7 @@ public record RangeProperties(
     int? ColumnCount = null,
     bool? ColumnHidden = null,
     int? ColumnIndex = null,
-    IEnumerable<IEnumerable<object?>>? Formulas = null,
+    List<List<object?>>? Formulas = null,
     bool? HasSpill = null,
     decimal? Height = null,
     bool? Hidden = null,
@@ -20,9 +20,9 @@ public record RangeProperties(
     bool? RowHidden = null,
     int? RowIndex = null,
     string? Style = null,
-    IEnumerable<IEnumerable<string?>>? Text = null,
+    List<List<string?>>? Text = null,
     List<List<object?>>? Values = null,
-    IEnumerable<IEnumerable<string?>>? ValueTypes = null)
+    List<List<string?>>? ValueTypes = null)
 {
     public RangeProperties() : this(Address: null) { }
 };
@@ -74,24 +74,14 @@ public class RangeObject : BaseObject<RangeProperties>
     }
     public override RangeProperties LocalProperties
     {
-        get => _local with { Values = _values?.LocalProperties.Local };
-        protected set
-        {
-            _local = value;
-            _values = new ValuesObject<object?>(Address, value.Values, null);
-        }
+        get => _local;
+        protected set => _local = value;
     }
     public string? Address => _xl.Address;
-    public ValuesObject<object?> Values
-    {
-        get
-        {
-            if (_values == null)
-                _values = new(Address, _xl.Values, _local.Values);
-            return _values;
-        }
-    }
-    public ValuesObject<string?> NumberFormat => new(Address, _xl.NumberFormat, _local.NumberFormat);
+    public ListObject<object?> Values =>
+        new("values", this, _getLocalValues, _setLocalValues, _getXlValues, _setXlValues);
+    public ListObject<string?> NumberFormat =>
+        new("numberFormat", this, _getLocalNumerFormat, _setLocalNumberFormat, _getXlNumberFormat, _setXlNumberFormat);
     public RangeObject Resize(int deltaRows, int deltaColumns)
     {
         var m = CELLREF.Match(Address ?? throw new ArgumentNullException(nameof(Address)));
@@ -172,7 +162,20 @@ public class RangeObject : BaseObject<RangeProperties>
         ? null
         : $"'{sheet}'!";
     static readonly Regex CELLREF = new Regex(@"^(?:'?([^']+)'?!)?([a-zA-Z]{1,3})(\d*)(?::([a-zA-Z]{1,3})(\d*))?$");
-    ValuesObject<object?>? _values;
+    #region delegates
+    List<List<string?>>? _getLocalNumerFormat() => _local.NumberFormat;
+    List<List<string?>>? _getXlNumberFormat() => _xl.NumberFormat;
+    void _setLocalNumberFormat(List<List<string?>> values) =>
+        _local = _local with { NumberFormat = values };
+    void _setXlNumberFormat(List<List<string?>> values) =>
+        _xl = _xl with { NumberFormat = values };
+    List<List<object?>>? _getLocalValues() => _local.Values;
+    List<List<object?>>? _getXlValues() => _xl.Values;
+    void _setLocalValues(List<List<object?>> values) =>
+        _local = _local with { Values = values };
+    void _setXlValues(List<List<object?>> values) =>
+        _xl = _xl with { Values = values };
+    #endregion
     RangeProperties _local;
     RangeProperties _xl;
     RangeObject(string? address)

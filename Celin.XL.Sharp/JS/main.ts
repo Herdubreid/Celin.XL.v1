@@ -26,10 +26,18 @@ function assignNonNullProperties(source: any, target: any) {
 
 function parseRangeAddress(address: string) {
     let m = address?.match(/(?:'?([^']+)'?!)?(.+)/);
-    let sheet: string|null = m ? m[1] : null;
-    let cells: string|null = m ? m[2] : null;
+    let sheet: string | null = m ? m[1] : null;
+    let cells: string | null = m ? m[2] : null;
     console.log(`Sheet: ${sheet}, Cells: ${cells}`);
     return { sheet, cells };
+}
+
+function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
+    return obj[key];
+}
+
+function setProperty<T, K extends keyof T>(obj: T, key: K, value: T[K]): void {
+    obj[key] = value;
 }
 
 export const app = {
@@ -59,7 +67,7 @@ export const app = {
 }
 
 export const xl = {
-    syncValues: async (key: string, values: any) => {
+    syncList: async (key: string, props: string, values: any) => {
         let a = parseRangeAddress(key);
         let result = await Excel.run(async (ctx) => {
             const sh = a.sheet == null
@@ -68,12 +76,13 @@ export const xl = {
             const range = a.cells == null
                 ? sh.getUsedRange()
                 : sh.getRange(a.cells);
-            range.values = values;
+            setProperty(range, props as keyof Excel.Range, values);
             await ctx.sync();
-            range.load("values")
+            range.load(props);
             await ctx.sync();
-            return range.values;
+            return getProperty(range, props as keyof Excel.Range);
         });
+        console.log(JSON.stringify(result));
         return result;
     },
     syncRange: async (key: string, values: Excel.Range) => {
