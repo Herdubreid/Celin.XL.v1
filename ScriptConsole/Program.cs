@@ -1,8 +1,8 @@
-﻿global using System;
+﻿global using Celin.Language;
+global using Celin.Language.XL;
+global using System;
 global using System.Collections.Generic;
 global using System.Linq;
-global using Celin.Language;
-global using Celin.Language.XL;
 using Celin;
 using Celin.AIS;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +21,8 @@ using var loggerFactory = LoggerFactory.Create(builder =>
 var logger = loggerFactory.CreateLogger<Program>();
 logger.LogInformation("Starting");
 
+TestParser.Run(logger);
+/*
 var e1 = new Server("demo.steltix.com/v2/", logger);
 
 //BaseObject<SheetObject>.SyncFromDelegate = Matrix.Sync;
@@ -33,4 +35,4 @@ Console.SetOut(textWriter);
 await TestScript.Run(logger);
 Console.SetOut(orgOut);
 Console.WriteLine(textWriter.ToString());
-//TestParser.Run(logger);
+*/

@@ -1,12 +1,6 @@
 ﻿namespace Celin.Language.XL;
 
-public record ListProperties<T>(
-    List<List<T>>? Xl = null,
-    List<List<T>>? Local = null)
-{
-    public ListProperties() : this(null, null) { }
-}
-public class ListObject<T> : BaseObject<ListProperties<T>>
+public class ListObject<T> : BaseObject<List<List<T>>>
 {
     public ListObject<T> Set(string value)
     {
@@ -31,15 +25,15 @@ public class ListObject<T> : BaseObject<ListProperties<T>>
     }
     public override string Key => _range.Address ?? string.Empty;
     public override string[] Params { get; }
-    public override ListProperties<T> Properties
+    public override List<List<T>> Properties
     {
-        get => new ListProperties<T>(Xl: (_getXl() ?? Init));
-        protected set => _setXl(value.Xl!);
+        get => _getXl() ?? Init;
+        protected set => _setXl(value);
     }
-    public override ListProperties<T> LocalProperties
+    public override List<List<T>> LocalProperties
     {
-        get => new ListProperties<T>(Local: (_getLocal() ?? Init));
-        protected set => _setLocal(value.Local ?? Init);
+        get => _getLocal() ?? Init;
+        protected set => _setLocal(value ?? Init);
     }
     public (int Left, int Top, int Right, int Bottom) Dim { get; protected set; }
     List<List<T>> Init =>

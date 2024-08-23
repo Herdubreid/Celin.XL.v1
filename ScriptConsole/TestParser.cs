@@ -9,6 +9,12 @@ namespace Celin;
 
 static class TestParser
 {
+    static object ParseNumber(string value) =>
+        SkipWhitespaces
+        .Then(Try(Real.Cast<object>())
+            .Or(DecimalNum.Cast<object>()))
+            .Before(End)
+        .ParseOrThrow(value);
     static IEnumerable<IEnumerable<object?>> ParseValue(string value)
         => Values<object?>.Parser
             .Before(End).ParseOrThrow(value);
@@ -30,6 +36,7 @@ static class TestParser
                 //var p = Range(ln);
                 //Console.WriteLine($"{(p.sheet.HasValue ? p.sheet.Value : string.Empty)}!{p.range}");
                 var m = ParseValue(ln);
+                //var m = ParseNumber(ln);
                 Console.WriteLine(m);
                 //Console.WriteLine($"{c.LeftHand}, {c.RightHand}");
                 //var a = Test(ln);

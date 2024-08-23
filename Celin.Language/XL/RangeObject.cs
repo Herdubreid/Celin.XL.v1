@@ -78,6 +78,12 @@ public class RangeObject : BaseObject<RangeProperties>
         protected set => _local = value;
     }
     public string? Address => _xl.Address;
+    public ListObject<string?> ValueTypes =>
+        new("valueTypes", this, _getLocalValueTypes, _setLocalValueTypes, _getXlValueTypes, _setXlValueTypes);
+    public ListObject<string?> Text =>
+        new("text", this, _getLocalText, _setLocalText, _getXlText, _setXlText);
+    public ListObject<object?> Formulas =>
+        new("values", this, _getLocalFormulas, _setLocalFormulas, _getXlFormulas, _setXlFormulas);
     public ListObject<object?> Values =>
         new("values", this, _getLocalValues, _setLocalValues, _getXlValues, _setXlValues);
     public ListObject<string?> NumberFormat =>
@@ -163,12 +169,30 @@ public class RangeObject : BaseObject<RangeProperties>
         : $"'{sheet}'!";
     static readonly Regex CELLREF = new Regex(@"^(?:'?([^']+)'?!)?([a-zA-Z]{1,3})(\d*)(?::([a-zA-Z]{1,3})(\d*))?$");
     #region delegates
+    List<List<string?>>? _getLocalValueTypes() => _local.ValueTypes;
+    List<List<string?>>? _getXlValueTypes() => _xl.ValueTypes;
+    void _setLocalValueTypes(List<List<string?>> values) =>
+        _local = _local with { ValueTypes = values };
+    void _setXlValueTypes(List<List<string?>> values) =>
+        _xl = _xl with { ValueTypes = values };
+    List<List<string?>>? _getLocalText() => _local.Text;
+    List<List<string?>>? _getXlText() => _xl.Text;
+    void _setLocalText(List<List<string?>> values) =>
+        _local = _local with { Text = values };
+    void _setXlText(List<List<string?>> values) =>
+        _xl = _xl with { Text = values };
     List<List<string?>>? _getLocalNumerFormat() => _local.NumberFormat;
     List<List<string?>>? _getXlNumberFormat() => _xl.NumberFormat;
     void _setLocalNumberFormat(List<List<string?>> values) =>
         _local = _local with { NumberFormat = values };
     void _setXlNumberFormat(List<List<string?>> values) =>
         _xl = _xl with { NumberFormat = values };
+    List<List<object?>>? _getLocalFormulas() => _local.Formulas;
+    List<List<object?>>? _getXlFormulas() => _xl.Formulas;
+    void _setLocalFormulas(List<List<object?>> values) =>
+        _local = _local with { Formulas = values };
+    void _setXlFormulas(List<List<object?>> values) =>
+        _xl = _xl with { Formulas = values };
     List<List<object?>>? _getLocalValues() => _local.Values;
     List<List<object?>>? _getXlValues() => _xl.Values;
     void _setLocalValues(List<List<object?>> values) =>

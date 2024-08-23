@@ -3,6 +3,7 @@ using Celin.Language.XL;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.Extensions.Logging;
+using System.Collections.ObjectModel;
 
 namespace Celin;
 
@@ -14,6 +15,7 @@ static class TestScript
         var e1 = new AIS.Server("https://demo.steltix.com/jderest/v2/", logger);
         e1.AuthRequest.username = "DEMO";
         e1.AuthRequest.password = "DEMO";
+        var host = new E1.Host("Demo", e1);
         //await e1.AuthenticateAsync();
 
         /*
@@ -32,7 +34,7 @@ static class TestScript
         }*/
 
         // Define the scripting API
-        var shell = new ScriptShell(e1);
+        var shell = new ScriptShell(new E1(new ReadOnlyCollection<E1.Host>(new List<E1.Host> { host })));
  
         // Create a scripting environment
         var scriptOptions = ScriptOptions.Default

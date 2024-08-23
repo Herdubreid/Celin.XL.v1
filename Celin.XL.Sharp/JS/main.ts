@@ -13,7 +13,7 @@ Office.onReady(async (info) => {
 function assignNonNullProperties(source: any, target: any) {
     if (Object.values(target).some(value => value !== null)) {
         Object.keys(source).forEach(key => {
-            if (source[key] !== null) {
+            if (source[key] !== null && (Array.isArray(source[key]) && source[key].length > 0)) {
                 try {
                     target[key] = source[key];
                 } catch { }
@@ -28,7 +28,6 @@ function parseRangeAddress(address: string) {
     let m = address?.match(/(?:'?([^']+)'?!)?(.+)/);
     let sheet: string | null = m ? m[1] : null;
     let cells: string | null = m ? m[2] : null;
-    console.log(`Sheet: ${sheet}, Cells: ${cells}`);
     return { sheet, cells };
 }
 
@@ -71,18 +70,17 @@ export const xl = {
         let a = parseRangeAddress(key);
         let result = await Excel.run(async (ctx) => {
             const sh = a.sheet == null
-                ? ctx.workbook.worksheets.getActiveWorksheet()
-                : ctx.workbook.worksheets.getItem(a.sheet);
+            ? ctx.workbook.worksheets.getActiveWorksheet()
+            : ctx.workbook.worksheets.getItem(a.sheet);
             const range = a.cells == null
-                ? sh.getUsedRange()
-                : sh.getRange(a.cells);
+            ? sh.getUsedRange()
+            : sh.getRange(a.cells);
             setProperty(range, props as keyof Excel.Range, values);
             await ctx.sync();
             range.load(props);
             await ctx.sync();
             return getProperty(range, props as keyof Excel.Range);
         });
-        console.log(JSON.stringify(result));
         return result;
     },
     syncRange: async (key: string, values: Excel.Range) => {

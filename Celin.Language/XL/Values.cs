@@ -16,10 +16,10 @@ public class Values<T>
             .Cast<T>();
     static readonly Parser<char, T> NUMBER =
         SkipWhitespaces
-            .Then(Try(DecimalNum.Cast<T>())
-            .Or(Real.Cast<T>()));
+            .Then(Try(Real.Cast<T>())
+            .Or(DecimalNum.Cast<T>()));
     static readonly Parser<char, IEnumerable<T>> ARRAY =
-        OneOf(STRING, NUMBER)
+        OneOf(NUMBER, STRING)
             .Optional()
             .SeparatedAtLeastOnce(Char(','))
             .Select(a => a
@@ -36,12 +36,7 @@ public class Values<T>
                     var res = m.Select(a => a.Concat(Enumerable.Repeat<T>(default!, sz.cols - a.Count())));
                     return res;
                 })
-            .Or(ARRAY.Separated(EndOfLine)
-                /*.Select(a =>
-                {
-                    var res = new List<IEnumerable<T>> { a };
-                    return res.AsEnumerable();
-                })*/);
+            .Or(ARRAY.Separated(EndOfLine));
     public static IEnumerable<IEnumerable<T>> Parse(string value)
         => Values<T>.Parser
             .Before(End).ParseOrThrow(value);

@@ -9,7 +9,7 @@ class Script1 : ScriptShell
         var v = Range("b2:b3");
         Console.WriteLine($"Result: {v.ToMatrix()}");
     }
-    Script1(AIS.Server e1) : base(e1) { }
-    public static Task Run(AIS.Server e1)
+    Script1(E1 e1) : base(e1) { }
+    public static Task Run(E1 e1)
         => new Script1(e1).Run();
 }

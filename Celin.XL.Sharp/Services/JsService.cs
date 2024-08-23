@@ -45,8 +45,8 @@ public class JsService
         syncList,
     }
     string XL(xl f) => $"{LIB}.{nameof(xl)}.{f:g}";
-    public ValueTask<ListProperties<object?>> syncList(string? key, ListProperties<object?> values, params string[] pars)
-        => _js.InvokeAsync<ListProperties<object?>>(XL(xl.syncList), key, pars[0], values.Local);
+    public ValueTask<List<List<T>>> syncList<T>(string? key, List<List<T>> values, params string[] pars)
+        => _js.InvokeAsync<List<List<T>>>(XL(xl.syncList), key, pars[0], values);
     public ValueTask<RangeProperties> syncRange(string? key, RangeProperties values, params string[] pars)
         => _js.InvokeAsync<RangeProperties>(XL(xl.syncRange), key, values);
     public ValueTask<SheetProperties> syncSheet(string? key, SheetProperties values, params string[] pars)
@@ -98,7 +98,8 @@ public class JsService
         _ref = DotNetObjectReference.Create(this);
         Store = store;
 
-        BaseObject<ListProperties<object?>>.SyncAsyncDelegate = syncList;
+        BaseObject<List<List<string?>>>.SyncAsyncDelegate = syncList;
+        BaseObject<List<List<object?>>>.SyncAsyncDelegate = syncList;
         BaseObject<RangeProperties>.SyncAsyncDelegate = syncRange;
         BaseObject<SheetProperties>.SyncAsyncDelegate = syncSheet;
     }
