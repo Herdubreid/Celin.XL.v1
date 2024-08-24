@@ -44,8 +44,11 @@ public class JsService
         syncRange,
         syncList,
         syncFormat,
+        syncFill,
     }
     string XL(xl f) => $"{LIB}.{nameof(xl)}.{f:g}";
+    public ValueTask<FillProperties> syncFill(string? key, FillProperties values, params string[] pars)
+        => _js.InvokeAsync<FillProperties>(XL(xl.syncFill), key, values);
     public ValueTask<FormatProperties> syncFormat(string? key, FormatProperties values, params string[] pars)
         => _js.InvokeAsync<FormatProperties>(XL(xl.syncFormat), key, values);
     public ValueTask<T> syncList<T>(string? key, T values, params string[] pars)
@@ -101,6 +104,7 @@ public class JsService
         _ref = DotNetObjectReference.Create(this);
         Store = store;
 
+        BaseObject<FillProperties>.SyncAsyncDelegate = syncFill;
         BaseObject<FormatProperties>.SyncAsyncDelegate = syncFormat;
         BaseObject<List<List<string?>>>.SyncAsyncDelegate = syncList;
         BaseObject<List<List<object?>>>.SyncAsyncDelegate = syncList;

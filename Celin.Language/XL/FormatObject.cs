@@ -15,9 +15,9 @@ public record FormatProperties(
 {
     public FormatProperties() : this(AutoIndent: null) { }
 };
-
 public class FormatObject : BaseObject<FormatProperties>
 {
+    public FillObject Fill => FillObject.Fill(_address);
     public bool? AutoIndent
     {
         get => _xl.AutoIndent;

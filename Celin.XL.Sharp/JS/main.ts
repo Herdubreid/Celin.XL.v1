@@ -70,6 +70,24 @@ export const app = {
 }
 
 export const xl = {
+    syncFill: async (key: string, values: any) => {
+        let a = parseRangeAddress(key);
+        let result = await Excel.run(async (ctx) => {
+            const sh = isNullOrEmpty(a.sheet)
+                ? ctx.workbook.worksheets.getActiveWorksheet()
+                : ctx.workbook.worksheets.getItem(a.sheet!);
+            const range = isNullOrEmpty(a.cells)
+                ? sh.getUsedRange()
+                : sh.getRange(a.cells!);
+            if (assignNonNullProperties(values, range.format.fill)) {
+                await ctx.sync();
+            }
+            range.load("format/fill");
+            await ctx.sync();
+            return range.format.fill;
+        });
+        return result;
+    },
     syncFormat: async (key: string, values: any) => {
         let a = parseRangeAddress(key);
         let result = await Excel.run(async (ctx) => {
