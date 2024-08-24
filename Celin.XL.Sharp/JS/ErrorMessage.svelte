@@ -17,8 +17,8 @@
 
     afterUpdate(() => {
         dispatch("updated", {
-            height: errorMessageElement
-                ? errorMessageElement.offsetHeight + 20
+            height: isVisible
+                ? errorMessageElement?.offsetHeight + 20
                 : 0,
         });
     });

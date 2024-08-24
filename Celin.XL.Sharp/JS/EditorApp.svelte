@@ -57,7 +57,7 @@
     };
     function handleMessage(event: any) {
         let el: HTMLElement = document.querySelector("#editor")!;
-        el.style.height = `calc(100% - 62px - ${event.detail.height}px)`;
+        el.style.height = `calc(100vh - 62px - ${event.detail.height}px)`;
     }
     onMount(() => {
         const state = EditorState.create({
@@ -119,6 +119,6 @@
 <style>
     #editor {
         transition: height 0.3s ease;
-        height: calc(100% - 62px);
+        height: calc(100vh - 62px);
     }
 </style>

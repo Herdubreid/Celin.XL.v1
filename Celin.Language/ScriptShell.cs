@@ -14,6 +14,8 @@ public class E1
 }
 public class ScriptShell
 {
+    public static FormatObject Format(string? address = null) =>
+        FormatObject.Format(address);
     public static RangeObject Range(string? address = null) =>
         RangeObject.Range(address);
     public static SheetObject Sheet(string? name = null) =>

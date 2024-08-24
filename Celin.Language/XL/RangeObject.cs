@@ -29,6 +29,7 @@ public record RangeProperties(
 
 public class RangeObject : BaseObject<RangeProperties>
 {
+    public FormatObject Format => FormatObject.Format(_xl.Address);
     public RangeObject Rows(int rows)
     {
         var m = CELLREF.Match(_xl.Address?.ToUpper() ?? "A1");

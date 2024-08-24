@@ -13,11 +13,9 @@ Office.onReady(async (info) => {
 function assignNonNullProperties(source: any, target: any) {
     if (Object.values(target).some(value => value !== null)) {
         Object.keys(source).forEach(key => {
-            console.log(key);
             if (source[key] !== null) {
                 try {
                     target[key] = source[key];
-                    console.log(target[key]);
                 } catch { }
             }
         });
@@ -72,6 +70,24 @@ export const app = {
 }
 
 export const xl = {
+    syncFormat: async (key: string, values: any) => {
+        let a = parseRangeAddress(key);
+        let result = await Excel.run(async (ctx) => {
+            const sh = isNullOrEmpty(a.sheet)
+                ? ctx.workbook.worksheets.getActiveWorksheet()
+                : ctx.workbook.worksheets.getItem(a.sheet!);
+            const range = isNullOrEmpty(a.cells)
+                ? sh.getUsedRange()
+                : sh.getRange(a.cells!);
+            if (assignNonNullProperties(values, range.format)) {
+                await ctx.sync();
+            }
+            range.load("format");
+            await ctx.sync();
+            return range.format;
+        });
+        return result;
+    },
     syncList: async (key: string, props: string, values: any) => {
         let a = parseRangeAddress(key);
         let result = await Excel.run(async (ctx) => {

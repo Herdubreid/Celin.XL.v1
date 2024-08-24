@@ -33,7 +33,14 @@ public class ListObject<T> : BaseObject<List<List<T>>?>
     public override List<List<T>>? LocalProperties
     {
         get => _getLocal() ?? Init;
-        protected set => _setLocal(value ?? Init);
+        protected set
+        {
+            var local = value == null
+                ? value
+                : value.Count() > 0
+                    ? value : null;
+            _setLocal(local);
+        }
     }
     public (int Left, int Top, int Right, int Bottom) Dim { get; protected set; }
     List<List<T>> Init =>
