@@ -4,7 +4,7 @@ public delegate ValueTask<T> SyncAsyncDelegate<T>(string? key, T values, params 
 public abstract class BaseObject<T>
     where T : new()
 {
-    public abstract string Key { get; }
+    public abstract string? Key { get; }
     public virtual string[] Params => [];
     public abstract T Properties { get; protected set; }
     public abstract T LocalProperties { get; protected set; }

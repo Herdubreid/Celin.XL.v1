@@ -59,6 +59,7 @@
         let el: HTMLElement = document.querySelector("#editor")!;
         el.style.height = `calc(100vh - 62px - ${event.detail.height}px)`;
     }
+    
     onMount(() => {
         const state = EditorState.create({
             extensions: [basicSetup, StreamLanguage.define(csharp), oneDark],

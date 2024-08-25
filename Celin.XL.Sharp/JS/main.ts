@@ -24,7 +24,8 @@ function assignNonNullProperties(source: any, target: any) {
     return false;
 }
 
-function parseRangeAddress(address: string) {
+function parseRangeAddress(address: string|null) {
+    if (address === null) return {};
     let m = address?.match(/(?:^'?([^']+)'?!)?(.*)$/);
     let sheet: string | null = m ? m[1] : null;
     let cells: string | null = m ? m[2] : null;
@@ -41,6 +42,19 @@ function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
 
 function setProperty<T, K extends keyof T>(obj: T, key: K, value: T[K]): void {
     obj[key] = value;
+}
+
+function getRange(ctx: Excel.RequestContext, address: string|null): Excel.Range {
+    let a = parseRangeAddress(address);
+    const sh = isNullOrEmpty(a.sheet)
+    ? ctx.workbook.worksheets.getActiveWorksheet()
+    : ctx.workbook.worksheets.getItem(a.sheet!);
+    const range = isNullOrEmpty(a.cells)
+    ? isNullOrEmpty(a.sheet)
+        ? ctx.workbook.getSelectedRange()
+        : sh.getUsedRange()
+    : sh.getRange(a.cells!);
+    return range;
 }
 
 export const app = {
@@ -71,14 +85,8 @@ export const app = {
 
 export const xl = {
     syncFill: async (key: string, values: any) => {
-        let a = parseRangeAddress(key);
         let result = await Excel.run(async (ctx) => {
-            const sh = isNullOrEmpty(a.sheet)
-                ? ctx.workbook.worksheets.getActiveWorksheet()
-                : ctx.workbook.worksheets.getItem(a.sheet!);
-            const range = isNullOrEmpty(a.cells)
-                ? sh.getUsedRange()
-                : sh.getRange(a.cells!);
+            const range = getRange(ctx, key);
             if (assignNonNullProperties(values, range.format.fill)) {
                 await ctx.sync();
             }
@@ -89,14 +97,8 @@ export const xl = {
         return result;
     },
     syncFormat: async (key: string, values: any) => {
-        let a = parseRangeAddress(key);
         let result = await Excel.run(async (ctx) => {
-            const sh = isNullOrEmpty(a.sheet)
-                ? ctx.workbook.worksheets.getActiveWorksheet()
-                : ctx.workbook.worksheets.getItem(a.sheet!);
-            const range = isNullOrEmpty(a.cells)
-                ? sh.getUsedRange()
-                : sh.getRange(a.cells!);
+            const range = getRange(ctx, key);
             if (assignNonNullProperties(values, range.format)) {
                 await ctx.sync();
             }
@@ -107,14 +109,8 @@ export const xl = {
         return result;
     },
     syncList: async (key: string, props: string, values: any) => {
-        let a = parseRangeAddress(key);
         let result = await Excel.run(async (ctx) => {
-            const sh = isNullOrEmpty(a.sheet)
-                ? ctx.workbook.worksheets.getActiveWorksheet()
-                : ctx.workbook.worksheets.getItem(a.sheet!);
-            const range = isNullOrEmpty(a.cells)
-                ? sh.getUsedRange()
-                : sh.getRange(a.cells!);
+            const range = getRange(ctx, key);
             setProperty(range, props as keyof Excel.Range, values);
             await ctx.sync();
             range.load(props);
@@ -124,14 +120,8 @@ export const xl = {
         return result;
     },
     syncRange: async (key: string, values: Excel.Range) => {
-        let a = parseRangeAddress(key);
         let result = await Excel.run(async (ctx) => {
-            const sh = isNullOrEmpty(a.sheet)
-                ? ctx.workbook.worksheets.getActiveWorksheet()
-                : ctx.workbook.worksheets.getItem(a.sheet!);
-            const range = isNullOrEmpty(a.cells)
-                ? sh.getUsedRange()
-                : sh.getRange(a.cells!);
+            const range = getRange(ctx, key);
             if (assignNonNullProperties(values, range)) {
                 await ctx.sync();
             }

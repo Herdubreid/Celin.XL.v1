@@ -15,9 +15,10 @@ public record FormatProperties(
 {
     public FormatProperties() : this(AutoIndent: null) { }
 };
-public class FormatObject : BaseObject<FormatProperties>
+public class FormatObject : RangeBaseObject<FormatProperties, FormatObject>
 {
     public FillObject Fill => FillObject.Fill(_address);
+    public FontObject Font => FontObject.Font(_address);
     public bool? AutoIndent
     {
         get => _xl.AutoIndent;
@@ -33,7 +34,7 @@ public class FormatObject : BaseObject<FormatProperties>
         get => _xl.HorizontalAlignment;
         set => _local = _local with { HorizontalAlignment = value };
     }
-    public int? IndentLevel 
+    public int? IndentLevel
     {
         get => _xl.IndentLevel;
         set => _local = _local with { IndentLevel = value };
@@ -78,28 +79,7 @@ public class FormatObject : BaseObject<FormatProperties>
         get => _xl.WrapText;
         set => _local = _local with { WrapText = value };
     }
-    public override string Key => _address ?? string.Empty;
-    public override FormatProperties Properties
-    {
-        get => _xl;
-        protected set => _xl = value;
-    }
-    public override FormatProperties LocalProperties
-    {
-        get => _local;
-        protected set => _local = value;
-    }
-    string? _address;
-    FormatProperties _local;
-    FormatProperties _xl;
-    protected FormatObject(string? address)
-    {
-        if (address != null)
-            _ = RangeObject.Dim(address);
-        _address = address;
-        _local = new FormatProperties();
-        _xl = new FormatProperties();
-    }
+    protected FormatObject(string? address) : base(address) { }
     public static FormatObject Format(string? address)
         => new(address);
 }

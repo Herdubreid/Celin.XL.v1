@@ -23,7 +23,7 @@ public class ListObject<T> : BaseObject<List<List<T>>?>
             _setLocal(local);
         }
     }
-    public override string Key => _range.Address ?? string.Empty;
+    public override string? Key => _range.Address;
     public override string[] Params { get; }
     public override List<List<T>>? Properties
     {

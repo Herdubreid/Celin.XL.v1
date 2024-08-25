@@ -7,9 +7,9 @@ public record FillProperties(
     double? PatternTintAndShade = null,
     double? TintAndShade = null)
 {
-    public FillProperties() :  this(Color: null) { }
+    public FillProperties() : this(Color: null) { }
 };
-public class FillObject : BaseObject<FillProperties>
+public class FillObject : RangeBaseObject<FillProperties, FillObject>
 {
     public string? Color
     {
@@ -36,9 +36,8 @@ public class FillObject : BaseObject<FillProperties>
         get => _xl.TintAndShade;
         set => _local = _local with { TintAndShade = value };
     }
-    public override string Key => _address ?? string.Empty;
     public override FillProperties Properties
-    { 
+    {
         get => _xl;
         protected set => _xl = value;
     }
@@ -47,17 +46,6 @@ public class FillObject : BaseObject<FillProperties>
         get => _local;
         protected set => _local = value;
     }
-    string? _address;
-    FillProperties _local;
-    FillProperties _xl;
-    protected FillObject(string? address)
-    {
-        if (address != null)
-            _ = RangeObject.Dim(address);
-        _address = address;
-        _local = new FillProperties();
-        _xl = new FillProperties();
-    }
-    public static FillObject Fill(string? address)
-        => new(address);
+    protected FillObject(string? address) : base(address) { }
+    public static FillObject Fill(string? address) => new(address);
 }
