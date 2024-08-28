@@ -2,10 +2,8 @@
 using Celin.Language.XL;
 using Celin.XL.Sharp.Services;
 using MediatR;
-using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.JSInterop;
 using static Celin.XL.Sharp.AppState;
-using static MudBlazor.Icons.Material;
 
 namespace Celin.XL.Sharp;
 
@@ -45,8 +43,14 @@ public class JsService
         syncList,
         syncFormat,
         syncFill,
+        syncFont,
+        syncBorders,
     }
     string XL(xl f) => $"{LIB}.{nameof(xl)}.{f:g}";
+    public ValueTask<List<BorderProperties>> syncBorders(string? key, List<BorderProperties> values, params string[] pars)
+        => _js.InvokeAsync<List<BorderProperties>>(XL(xl.syncBorders), key, values);
+    public ValueTask<FontProperties> syncFont(string? key, FontProperties values, params string[] pars)
+        => _js.InvokeAsync<FontProperties>(XL(xl.syncFont), key, values);
     public ValueTask<FillProperties> syncFill(string? key, FillProperties values, params string[] pars)
         => _js.InvokeAsync<FillProperties>(XL(xl.syncFill), key, values);
     public ValueTask<FormatProperties> syncFormat(string? key, FormatProperties values, params string[] pars)
@@ -104,6 +108,8 @@ public class JsService
         _ref = DotNetObjectReference.Create(this);
         Store = store;
 
+        BaseObject<List<BorderProperties>>.SyncAsyncDelegate = syncBorders;
+        BaseObject<FontProperties>.SyncAsyncDelegate = syncFont;
         BaseObject<FillProperties>.SyncAsyncDelegate = syncFill;
         BaseObject<FormatProperties>.SyncAsyncDelegate = syncFormat;
         BaseObject<List<List<string?>>>.SyncAsyncDelegate = syncList;

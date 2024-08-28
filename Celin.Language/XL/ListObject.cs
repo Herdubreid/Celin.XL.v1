@@ -33,7 +33,7 @@ public class ListObject<T> : BaseObject<List<List<T>>?>
     public override List<List<T>>? LocalProperties
     {
         get => _getLocal() ?? Init;
-        protected set
+        set
         {
             var local = value == null
                 ? value

@@ -4,8 +4,7 @@ public record FillProperties(
     string? Color = null,
     string? Pattern = null,
     string? PatternColor = null,
-    double? PatternTintAndShade = null,
-    double? TintAndShade = null)
+    double? PatternTintAndShade = null) : BaseProperties
 {
     public FillProperties() : this(Color: null) { }
 };
@@ -31,21 +30,8 @@ public class FillObject : RangeBaseObject<FillProperties, FillObject>
         get => _xl.PatternTintAndShade;
         set => _local = _local with { PatternTintAndShade = value };
     }
-    public double? TintAndShade
-    {
-        get => _xl.TintAndShade;
-        set => _local = _local with { TintAndShade = value };
-    }
-    public override FillProperties Properties
-    {
-        get => _xl;
-        protected set => _xl = value;
-    }
-    public override FillProperties LocalProperties
-    {
-        get => _local;
-        protected set => _local = value;
-    }
-    protected FillObject(string? address) : base(address) { }
+    public static async Task Set(string? key, FillProperties prop, string[] pars) =>
+        await SyncAsyncDelegate(key, prop, pars);
+    public FillObject(string? address) : base(address) { }
     public static FillObject Fill(string? address) => new(address);
 }

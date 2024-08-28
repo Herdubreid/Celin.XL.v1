@@ -2,12 +2,42 @@
 using System.Text.RegularExpressions;
 
 namespace Celin.Language.XL;
-
-public abstract class RangeBaseObject<T1,T2> : BaseObject<T1>
-    where T1 : new()
-    where T2 : RangeBaseObject<T1,T2>
+public interface IRangeObjectFactory<T>
 {
+    T Create(string? address);
+}
+
+public abstract class RangeBaseObject<T1, T2> : BaseObject<T1>
+    where T1 : new()
+    where T2 : RangeBaseObject<T1, T2>
+{
+    public IEnumerator<T2> GetEnumerator()
+    {
+        if (!string.IsNullOrEmpty(_address))
+        {
+            var m = CELLREF.Match(_address);
+            var dim = Dim(_address);
+            for (int col = dim.Left; col <= dim.Right; col++)
+                for (int row = dim.Top; row <= dim.Bottom; row++)
+                {
+                    string address = $"{ToSheet(m.Groups[1].Value)}{NumberToColumn(col + 1)}{row + 1}";
+                    yield return (T2)Activator.CreateInstance(typeof(T2), address)!;
+                }
+        }
+    }
     public string? Address => _address;
+    public string? CellRange
+    {
+        get
+        {
+            var m = CELLREF.Match(_address?.ToUpper() ?? throw new ArgumentNullException(nameof(Dim)));
+            if (m.Success)
+            {
+                return $"{m.Groups[2]}{m.Groups[3].Value}{(string.IsNullOrEmpty(m.Groups[4].Value) ? "" : $":{m.Groups[4].Value}{m.Groups[5].Value}")}";
+            }
+            throw InvalidCells(_address);
+        }
+    }
     public override string? Key => _address;
     public override T1 Properties
     {
@@ -17,56 +47,22 @@ public abstract class RangeBaseObject<T1,T2> : BaseObject<T1>
     public override T1 LocalProperties
     {
         get => _local;
-        protected set => _local = value;
+        set => _local = value;
     }
-    public T2 Rows(int rows)
+    public T2 Expand(int cols, int rows)
     {
         var m = CELLREF.Match(_address?.ToUpper() ?? "A1");
         if (m.Success)
         {
             var row = string.IsNullOrEmpty(m.Groups[3].Value)
                 ? 1 : int.Parse(m.Groups[3].Value);
-            _address = $"{ToSheet(m.Groups[1].Value)}{m.Groups[2]}{row}:{(m.Groups[4].Success ? m.Groups[4].Value : m.Groups[2].Value)}{row + rows - 1}";
-        }
-        else
-        {
-            throw InvalidCells(_address!);
-        }
-
-        return (T2)this;
-    }
-    public T2 Cols(int cols)
-    {
-        var m = CELLREF.Match(_address?.ToUpper() ?? "A1");
-        if (m.Success)
-        {
             var col = ColumnToNumber(m.Groups[4].Success ? m.Groups[4].Value : m.Groups[2].Value);
-            _address = $"{ToSheet(m.Groups[1].Value)}{m.Groups[2]}{m.Groups[3]}:{NumberToColumn(col + cols - 1)}{m.Groups[5].Value}";
+            _address = $"{ToSheet(m.Groups[1].Value)}{m.Groups[2]}{row}:{NumberToColumn(col + cols - 1)}{row + rows - 1}";
         }
         else
         {
             throw InvalidCells(_address!);
         }
-
-        return (T2)this;
-    }
-    public T2 Resize(int deltaRows, int deltaColumns)
-    {
-        var m = CELLREF.Match(_address?.ToUpper() ?? throw new ArgumentNullException(nameof(Resize)));
-        if (m.Success)
-        {
-            int row = int.Parse(
-                string.IsNullOrEmpty(m.Groups[5].Value)
-                ? m.Groups[3].Value : m.Groups[5].Value)
-                + deltaRows;
-            int col = ColumnToNumber(
-                string.IsNullOrEmpty(m.Groups[4].Value)
-                ? m.Groups[1].Value : m.Groups[4].Value)
-                + deltaColumns;
-            var _cells = $"{m.Groups[1].Value}{m.Groups[3].Value}:{NumberToColumn(col)}{row}";
-        }
-        else
-            throw InvalidCells(_address);
 
         return (T2)this;
     }

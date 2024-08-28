@@ -9,8 +9,7 @@ public record FontProperties(
     bool? Strikethrough = null,
     bool? Subscript = null,
     bool? Superscript = null,
-    double? TintAndShade = null,
-    string? Underline = null)
+    string? Underline = null) : BaseProperties
 {
     public FontProperties() : this(Bold: null) { }
 }
@@ -56,16 +55,13 @@ public class FontObject : RangeBaseObject<FontProperties, FontObject>
         get => _xl.Superscript;
         set => _local = _local with { Superscript = value };
     }
-    public double? TintAndShade
-    {
-        get => _xl.TintAndShade;
-        set => _local = _local with { TintAndShade = value };
-    }
     public string? Underline
     {
         get => _xl.Underline;
         set => _local = _local with { Underline = value };
     }
+    public static async Task Set(string? key, FontProperties prop, string[] pars) =>
+        await SyncAsyncDelegate(key, prop, pars);
     public FontObject(string? address) : base(address) { }
     public static FontObject Font(string? address) => new(address);
 }

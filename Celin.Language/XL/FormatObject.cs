@@ -1,4 +1,5 @@
 ﻿namespace Celin.Language.XL;
+
 public record FormatProperties(
     bool? AutoIndent = null,
     decimal? ColumnWidth = null,
@@ -11,14 +12,15 @@ public record FormatProperties(
     bool? UseStandardHeight = null,
     bool? UseStandardWidth = null,
     string? VerticalAlignment = null,
-    bool? WrapText = null)
+    bool? WrapText = null) : BaseProperties
 {
     public FormatProperties() : this(AutoIndent: null) { }
 };
 public class FormatObject : RangeBaseObject<FormatProperties, FormatObject>
 {
-    public FillObject Fill => FillObject.Fill(_address);
-    public FontObject Font => FontObject.Font(_address);
+    public FillObject Fill => new FillObject(_address);
+    public FontObject Font => new FontObject(_address);
+    public BordersObject Borders => new BordersObject(_address);
     public bool? AutoIndent
     {
         get => _xl.AutoIndent;
@@ -79,7 +81,9 @@ public class FormatObject : RangeBaseObject<FormatProperties, FormatObject>
         get => _xl.WrapText;
         set => _local = _local with { WrapText = value };
     }
-    protected FormatObject(string? address) : base(address) { }
+    public static async Task Set(string? key, FormatProperties prop, string[] pars) =>
+        await SyncAsyncDelegate(key, prop, pars);
+    public FormatObject(string? address) : base(address) { }
     public static FormatObject Format(string? address)
         => new(address);
 }

@@ -84,13 +84,43 @@ export const app = {
 }
 
 export const xl = {
+    syncBorders: async (key: string, values: any) => {
+        let result = await Excel.run(async (ctx) => {
+            const range = getRange(ctx, key);
+            values.forEach((e: any) => {
+                let border = range.format.borders.getItem(e.sideIndex);
+                if (e.style === "None") {
+                    border.style = e.style;
+                } else {
+                    assignNonNullProperties(e, border);
+                }
+            });
+            await ctx.sync();
+            range.format.borders.load();
+            await ctx.sync();
+            return range.format.borders.items;
+        });
+        return result;
+    },
+    syncFont: async (key: string, values: any) => {
+        let result = await Excel.run(async (ctx) => {
+            const range = getRange(ctx, key);
+            if (assignNonNullProperties(values, range.format.font)) {
+                await ctx.sync();
+            }
+            range.format.font.load();
+            await ctx.sync();
+            return range.format.font;
+        });
+        return result;
+    },
     syncFill: async (key: string, values: any) => {
         let result = await Excel.run(async (ctx) => {
             const range = getRange(ctx, key);
             if (assignNonNullProperties(values, range.format.fill)) {
                 await ctx.sync();
             }
-            range.load("format/fill");
+            range.format.fill.load();
             await ctx.sync();
             return range.format.fill;
         });
@@ -102,7 +132,7 @@ export const xl = {
             if (assignNonNullProperties(values, range.format)) {
                 await ctx.sync();
             }
-            range.load("format");
+            range.format.load();
             await ctx.sync();
             return range.format;
         });

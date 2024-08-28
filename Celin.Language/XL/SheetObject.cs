@@ -11,9 +11,9 @@ public record SheetProperties(
     decimal? StandardWidth = null,
     string? TabColor = null,
     int? TabId = null,
-    string? Visibility = null)
+    string? Visibility = null) : BaseProperties(Id)
 {
-    public SheetProperties() : this(Id: null) { }
+    public SheetProperties() : this(Name: null) { }
 };
 public class SheetObject : BaseObject<SheetProperties>
 {
@@ -31,7 +31,7 @@ public class SheetObject : BaseObject<SheetProperties>
     public override SheetProperties LocalProperties
     {
         get => _local;
-        protected set => _local = value;
+        set => _local = value;
     }
     public string? Name
     {
@@ -40,7 +40,7 @@ public class SheetObject : BaseObject<SheetProperties>
     }
     SheetProperties _local;
     SheetProperties _xl;
-    SheetObject(string? sheetName)
+    public SheetObject(string? sheetName)
     {
         _xl = new SheetProperties();
         _local = new SheetProperties(Name: sheetName);

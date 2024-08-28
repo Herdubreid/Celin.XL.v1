@@ -19,13 +19,45 @@ public record RangeProperties(
     string? Style = null,
     List<List<string?>>? Text = null,
     List<List<object?>>? Values = null,
-    List<List<string?>>? ValueTypes = null)
+    List<List<string?>>? ValueTypes = null) : BaseProperties
 {
     public RangeProperties() : this(Address: null) { }
 };
 
 public class RangeObject : RangeBaseObject<RangeProperties, RangeObject>
 {
+    public override RangeProperties Properties
+    {
+        get => _xl;
+        protected set
+        {
+            _xl = value;
+            _address = _xl.Address;
+        }
+    }
+    public async Task Set(params BaseProperties[] properties)
+    {
+        foreach (var prop in properties)
+        {
+            switch (prop)
+            {
+                case RangeProperties range:
+                    await Set(Key, range, Params);
+                    break;
+                case FormatProperties format:
+                    await FormatObject.Set(Key, format, Params);
+                    break;
+                case FontProperties font:
+                    await FontObject.Set(Key, font, Params);
+                    break;
+                case FillProperties fill:
+                    await FillObject.Set(Key, fill, Params);
+                    break;
+                default:
+                    throw new InvalidCastException(prop.ToString());
+            };
+        }
+    }
     public FormatObject Format => FormatObject.Format(_address);
     public ListObject<string?> ValueTypes
     {
@@ -84,7 +116,9 @@ public class RangeObject : RangeBaseObject<RangeProperties, RangeObject>
     void _setXlValues(List<List<object?>>? values) =>
         _xl = _xl with { Values = values };
     #endregion
-    RangeObject(string? address) : base(address) { }
+    public static async Task Set(string? key, RangeProperties prop, string[] pars) =>
+        await SyncAsyncDelegate(key, prop, pars);
+    public RangeObject(string? address) : base(address) { }
     public static RangeObject Range(string? address = null)
         => new(address);
 }

@@ -7,6 +7,7 @@ using Celin;
 using Celin.AIS;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 // Logging
 var conf = new ConfigurationBuilder()
@@ -21,8 +22,15 @@ using var loggerFactory = LoggerFactory.Create(builder =>
 var logger = loggerFactory.CreateLogger<Program>();
 logger.LogInformation("Starting");
 
-TestParser.Run(logger);
+var fmt = new SheetProperties(Id: "Testing");
+var json = JsonSerializer.Serialize<BaseProperties>(fmt);
+
+var d = JsonSerializer.Deserialize<BaseProperties>(json);
+
+Console.WriteLine(d);
+
 /*
+TestParser.Run(logger);
 var e1 = new Server("demo.steltix.com/v2/", logger);
 
 //BaseObject<SheetObject>.SyncFromDelegate = Matrix.Sync;
