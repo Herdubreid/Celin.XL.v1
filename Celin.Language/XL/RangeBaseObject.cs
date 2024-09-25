@@ -7,7 +7,7 @@ public interface IRangeObjectFactory<T>
     T Create(string? address);
 }
 
-public abstract class RangeBaseObject<T1, T2> : BaseObject<T1>
+public abstract partial class RangeBaseObject<T1, T2> : BaseObject<T1>
     where T1 : new()
     where T2 : RangeBaseObject<T1, T2>
 {
@@ -15,7 +15,7 @@ public abstract class RangeBaseObject<T1, T2> : BaseObject<T1>
     {
         if (!string.IsNullOrEmpty(_address))
         {
-            var m = CELLREF.Match(_address);
+            var m = CELLREF().Match(_address);
             var dim = Dim(_address);
             for (int col = dim.Left; col <= dim.Right; col++)
                 for (int row = dim.Top; row <= dim.Bottom; row++)
@@ -30,7 +30,7 @@ public abstract class RangeBaseObject<T1, T2> : BaseObject<T1>
     {
         get
         {
-            var m = CELLREF.Match(_address?.ToUpper() ?? throw new ArgumentNullException(nameof(Dim)));
+            var m = CELLREF().Match(_address?.ToUpper() ?? throw new ArgumentNullException(nameof(Dim)));
             if (m.Success)
             {
                 return $"{m.Groups[2]}{m.Groups[3].Value}{(string.IsNullOrEmpty(m.Groups[4].Value) ? "" : $":{m.Groups[4].Value}{m.Groups[5].Value}")}";
@@ -51,7 +51,7 @@ public abstract class RangeBaseObject<T1, T2> : BaseObject<T1>
     }
     public T2 Expand(int cols, int rows)
     {
-        var m = CELLREF.Match(_address?.ToUpper() ?? "A1");
+        var m = CELLREF().Match(_address?.ToUpper() ?? "A1");
         if (m.Success)
         {
             var row = string.IsNullOrEmpty(m.Groups[3].Value)
@@ -68,7 +68,7 @@ public abstract class RangeBaseObject<T1, T2> : BaseObject<T1>
     }
     public static (int Left, int Top, int Right, int Bottom) Dim(string address)
     {
-        var m = CELLREF.Match(address?.ToUpper() ?? throw new ArgumentNullException(nameof(Dim)));
+        var m = CELLREF().Match(address?.ToUpper() ?? throw new ArgumentNullException(nameof(Dim)));
         if (m.Success)
         {
             int left = m.Groups[2].Success ? ColumnToNumber(m.Groups[2].Value) - 1 : 0;
@@ -111,7 +111,6 @@ public abstract class RangeBaseObject<T1, T2> : BaseObject<T1>
     protected static string? ToSheet(string? sheet) => string.IsNullOrEmpty(sheet)
         ? null
         : $"'{sheet}'!";
-    protected static readonly Regex CELLREF = new Regex(@"^(?:'?([^']+)'?!)?([a-zA-Z]{0,3})(\d*)(?::([a-zA-Z]{1,3})(\d*))?$");
     protected string? _address;
     protected T1 _local;
     protected T1 _xl;
@@ -123,4 +122,7 @@ public abstract class RangeBaseObject<T1, T2> : BaseObject<T1>
         _local = new T1();
         _xl = new T1();
     }
+
+    [GeneratedRegex(@"^(?:'?([^']+)'?!)?([a-zA-Z]{0,3})(\d*)(?::([a-zA-Z]{1,3})(\d*))?$")]
+    private static partial Regex CELLREF();
 }

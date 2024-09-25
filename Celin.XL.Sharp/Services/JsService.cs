@@ -2,6 +2,7 @@
 using Celin.Language.XL;
 using Celin.XL.Sharp.Services;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.JSInterop;
 using static Celin.XL.Sharp.AppState;
 
@@ -67,12 +68,26 @@ public class JsService
     public void PromptCommand()
         => _mediator.Send(new PromptCommandAction());
     [JSInvokable]
+    public async void RunDoc(string key, string doc)
+    {
+        var script = _scripts.Scripts[key];
+        script.Cancellation?.Cancel();
+        script.Cancellation = new CancellationTokenSource();
+        try
+        {
+            await _sharp.Submit(doc, script.Cancellation.Token);
+            await MessageDlg(string.Empty);
+        }
+        catch (Exception ex)
+        {
+            await MessageDlg(ex.Message);
+        }
+    }
+    [JSInvokable]
     public async void UpdateDoc(string key, string doc)
     {
         try
         {
-            _sharp.Validate(doc!);
-            await CloseDlg();
             var script = _scripts.Scripts[key];
             script.Doc = doc;
             _scripts.SaveScript(key, script);

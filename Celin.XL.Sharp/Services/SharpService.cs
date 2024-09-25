@@ -1,5 +1,4 @@
 ﻿using Celin.Language;
-using Celin.Language.XL;
 using Celin.XL.Sharp.Service;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;

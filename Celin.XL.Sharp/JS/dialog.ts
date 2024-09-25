@@ -20,8 +20,8 @@ export function openEditorDlg(key: string, title: string, doc: string)
     Office.context.ui.displayDialogAsync(
         dialogUrl("editor"),
         {
-            height: 40,
-            width: 40,
+            height: 60,
+            width: 60,
             displayInIframe: true,
         },
         (result) => {
@@ -38,9 +38,17 @@ export function openEditorDlg(key: string, title: string, doc: string)
                                 globalState.dialog!.messageChild(
                                     JSON.stringify({
                                         update: true,
+                                        key,
                                         title,
                                         doc,
                                     }),
+                                );
+                                break;
+                            case msg.play:
+                                await globalState.blazorLib!.invokeMethodAsync(
+                                    "RunDoc",
+                                    key,
+                                    msg.doc,
                                 );
                                 break;
                             case msg.save:
