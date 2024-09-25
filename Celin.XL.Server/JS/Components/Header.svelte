@@ -131,6 +131,7 @@
       class="flex flex-row font-semibold peer-hover:bg-slate-300 hover:bg-slate-300 w-auto p-2 h-10 rounded-tr-md box-border"
       class:selected={openServers}
       on:click={() => (openServers = !openServers)}
+      disabled={$stateStore.lockContext}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

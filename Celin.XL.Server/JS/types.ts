@@ -102,12 +102,8 @@ export interface ICql extends IAction {
 
 export interface IState {
   busy: boolean;
-  subPrompt: boolean;
-  alPrompt: boolean;
-  opPrompt: boolean;
   login: boolean;
   loginMsg: unknown;
-  server: boolean;
   active: boolean;
   notify: unknown;
   table: unknown;

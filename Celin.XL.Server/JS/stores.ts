@@ -34,10 +34,10 @@ export const optionsStore = options();
 const initFlags = {
   busy: false,
   login: false,
-  server: false,
   active: false,
   notify: null,
   action: false,
+  lockContext: false,
 };
 const resetState = {
   table: null,
@@ -54,29 +54,22 @@ const state = () => {
   const { set, subscribe, update } = writable<any>(initState);
 
   return {
-    busy: (busy) => update((s) => ({ ...s, busy })),
-    action: (action) => update((s) => ({ ...s, action })),
-    subPrompt: (subPrompt) =>
-      update((s) => ({ ...s, ...initFlags, subPrompt, active: subPrompt })),
-    alPrompt: (alPrompt) =>
-      update((s) => ({ ...s, ...initFlags, alPrompt, active: alPrompt })),
-    opPrompt: (opPrompt) =>
-      update((s) => ({ ...s, ...initFlags, opPrompt, active: opPrompt })),
-    login: (login) =>
+    lockContext: (lockContext: boolean) => update((s) => ({ ...s, lockContext })),
+    busy: (busy: boolean) => update((s) => ({ ...s, busy })),
+    action: (action: boolean) => update((s) => ({ ...s, action })),
+    login: (login: boolean) =>
       update((s) => {
         lastState = s;
         return { ...s, ...initFlags, login, active: login };
       }),
-    loginMsg: (loginMsg) =>
+    loginMsg: (loginMsg:string) =>
       update((s) => ({
         ...s,
         loginMsg,
       })),
-    server: (server) =>
-      update((s) => ({ ...s, ...initFlags, server, active: server })),
-    context: (contextId) =>
-      update((s) => ({ ...s, contextId})),
-    selected: (data) =>
+    context: (contextId:any) =>
+      update((s) => ({ ...s, contextId })),
+    selected: (data:any) =>
       update((s) => {
         const selected = s.selected === data ? null : data;
         const info = s.info === null ? null : selected;
@@ -96,7 +89,7 @@ const state = () => {
         table: s.table === null ? s.selected : null,
       })),
     last: () => set(lastState),
-    error: (title, details, timeout) => 
+    error: (title: string, details: string, timeout:any) =>
       update((s) => ({
         ...s,
         busy: false,
@@ -124,7 +117,6 @@ const servers = () => {
       getItem<any[]>(SERVER_KEY).then((s) => {
         const servers = s ?? [];
         set(servers);
-        stateStore.server(servers.length === 0);
         if (servers.length > 0) {
           global.blazorLib.invokeMethodAsync("SelectContext", 0);
         }
@@ -133,12 +125,11 @@ const servers = () => {
     set: (servers) => {
       setItem(SERVER_KEY, servers);
       set(servers);
-      stateStore.server(servers.length === 0);
       if (servers.length > 0) {
         global.blazorLib.invokeMethodAsync("SelectContext", 0);
       }
     },
-    update: (server) =>
+    update: (server:IServer) =>
       update((s) => {
         const ndx = s.findIndex((e) => e.id === server.id);
         if (ndx !== -1) {
@@ -471,7 +462,7 @@ const cmd = () => {
         if (ndx !== -1) {
           try {
             c[ndx]?.unsub();
-          } catch {}
+          } catch { }
           const a = [...c.slice(0, ndx), cmd, ...c.slice(ndx + 1)];
           return a;
         }

@@ -2,6 +2,28 @@
     "allowCustomDataForDataTypeAny": true,
     "functions": [
         {
+            "description": "Set Context",
+            "helpUrl": "https://celin.io/xl-docs/functions/context.html",
+            "id": "CONTEXT",
+            "name": "CONTEXT",
+            "options": {
+                "stream": true
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "type": "number"
+                },
+                {
+                    "name": "lock",
+                    "type": "boolean"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix"
+            }
+        },
+        {
             "description": "Call a Function on CQL Update",
             "helpUrl": "https://celin.io/xl-docs/functions/oncql.html",
             "id": "ONCQL",

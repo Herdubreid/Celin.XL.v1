@@ -1,6 +1,6 @@
 ﻿import "./style.css";
 import "./functions";
-import type { detail } from "./types";
+import type { detail, IServer } from "./types";
 import { get } from "svelte/store";
 import App from "./Components/EditorApp.svelte";
 import {
@@ -41,12 +41,10 @@ export const app = {
     stateStore.last();
     stateStore.login(false);
   },
-  setServers: (servers) => {
-    console.log("Set Servers");
-    console.log(servers);
+  setServers: (servers:IServer[]) => {
     serversStore.set(servers);
   },
-  updateCql: (data) => {
+  updateCql: (data:any) => {
     cqlStore.update(data);
     cqlStore.edit(data);
   },

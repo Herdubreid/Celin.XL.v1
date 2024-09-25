@@ -1,6 +1,8 @@
 import { get } from "svelte/store";
 import { CommandType, type IDetails } from "./types";
 import {
+  stateStore,
+  serversStore,
   cmdStore,
   cqlStateStore,
   cqlStore,
@@ -12,6 +14,50 @@ import {
 import { runCmd, submitQuery, submitScript } from "./submit";
 import { getItem } from "./persist";
 
+/**
+ * Set Context
+ * @customfunction
+ * @helpUrl https://celin.io/xl-docs/functions/context.html
+ * @param {number} id
+ * @param {boolean} lock
+ * @param {CustomFunctions.StreamingInvocation<any[][]>} invocation Function Return
+ */
+function context(
+  id: number,
+  lock: boolean,
+  invocation: CustomFunctions.StreamingInvocation<any[][]>
+) {
+  try {
+    const unsubscibe = serversStore.subscribe((servers) => {
+      console.log(servers);
+      if (servers) {
+
+        const ctx = servers.find((c) => c.id === id);
+        if (ctx) {
+          global.blazorLib.invokeMethodAsync("SelectContext", id);
+          stateStore.context(id);
+          stateStore.lockContext(lock);
+          invocation.setResult([[ctx.name]]);
+        } else {
+          invocation.setResult(
+            new CustomFunctions.Error(
+              CustomFunctions.ErrorCode.invalidValue,
+              `Unknown context: ${id}`
+            ));
+        }
+      }
+    });
+    invocation.onCanceled = () => unsubscibe();
+  } catch (ex) {
+    console.error(ex);
+    invocation.setResult(
+      new CustomFunctions.Error(
+        CustomFunctions.ErrorCode.invalidValue,
+        ex.message
+      )
+    );
+  }
+}
 
 /**
  * Call a Function on CQL Update
@@ -287,7 +333,7 @@ function onmenu(
           ex.message
         )
       );
-      }
+    }
   });
 
   invocation.onCanceled = () => {
@@ -535,12 +581,12 @@ function data(
               from < 0
                 ? allrows.results
                 : allrows.results.slice(
-                    from,
-                    Math.min(
-                      Math.max(to, -1),
-                      (allrows.transposed ?? allrows.results).length
-                    )
-                  );
+                  from,
+                  Math.min(
+                    Math.max(to, -1),
+                    (allrows.transposed ?? allrows.results).length
+                  )
+                );
             if (rows.length > 0) {
               if (format.length > 0) {
                 const frows = rows.map((r) =>
