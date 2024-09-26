@@ -218,8 +218,8 @@ const cql = () => {
       });
       removeItem(`cql-${id}`);
     },
-    get: (id) => {
-      let result;
+    get: (id:string) => {
+      let result:ICql|undefined;
       const unsubscibe = subscribe(
         (current) => (result = current.find((e) => e.id === id))
       );
@@ -359,7 +359,7 @@ export const subjectStore = subject();
 
 //#region subjectDemo
 const subjectDemo = () => {
-  const { update, subscribe } = writable<ISubjectDemo>(null);
+  const { update, subscribe } = writable<ISubjectDemo>();
   return {
     subject: (subject: ISubject) => update((s) => ({ ...s, subject })),
     results: (rs: any) => update((s) => ({ ...s, ...rs })),

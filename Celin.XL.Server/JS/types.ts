@@ -1,5 +1,10 @@
+import { DotNet } from "@microsoft/dotnet-js-interop";
 
 // Types
+declare global {
+  var blazorLib: DotNet.DotNetObject;
+}
+
 export type detail = (string | number | boolean)[][];
 
 export interface ISubject {

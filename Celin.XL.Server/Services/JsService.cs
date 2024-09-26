@@ -78,19 +78,10 @@ public class JsService
     #region utils
     enum utils
     {
-        init,
-        focus,
-        defaultFocus,
         notifyError,
         loginMsg,
     }
     string Utils(utils f) => $"{LIB}.{nameof(utils)}.{f.ToString("g")}";
-    public ValueTask Init()
-        => JS.InvokeVoidAsync(Utils(utils.init), Ref);
-    public ValueTask SetFocus(string id)
-        => JS.InvokeVoidAsync(Utils(utils.focus), id);
-    public ValueTask DefaultFocus()
-        => JS.InvokeVoidAsync(Utils(utils.defaultFocus));
     public ValueTask NotifyError(string detail, string title = "Error", int timeout = 10000)
         => JS.InvokeVoidAsync(Utils(utils.notifyError), title, detail, timeout);
     public ValueTask LoginMsg(string msg)

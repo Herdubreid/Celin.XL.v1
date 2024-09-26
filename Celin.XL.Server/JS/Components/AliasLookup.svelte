@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
   import { createEventDispatcher } from "svelte";
   import Select from "svelte-select";
   import { subjectDemoStore } from "../stores";

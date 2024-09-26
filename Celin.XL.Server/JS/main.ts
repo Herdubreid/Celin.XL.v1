@@ -1,6 +1,7 @@
 ﻿import "./style.css";
 import "./functions";
-import type { detail, IServer } from "./types";
+import type { DotNet } from "@microsoft/dotnet-js-interop";
+import type { detail, ICql, ICsl, ICslProgress, IServer } from "./types";
 import { get } from "svelte/store";
 import App from "./Components/EditorApp.svelte";
 import {
@@ -25,9 +26,9 @@ Office.onReady(async (info) => {
 });
 
 export const app = {
-  init: (lib, version) => {
+  init: (lib:DotNet.DotNetObject, version:string) => {
     global.blazorLib = lib;
-    const target = document.getElementById("editor-app");
+    const target = document.getElementById("editor-app") as HTMLElement;
     new App({
       target,
       props: {
@@ -36,7 +37,7 @@ export const app = {
     });
   },
   login: (flag: boolean) => stateStore.login(flag),
-  authenticated: (context) => {
+  authenticated: (context:IServer) => {
     serversStore.update(context);
     stateStore.last();
     stateStore.login(false);
@@ -48,22 +49,22 @@ export const app = {
     cqlStore.update(data);
     cqlStore.edit(data);
   },
-  deleteCql: (id) => cqlStore.delete(id),
-  setCqlDetails: async (data, results: detail) => {
+  deleteCql: (id:any) => cqlStore.delete(id),
+  setCqlDetails: async (data:ICql, results: detail) => {
     const d = cqlStore.get(data.id);
     await setItem(`cql-${data.id}`, { results });
-    if (d.autoUpdate) {
+    if (d?.autoUpdate) {
       insertData(d);
     }
   },
-  updateCsl: (data) => {
+  updateCsl: (data:any) => {
     Object.keys(data).forEach((k) => {
       if (data[k] === null) delete data[k];
     });
     cslStateStore.set(data);
     cslStore.edit(data);
   },
-  setScriptResponse: (response) => {
+  setScriptResponse: (response:any) => {
     Object.keys(response).forEach((k) => {
       if (response[k] === null) delete response[k];
     });
@@ -74,10 +75,10 @@ export const app = {
     cslProgressStore.clear(id);
     cslResponseStore.clear(id);
   },
-  setScriptStatus: (status) => {
+  setScriptStatus: (status:ICslProgress) => {
     cslProgressStore.update(status);
   },
-  getQueryInfo: (id) => {
+  getQueryInfo: (id:string) => {
     const data = get(cqlStore).find((d) => d?.id === id);
     if (data) {
       return { qry: data.template ?? data.query, id: data.id };
@@ -92,15 +93,8 @@ export const lookups = {
 };
 
 export const utils = {
-  init: (lib) => (global.blazorLib = lib),
-  focus: (id) => document.getElementById(id)?.focus(),
-  defaultFocus: () => {
-    if (document.activeElement.tagName === "BODY") {
-      document.getElementById("defaultElement")?.focus();
-    }
-  },
-  notifyError: (title, detail, timeout) =>
+  notifyError: (title:string, detail:string, timeout:any) =>
     stateStore.error(title, detail, timeout),
-  loginMsg: (msg) =>
+  loginMsg: (msg:string) =>
     stateStore.loginMsg(msg),
 };

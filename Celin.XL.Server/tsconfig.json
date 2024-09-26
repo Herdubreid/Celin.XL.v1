@@ -6,7 +6,7 @@
     "target": "ESNext",
     "allowJs": true,
     "moduleResolution": "node",
-    "forceConsistentCasingInFileNames": false
+    "forceConsistentCasingInFileNames": false,
   },
   "extends": "@tsconfig/svelte/tsconfig.json",
   "include": [
