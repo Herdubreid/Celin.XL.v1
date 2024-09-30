@@ -1,7 +1,7 @@
 ﻿import "./style.css";
 import "./functions";
 import type { DotNet } from "@microsoft/dotnet-js-interop";
-import type { detail, ICql, ICsl, ICslProgress, IServer } from "./types";
+import type { detail, ICql, ICsl, ICslProgress, IServer, ISubject } from "./types";
 import { get } from "svelte/store";
 import App from "./Components/EditorApp.svelte";
 import {
@@ -88,8 +88,8 @@ export const app = {
 };
 
 export const lookups = {
-  subjectResponse: (response) => subjectStore.set(response),
-  subjectDemoResponse: (response) => subjectDemoStore.results(response),
+  subjectResponse: (response:ISubject[]) => subjectStore.set(response),
+  subjectDemoResponse: (response:any) => subjectDemoStore.results(response),
 };
 
 export const utils = {

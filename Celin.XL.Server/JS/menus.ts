@@ -3,7 +3,7 @@ import { tableMenuStore, stateStore } from "./stores";
 
 export const MENU_KEY = "menus";
 
-export async function onMenuChanged(eventArgs: Excel.TableChangedEventArgs) {
+export async function onMenuChanged(eventArgs: Excel.TableChangedEventArgs | null) {
   if (!eventArgs || eventArgs.details.valueTypeAfter === "Empty") return;
   await Excel.run(async (context) => {
     const table = context.workbook.tables.getItem(eventArgs.tableId);
@@ -34,7 +34,7 @@ export async function onMenuChanged(eventArgs: Excel.TableChangedEventArgs) {
 export async function initMenus() {
   onMenuChanged(null);
   const menus = (await getItem<string[]>(MENU_KEY)) ?? [];
-  let valid = [];
+  let valid: string[] = [];
   for (let i = 0; i < menus.length; i++) {
     const exist = await Excel.run(async (context) => {
       const wb = context.workbook;
@@ -76,7 +76,7 @@ export async function createMenu() {
       const menus = (await getItem<string[]>(MENU_KEY)) ?? [];
       await setItem(MENU_KEY, [...menus, table.id]);
     });
-  } catch (ex) {
+  } catch (ex: any) {
     stateStore.error("Failed to create Menu", ex, null);
   }
 }

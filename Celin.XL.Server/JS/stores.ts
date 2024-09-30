@@ -1,7 +1,7 @@
 //
 import { writable } from "svelte/store";
 import { getItem, setItem, removeItem } from "./persist";
-import { buildCmd, runCmd } from "./submit";
+import { buildCmd, runCmd, toggleCmd } from "./submit";
 import {
   type ICslResponse,
   type ICmd,
@@ -62,14 +62,14 @@ const state = () => {
         lastState = s;
         return { ...s, ...initFlags, login, active: login };
       }),
-    loginMsg: (loginMsg:string) =>
+    loginMsg: (loginMsg: string) =>
       update((s) => ({
         ...s,
         loginMsg,
       })),
-    context: (contextId:any) =>
+    context: (contextId: any) =>
       update((s) => ({ ...s, contextId })),
-    selected: (data:any) =>
+    selected: (data: any) =>
       update((s) => {
         const selected = s.selected === data ? null : data;
         const info = s.info === null ? null : selected;
@@ -89,7 +89,7 @@ const state = () => {
         table: s.table === null ? s.selected : null,
       })),
     last: () => set(lastState),
-    error: (title: string, details: string, timeout:any) =>
+    error: (title: string, details: string, timeout: any) =>
       update((s) => ({
         ...s,
         busy: false,
@@ -110,7 +110,7 @@ export const stateStore = state();
 //#region servers
 const SERVER_KEY = "servers";
 const servers = () => {
-  const { set, subscribe, update } = writable<IServer[]>(null);
+  const { set, subscribe, update } = writable<IServer[]>();
 
   return {
     init: () => {
@@ -118,18 +118,18 @@ const servers = () => {
         const servers = s ?? [];
         set(servers);
         if (servers.length > 0) {
-          global.blazorLib.invokeMethodAsync("SelectContext", 0);
+          global.blazorLib?.invokeMethodAsync("SelectContext", 0);
         }
       });
     },
-    set: (servers) => {
+    set: (servers: IServer[]) => {
       setItem(SERVER_KEY, servers);
       set(servers);
       if (servers.length > 0) {
-        global.blazorLib.invokeMethodAsync("SelectContext", 0);
+        global.blazorLib?.invokeMethodAsync("SelectContext", 0);
       }
     },
-    update: (server:IServer) =>
+    update: (server: IServer) =>
       update((s) => {
         const ndx = s.findIndex((e) => e.id === server.id);
         if (ndx !== -1) {
@@ -158,9 +158,9 @@ const query = () => {
   return {
     set,
     subscribe,
-    replace: (text, from, to) =>
+    replace: (text: string, from: number, to: number) =>
       update((q) => `${q.slice(0, from)}${text}${q.slice(to)}`),
-    append: (text) => update((q) => (q = `${q}\n${text}`)),
+    append: (text: string) => update((q) => (q = `${q}\n${text}`)),
   };
 };
 export const queryStore = query();
@@ -191,7 +191,7 @@ const cql = () => {
     );
   });
   return {
-    edit: (data: ICql) =>
+    edit: (data: any) =>
       update((d) => {
         Object.keys(data).forEach((k) => {
           if (data[k] === null) delete data[k];
@@ -204,13 +204,13 @@ const cql = () => {
         }
         return [data, ...d];
       }),
-    update: (data: ICql) => {
+    update: (data: any) => {
       Object.keys(data).forEach((k) => {
         if (data[k] === null) delete data[k];
       });
       cqlStateStore.set(data);
     },
-    delete: (id) => {
+    delete: (id: string) => {
       update((d) => {
         const ndx = d.findIndex((d) => d.id === id);
         if (ndx !== -1) return [...d.slice(0, ndx), ...d.slice(ndx + 1)];
@@ -218,8 +218,8 @@ const cql = () => {
       });
       removeItem(`cql-${id}`);
     },
-    get: (id:string) => {
-      let result:ICql|undefined;
+    get: (id: string) => {
+      let result: ICql | undefined;
       const unsubscibe = subscribe(
         (current) => (result = current.find((e) => e.id === id))
       );
@@ -257,7 +257,7 @@ const csl = () => {
     );
   });
   return {
-    edit: (data: ICsl) =>
+    edit: (data: any) =>
       update((d) => {
         Object.keys(data).forEach((k) => {
           if (data[k] === null) delete data[k];
@@ -270,7 +270,7 @@ const csl = () => {
         }
         return [data, ...d];
       }),
-    delete: (id) => {
+    delete: (id: string) => {
       update((d) => {
         const ndx = d.findIndex((d) => d.id === id);
         if (ndx !== -1) return [...d.slice(0, ndx), ...d.slice(ndx + 1)];
@@ -296,10 +296,10 @@ export const cslResponseStateStore = cslResponseState();
 
 //#region cslResponse
 const cslResponse = () => {
-  const { subscribe, update } = writable([]);
+  const { subscribe, update } = writable<ICslResponse[]>([]);
   return {
-    add: (response) => update((d) => [response, ...d]),
-    clear: (id) => update((d) => [...d.filter((e) => e.id !== id)]),
+    add: (response: any) => update((d) => [response, ...d]),
+    clear: (id: string) => update((d) => [...d.filter((e) => e.id !== id)]),
     subscribe,
   };
 };
@@ -381,7 +381,7 @@ const script = () => {
   return {
     set,
     subscribe,
-    append: (text) => update((q) => (q = `${q}\n${text}`)),
+    append: (text: string) => update((q) => (q = `${q}\n${text}`)),
   };
 };
 export const scriptStore = script();
@@ -399,7 +399,7 @@ const cmdEdit = () => {
   return {
     set,
     subscribe,
-    append: (text) => update((c) => (c = `${c}\n${text}`)),
+    append: (text: string) => update((c) => (c = `${c}\n${text}`)),
   };
 };
 export const cmdEditStore = cmdEdit();
@@ -429,12 +429,23 @@ const cmd = () => {
           ...c,
           fn,
         };
-        const unsub = c.unsub ? runCmd(cmd, null) : null;
+        let unsub: any | null = null;
+        if (c.unsub) {
+          toggleCmd(cmd).then(result => {
+            unsub = result;
+          }).catch(error => {
+            console.error('Error:', error);
+            unsub = null;
+          });
+        } else {
+          unsub = null;
+        }
+
         return {
           ...cmd,
           unsub,
         };
-      } catch (ex) {
+      } catch (ex: any) {
         return {
           ...c,
           error: ex.toString(),
@@ -470,7 +481,7 @@ const cmd = () => {
       });
       cmdStateStore.set(cmd);
     },
-    delete: (id) => {
+    delete: (id: string) => {
       update((d) => {
         const ndx = d.findIndex((d) => d.id === id);
         if (ndx !== -1) return [...d.slice(0, ndx), ...d.slice(ndx + 1)];

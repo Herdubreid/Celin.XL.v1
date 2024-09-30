@@ -25,36 +25,36 @@ export function listSettings() {
   });
 }
 
-export async function getItem<Type>(key: string): Promise<Type> {
+export async function getItem<Type>(key: string): Promise<Type | null> {
   return (await isExcel)
     ? Excel.run<Type>(async (context) => {
-        const item = context.workbook.settings.getItem(key);
-        try {
-          item.load("value");
-          await context.sync();
-        } catch {
-          return null;
-        }
-        return item.value;
-      })
+      const item = context.workbook.settings.getItem(key);
+      try {
+        item.load("value");
+        await context.sync();
+      } catch {
+        return null;
+      }
+      return item.value;
+    })
     : localforage.getItem<Type>(key);
 }
 
-export async function setItem(key, value) {
+export async function setItem(key: string, value: any) {
   return (await isExcel)
     ? Excel.run(async (context) => {
-        context.workbook.settings.add(key, value);
-        await context.sync();
-      })
+      context.workbook.settings.add(key, value);
+      await context.sync();
+    })
     : localforage.setItem(key, value);
 }
 
-export async function removeItem(key) {
+export async function removeItem(key: string) {
   return (await isExcel)
     ? Excel.run(async (context) => {
-        const item = context.workbook.settings.getItem(key);
-        item.delete();
-        await context.sync();
-      })
+      const item = context.workbook.settings.getItem(key);
+      item.delete();
+      await context.sync();
+    })
     : localforage.removeItem(key);
 }

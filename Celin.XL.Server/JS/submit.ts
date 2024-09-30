@@ -45,7 +45,7 @@ const lib = {
   },
   data: async (name: string) => {
     const d = await getItem<IDetails>(`cql-${name}`);
-    return d.results;
+    return d?.results;
   },
   table: async (name: string) => {
     const id = await Excel.run(async (ctx) => {
@@ -82,11 +82,11 @@ const lib = {
                   ? i < start
                     ? e
                     : i - start > values.length - 1
-                    ? e
-                    : [values[i - start]]
+                      ? e
+                      : [values[i - start]]
                   : i > values.length - 1
-                  ? e
-                  : [values[i]]
+                    ? e
+                    : [values[i]]
               );
               c.values = v;
               return v.flat();
@@ -126,11 +126,11 @@ const lib = {
                   ? i < start
                     ? e
                     : i - start > values.length - 1
-                    ? e
-                    : values[i - start]
+                      ? e
+                      : values[i - start]
                   : i > values.length - 1
-                  ? e
-                  : values[i]
+                    ? e
+                    : values[i]
               );
               r.values = [v];
               return v;
@@ -166,38 +166,42 @@ export const runCmd = (cmd: ICmd, param: any[]): any => {
   }
 };
 
+const notBoolean = (value:any) => typeof value !== 'boolean';
+
 export const toggleCmd = async (cmd: ICmd) => {
+  console.log(`Toggle: ${JSON.stringify(cmd)}`);
   try {
     switch (cmd.type) {
       case CommandType.onTable:
-        if (cmd.unsub) {
-          console.log(cmd.unsub);
-          cmd.unsub.remove();
+        if (cmd.unsub && notBoolean(cmd.unsub)) {
+          await Excel.run(cmd.unsub.context, async (ctx) => {
+            cmd.unsub.remove();
+            await ctx.sync();
+          });
           cmdStore.edit({ ...cmd, unsub: null, error: null });
         } else {
           const unsub = await Excel.run(async (ctx) => {
             const tb = ctx.workbook.tables.getItemOrNullObject(cmd.id);
             await ctx.sync();
             if (!tb.isNullObject) {
-              const h = tb.onChanged.add(cmd.fn);
+              const h = tb.onChanged.add(async (ev) => cmd.fn(lib, ev));
               return h;
             }
             return null;
           });
-          unsub.remove();
           cmdStore.edit({ ...cmd, unsub, error: null });
         }
         break;
       default:
-        if (cmd.unsub) {
+        if (cmd.unsub && notBoolean(cmd.unsub)) {
           cmd.unsub();
           cmdStore.edit({ ...cmd, unsub: null, error: null });
         } else {
-          const unsub = runCmd(cmd, null);
+          const unsub = runCmd(cmd, []);
           cmdStore.edit({ ...cmd, unsub, error: null });
         }
     }
-  } catch (ex) {
+  } catch (ex: any) {
     cmdStore.edit({ ...cmd, error: ex.toString() });
   }
 };
@@ -210,11 +214,12 @@ export const buildCmd = (cmd: ICmd): any => {
   const err = `catch(ex){console.error(ex);lib.error("${cmd.id}",ex);return ex.message;}`;
   const msg = `(msg)=>{if (msg?.id==='${cmd.id}')try{${cmd.source}}${err}}`;
   const fmsg = "const msg=arguments[1];";
+  const ev = "const ev=arguments[1];";
   const range = "const params=arguments[2];";
   const invocation = "const invocation=arguments.length>3?arguments[3]:null;";
   switch (cmd.type) {
     case CommandType.onTable:
-      return Function(`${strict}${cmd.source}`);
+      return Function(`${strict}${slib}${ev}${cmd.source}`);
     case CommandType.onMenu:
       return Function(`${strict}${slib}${subs}(${isAsync}${msg})`);
     case CommandType.onCql:
@@ -224,25 +229,25 @@ export const buildCmd = (cmd: ICmd): any => {
     case CommandType.func:
       return isAsync
         ? AsyncFunction(
-            `${strict}${slib}${fmsg}${range}${invocation}try{${cmd.source}}${err}`
-          )
+          `${strict}${slib}${fmsg}${range}${invocation}try{${cmd.source}}${err}`
+        )
         : Function(
-            `${strict}${slib}${fmsg}${range}${invocation}try{${cmd.source}}${err}`
-          );
+          `${strict}${slib}${fmsg}${range}${invocation}try{${cmd.source}}${err}`
+        );
   }
 };
 
 export const parseCmd = (cmd: string) => {
   if (!cmd && !cmd.trim()) return;
 
-  let c: ICmd = null;
+  let c: ICmd | null = null;
   try {
     const f = [...(cmd + "\n\n").matchAll(CMD)];
     if (f.length > 0) {
       c = {
         id: f[0][3],
         title: "",
-        type: CommandType[f[0][1]],
+        type: CommandType[f[0][1] as keyof typeof CommandType],
         source: f[0][4].trim(),
         isAsync: f[0][2] > "",
         fn: null,
@@ -255,7 +260,7 @@ export const parseCmd = (cmd: string) => {
       // const unsub = runCmd(c, []);
       cmdStore.edit({ ...c });
     }
-  } catch (ex) {
+  } catch (ex: any) {
     stateStore.error("Command Error", ex.message, null);
   }
 };
@@ -308,7 +313,7 @@ export const submitScript = async (
                 .load("values");
               await context.sync();
               return { name, data: data.values };
-            } catch (ex) {
+            } catch (ex: any) {
               if (ex.code === "ItemNotFound")
                 throw { message: `Variable Name "${name}" not defined!` };
               else throw ex;
@@ -324,18 +329,18 @@ export const submitScript = async (
         /\W/.test(val)
           ? `"${val}"`
           : typeof +val === "number"
-          ? val
-          : `"${val}"`
+            ? val
+            : `"${val}"`
       );
     });
 
-    global.blazorLib.invokeMethodAsync("SubmitCsl", parsed, sc, validateOnly);
-  } catch (ex) {
+    global.blazorLib?.invokeMethodAsync("SubmitCsl", parsed, sc, validateOnly);
+  } catch (ex: any) {
     stateStore.error("Error in Script", ex.message, null);
   }
 };
 
-export const submitQuery = async (query) => {
+export const submitQuery = async (query: string) => {
   if (!global.ready) return;
   // Test for blank query
   if (!query && !query.trim()) return;
@@ -365,7 +370,7 @@ export const submitQuery = async (query) => {
                 .load("values");
               await context.sync();
               return { ...e, data: data.values };
-            } catch (ex) {
+            } catch (ex: any) {
               if (ex.code === "ItemNotFound")
                 throw { message: `Variable Name "${e.name}" not defined!` };
               else throw ex;
@@ -374,29 +379,29 @@ export const submitQuery = async (query) => {
         })
     );
 
-    let parsed = null;
+    let parsed: string | undefined;
     if (vars.length > 0) {
       parsed = query;
       vars.forEach((t) => {
         const value = t.data.flat().join(`","`);
         if (value.trim()) {
-          parsed = parsed.replaceAll(`@${t.name}`, `"${value}"`);
+          parsed = parsed?.replaceAll(`@${t.name}`, `"${value}"`);
         } else {
           if (t.operator === "=") {
-            parsed = parsed.replaceAll(t.literal, "_blank");
+            parsed = parsed?.replaceAll(t.literal, "_blank");
           } else {
-            parsed = parsed.replaceAll(t.literal, "!blank");
+            parsed = parsed?.replaceAll(t.literal, "!blank");
           }
         }
       });
     }
 
-    global.blazorLib.invokeMethodAsync(
+    global.blazorLib?.invokeMethodAsync(
       "SubmitCql",
       parsed ?? query,
       parsed ? query : null
     );
-  } catch (ex) {
+  } catch (ex: any) {
     stateStore.error("Error in Query", ex.message, null);
   }
 };

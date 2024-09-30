@@ -2,7 +2,8 @@ import { DotNet } from "@microsoft/dotnet-js-interop";
 
 // Types
 declare global {
-  var blazorLib: DotNet.DotNetObject;
+  var blazorLib: DotNet.DotNetObject | undefined;
+  var ready: boolean;
 }
 
 export type detail = (string | number | boolean)[][];
@@ -18,7 +19,7 @@ export interface IAlias extends ISubject {
 
 export interface ISubjectDemo {
   subject: ISubject,
-  error: string,
+  error: string | null,
   list: IAlias[];
 }
 
@@ -59,19 +60,19 @@ export interface IAction {
   title: string;
   source: string;
   busy: boolean;
-  error: string;
+  error: string | null;
 }
 
 export interface ICmd extends IAction {
   type: CommandType;
   isAsync: boolean;
   fn: any | null;
-  unsub: any | null;
+  unsub: OfficeExtension.EventHandlerResult<Excel.TableChangedEventArgs> | any | null;
 }
 
 export interface ICslResponse {
   id: string;
-  error: string;
+  error: string | null;
   msg: string;
   data: any;
 }
@@ -102,7 +103,7 @@ export interface ICql extends IAction {
   withMenu: boolean;
   aliasHeader: boolean;
   insertOption: number;
-  timer: NodeJS.Timer;
+  timer: NodeJS.Timeout;
 }
 
 export interface IState {

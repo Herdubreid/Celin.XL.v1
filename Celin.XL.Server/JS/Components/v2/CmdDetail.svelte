@@ -49,10 +49,10 @@
           class="p-1.5 hover:bg-slate-100 active:scale-90"
           data-bs-target="tooltip"
           title="Run"
-          on:click={() =>
+          on:click={async () =>
             detail.type === CommandType.func
-              ? runCmd(detail, null)
-              : toggleCmd(detail)}
+              ? await runCmd(detail, null)
+              : await toggleCmd(detail)}
         >
           {#if detail.unsub}
             <svg

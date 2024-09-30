@@ -34,7 +34,7 @@ function context(
 
         const ctx = servers.find((c) => c.id === id);
         if (ctx) {
-          global.blazorLib.invokeMethodAsync("SelectContext", id);
+          global.blazorLib?.invokeMethodAsync("SelectContext", id);
           stateStore.context(id);
           stateStore.lockContext(lock);
           invocation.setResult([[ctx.name]]);
@@ -48,7 +48,7 @@ function context(
       }
     });
     invocation.onCanceled = () => unsubscibe();
-  } catch (ex) {
+  } catch (ex: any) {
     console.error(ex);
     invocation.setResult(
       new CustomFunctions.Error(
@@ -101,7 +101,7 @@ function oncql(
         )
       );
     }
-  } catch (ex) {
+  } catch (ex: any) {
     console.error(ex);
     invocation.setResult(
       new CustomFunctions.Error(
@@ -164,7 +164,7 @@ function oncsl(
         )
       );
     }
-  } catch (ex) {
+  } catch (ex: any) {
     console.error(ex);
     invocation.setResult(
       new CustomFunctions.Error(
@@ -209,7 +209,7 @@ function callstream(
         )
       );
     }
-  } catch (ex) {
+  } catch (ex: any) {
     invocation.setResult(
       new CustomFunctions.Error(
         CustomFunctions.ErrorCode.invalidValue,
@@ -246,7 +246,7 @@ function callvolatile(name: string, params: any[][][]) {
         `${name} not found!`
       );
     }
-  } catch (ex) {
+  } catch (ex: any) {
     console.error(ex);
     return new CustomFunctions.Error(
       CustomFunctions.ErrorCode.invalidValue,
@@ -281,7 +281,7 @@ function call(name: string, params: any[][][]) {
         `${name} not found!`
       );
     }
-  } catch (ex) {
+  } catch (ex: any) {
     console.error(ex);
     return new CustomFunctions.Error(
       CustomFunctions.ErrorCode.invalidValue,
@@ -325,7 +325,7 @@ function onmenu(
           }
         });
       }
-    } catch (ex) {
+    } catch (ex: any) {
       console.error(ex);
       invocation.setResult(
         new CustomFunctions.Error(
@@ -394,7 +394,7 @@ async function csl(
         )
       );
     }
-  } catch (ex) {
+  } catch (ex: any) {
     console.error(ex);
     invocation.setResult(
       new CustomFunctions.Error(
@@ -438,7 +438,7 @@ async function cql(
         )
       );
     }
-  } catch (ex) {
+  } catch (ex: any) {
     console.error(ex);
     invocation.setResult(
       new CustomFunctions.Error(
@@ -474,7 +474,7 @@ async function cqlstate(
         );
         const state = fn(data) ?? _default;
         invocation.setResult(state);
-      } catch (ex) {
+      } catch (ex: any) {
         console.error(ex);
         invocation.setResult(
           new CustomFunctions.Error(
@@ -531,7 +531,7 @@ function cslstate(
       unsubscibe1();
       unsubscibe2();
     };
-  } catch (ex) {
+  } catch (ex: any) {
     console.error(ex);
     invocation.setResult(
       new CustomFunctions.Error(
@@ -543,7 +543,7 @@ function cslstate(
 }
 
 const FMT = /{(\d+)}/g;
-const lastUpdate = new Map<string, Number>();
+const lastUpdate = new Map<string, number>();
 
 /**
  * Get named data results
@@ -572,19 +572,19 @@ function data(
         } else {
           const submitted = new Date(data.submitted);
           const last = lastUpdate.get(name);
-          if (submitted.getTime() < last) {
+          if (submitted.getTime() < last!) {
             return;
           }
           lastUpdate.set(name, Date.now());
           getItem<IDetails>(data.id).then((allrows) => {
             const rows =
               from < 0
-                ? allrows.results
-                : allrows.results.slice(
+                ? allrows!.results
+                : allrows!.results.slice(
                   from,
                   Math.min(
                     Math.max(to, -1),
-                    (allrows.transposed ?? allrows.results).length
+                    (allrows!.transposed ?? allrows!.results).length
                   )
                 );
             if (rows.length > 0) {
@@ -595,7 +595,7 @@ function data(
                       const fmts = c.matchAll(FMT);
                       if (fmts) {
                         const fs = [...fmts].reduce(
-                          (f, fmt) => f.replace(fmt[0], r[fmt[1]]),
+                          (f, fmt) => f.replace(fmt[0], r[+fmt[1]] as string),
                           c
                         );
                         return fs;

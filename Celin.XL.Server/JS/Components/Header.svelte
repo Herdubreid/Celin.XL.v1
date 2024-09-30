@@ -1,6 +1,6 @@
 <script>
   import { fade } from "svelte/transition";
-  import { serversStore, stateStore } from "../stores";
+  import { cmdStore, serversStore, stateStore } from "../stores";
     import Server from "./Server.svelte";
     import { onDestroy } from "svelte";
 
@@ -23,7 +23,7 @@
     menu(option);
   };
 
-  const unsubscibe = stateStore.subscribe(state => console.log(state));
+//  const unsubscibe = cmdStore.subscribe(state => console.log(state));
 
   onDestroy(() => {
     unsubscibe();

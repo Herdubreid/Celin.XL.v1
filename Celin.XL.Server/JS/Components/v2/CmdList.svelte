@@ -51,10 +51,10 @@
                 class="h-full rounded-tr-md rounded-br-md bg-slate-200 p-1 hover:bg-slate-100 active:scale-90"
                 data-bs-target="tooltip"
                 title="Run"
-                on:click={() =>
+                on:click={async () =>
                   cmd.type === CommandType.func
-                    ? runCmd(cmd, null)
-                    : toggleCmd(cmd)}
+                    ? await runCmd(cmd, null)
+                    : await toggleCmd(cmd)}
               >
                 {#if cmd.unsub}
                   <svg
