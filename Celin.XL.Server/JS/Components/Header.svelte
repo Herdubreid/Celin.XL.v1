@@ -1,8 +1,7 @@
 <script>
   import { fade } from "svelte/transition";
   import { cmdStore, serversStore, stateStore } from "../stores";
-    import Server from "./Server.svelte";
-    import { onDestroy } from "svelte";
+  import { onDestroy } from "svelte";
 
   export let version;
   export let menu;
@@ -11,7 +10,6 @@
   export let setTab;
 
   let openServers = false;
-  let serverOption = 0;
   let options = [];
 
   fetch("./assets/data/menu.json")
@@ -23,11 +21,11 @@
     menu(option);
   };
 
-//  const unsubscibe = cmdStore.subscribe(state => console.log(state));
+/*  const unsubscribe = cmdStore.subscribe((state) => console.log(state));
 
   onDestroy(() => {
-    unsubscibe();
-  });
+    unsubscribe();
+  });*/
 </script>
 
 {#if openMenu}
@@ -148,8 +146,8 @@
         />
       </svg>
       <span class="text-nowrap ml-1"
-        >{($serversStore ?? []).find((s) => s.id === $stateStore.contextId)?.name ??
-          ""}</span
+        >{($serversStore ?? []).find((s) => s.id === $stateStore.contextId)
+          ?.name ?? ""}</span
       >
     </button>
   </div>

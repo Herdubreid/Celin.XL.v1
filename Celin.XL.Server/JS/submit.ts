@@ -7,7 +7,6 @@ import {
   cslResponseStateStore,
   cslStore,
   stateStore,
-  tableMenuStore,
 } from "./stores";
 import { AsyncFunction } from "./helper";
 import { getValue, setFormula, setValues } from "./excel";
@@ -153,47 +152,78 @@ const lib = {
   },
 };
 
-export const runCmd = (cmd: ICmd, param: any[]): any => {
+export async function menuChanged(eventArgs: Excel.TableChangedEventArgs | null, fn: Function) {
+  if (!eventArgs || eventArgs.details.valueTypeAfter === "Empty") return;
+  await Excel.run(async (context) => {
+    const table = context.workbook.tables.getItem(eventArgs.tableId);
+    table.load(["name"]);
+    const body = table.getDataBodyRange();
+    body.load(["rowIndex", "columnIndex", "columnCount"]);
+    const range = eventArgs.getRange(context);
+    range.load();
+    await context.sync();
+    const index = range.rowIndex - body.rowIndex;
+    const col = range.columnIndex - body.columnIndex;
+    if (col === 0 && index !== -1) {
+      range.clear("Contents");
+      const row = range.getResizedRange(0, body.columnCount - 1);
+      row.load("values");
+      await context.sync();
+      fn(lib, index, eventArgs.details.valueAfter, row.values[0]);
+    }
+  });
+}
+
+export const runCmd = async (cmd: ICmd, param: any[]): Promise<any | null> => {
   switch (cmd.type) {
-    case CommandType.onMenu:
-      return cmd.fn(lib, tableMenuStore);
     case CommandType.onCql:
-      return cmd.fn(lib, cqlStateStore);
+      return cmd.fn!(lib, cqlStateStore);
     case CommandType.onCsl:
-      return cmd.fn(lib, cslResponseStateStore);
+      return cmd.fn!(lib, cslResponseStateStore);
     case CommandType.func:
-      return cmd.fn(lib, ...(param ?? []));
+      return cmd.fn!(lib, ...(param ?? []));
+    case CommandType.onMenu:
+      return await Excel.run(async (ctx) => {
+        const tb = ctx.workbook.tables.getItemOrNullObject(cmd.id);
+        await ctx.sync();
+        if (!tb.isNullObject) {
+          cmd.fn!(lib);
+          const h = tb.onChanged.add(async (ev) => menuChanged(ev, cmd.fn!));
+          return h;
+        }
+      });
+    case CommandType.onTable:
+      return await Excel.run(async (ctx) => {
+        const tb = ctx.workbook.tables.getItemOrNullObject(cmd.id);
+        await ctx.sync();
+        if (!tb.isNullObject) {
+          const h = tb.onChanged.add(async (ev) => cmd.fn!(lib, ev));
+          return h;
+        }
+        return null;
+      });
   }
 };
 
-const notBoolean = (value:any) => typeof value !== 'boolean';
-
 export const toggleCmd = async (cmd: ICmd) => {
-  console.log(`Toggle: ${JSON.stringify(cmd)}`);
   try {
     switch (cmd.type) {
       case CommandType.onTable:
-        if (cmd.unsub && notBoolean(cmd.unsub)) {
+      case CommandType.onMenu:
+        if (cmd.unsub) {
           await Excel.run(cmd.unsub.context, async (ctx) => {
+            console.log(`Unsubscribe ${cmd.id}`);
             cmd.unsub.remove();
             await ctx.sync();
           });
           cmdStore.edit({ ...cmd, unsub: null, error: null });
         } else {
-          const unsub = await Excel.run(async (ctx) => {
-            const tb = ctx.workbook.tables.getItemOrNullObject(cmd.id);
-            await ctx.sync();
-            if (!tb.isNullObject) {
-              const h = tb.onChanged.add(async (ev) => cmd.fn(lib, ev));
-              return h;
-            }
-            return null;
-          });
+          const unsub = await runCmd(cmd, []);
           cmdStore.edit({ ...cmd, unsub, error: null });
         }
         break;
       default:
-        if (cmd.unsub && notBoolean(cmd.unsub)) {
+        if (cmd.unsub) {
           cmd.unsub();
           cmdStore.edit({ ...cmd, unsub: null, error: null });
         } else {
@@ -206,6 +236,16 @@ export const toggleCmd = async (cmd: ICmd) => {
   }
 };
 
+export const initCmds = async () => {
+  const cmds = get(cmdStore);
+  cmds.forEach(async (cmd) => {
+    if (cmd.unsub) {
+      const unsub = await runCmd(cmd, [])
+      cmdStore.edit({ ...cmd, unsub, error: null });
+    }
+  });
+};
+
 export const buildCmd = (cmd: ICmd): any => {
   const strict = "'use strict';";
   const isAsync = cmd.isAsync ? "async " : "";
@@ -215,17 +255,22 @@ export const buildCmd = (cmd: ICmd): any => {
   const msg = `(msg)=>{if (msg?.id==='${cmd.id}')try{${cmd.source}}${err}}`;
   const fmsg = "const msg=arguments[1];";
   const ev = "const ev=arguments[1];";
+  const mnu = "const index=arguments[1];const option=arguments[2];const row=arguments[3];";
   const range = "const params=arguments[2];";
   const invocation = "const invocation=arguments.length>3?arguments[3]:null;";
   switch (cmd.type) {
-    case CommandType.onTable:
-      return Function(`${strict}${slib}${ev}${cmd.source}`);
-    case CommandType.onMenu:
-      return Function(`${strict}${slib}${subs}(${isAsync}${msg})`);
     case CommandType.onCql:
       return Function(`${strict}${slib}${subs}(${isAsync}${msg})`);
     case CommandType.onCsl:
       return Function(`${strict}${slib}${subs}(${isAsync}${msg})`);
+    case CommandType.onTable:
+      return isAsync
+      ? AsyncFunction(`${strict}${slib}${ev}${cmd.source}`)
+      : Function(`${strict}${slib}${ev}${cmd.source}`);
+    case CommandType.onMenu:
+      return isAsync
+      ? AsyncFunction(`${strict}${slib}${mnu}${cmd.source}`)
+      : Function(`${strict}${slib}${mnu}${cmd.source}`);
     case CommandType.func:
       return isAsync
         ? AsyncFunction(
@@ -237,7 +282,7 @@ export const buildCmd = (cmd: ICmd): any => {
   }
 };
 
-export const parseCmd = (cmd: string) => {
+export const parseCmd = async (cmd: string) => {
   if (!cmd && !cmd.trim()) return;
 
   let c: ICmd | null = null;
@@ -257,7 +302,12 @@ export const parseCmd = (cmd: string) => {
       };
       const fn = buildCmd(c);
       c = { ...c, fn };
-      // const unsub = runCmd(c, []);
+
+      const cmd = get(cmdStore).find((e) => e.id === c!.id);
+      if (cmd && cmd.unsub) {
+        await toggleCmd(cmd);
+      }
+
       cmdStore.edit({ ...c });
     }
   } catch (ex: any) {

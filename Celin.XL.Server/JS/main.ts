@@ -18,11 +18,11 @@ import {
 } from "./stores";
 import { insertData } from "./excel";
 import { setItem } from "./persist";
-import { initMenus } from "./menus";
+import { initCmds } from "./submit";
 
 Office.onReady(async (info) => {
   await Office.addin.setStartupBehavior(Office.StartupBehavior.load);
-  await initMenus();
+  await initCmds();
 });
 
 export const app = {

@@ -1,10 +1,8 @@
 import { get } from "svelte/store";
 import { stateStore, optionsStore, tableMenuStore } from "./stores";
 import type { ICql, IDetails } from "./types";
-import { getItem, setItem } from "./persist";
-import { onMenuChanged, MENU_KEY } from "./menus"; 
+import { getItem } from "./persist";
 
-const SHEET = /^'?([^']*)'?!(.*)/;
 const DATETYPE =
   /^(?:19|20)[0-9][0-9]-(?:0[1-9]|1[0-2])-(?:0[1-9]|[1-2][0-9]|3[0-1])$/;
 const ALIASTRIMVIEW = /\S*_/;
@@ -33,7 +31,7 @@ export async function setValues(values: object) {
         }
       }
     });
-  } catch (ex) {
+  } catch (ex: any) {
     stateStore.error("Set Value Failed", ex.message, null);
   }
 }
@@ -51,7 +49,7 @@ export async function setFormula(name: string, formula: string) {
         await ctx.sync();
       }
     });
-  } catch (ex) {
+  } catch (ex: any) {
     stateStore.error("Set Formula Failed", ex.message, null);
   }
 }
@@ -73,13 +71,13 @@ export async function getValue(name: string) {
       return null;
     });
     return value;
-  } catch (ex) {
+  } catch (ex: any) {
     stateStore.error("Get Value Failed", ex.message, null);
   }
   return null;
 }
 
-export async function deleteTable(header) {
+export async function deleteTable(header: ICql) {
   try {
     if (!header.id) throw "Missing name!";
     await Excel.run(async (context) => {
@@ -93,7 +91,7 @@ export async function deleteTable(header) {
       exists.delete();
       await context.sync();
     });
-  } catch (ex) {
+  } catch (ex: any) {
     stateStore.error("Failed to delete Table", ex, null);
   }
 }
@@ -127,22 +125,15 @@ export async function createTable(header: ICql) {
       table.name = header.id;
       const cols = Object.entries(header.columns).map((c) =>
         header.aliasHeader
-        ? c[1] === "" ? c[0].replace(ALIASTRIMAGGR, "") : c[0].replace(ALIASTRIMVIEW, "")
-        : c[1] === "" ? c[0] : c[1]
+          ? c[1] === "" ? c[0].replace(ALIASTRIMAGGR, "") : c[0].replace(ALIASTRIMVIEW, "")
+          : c[1] === "" ? c[0] : c[1]
       );
       table.getHeaderRowRange().values = [
         header.withMenu ? [".", ...cols] : cols,
       ];
-      if (header.withMenu) {
-        table.onChanged.add(onMenuChanged);
-      }
       await context.sync();
-      if (header.withMenu) {
-        const menus = (await getItem<string[]>(MENU_KEY)) ?? [];
-        await setItem(MENU_KEY, [...menus, table.id]);
-      }
     });
-  } catch (ex) {
+  } catch (ex: any) {
     stateStore.error("Failed to create Table", ex, null);
   }
 }
@@ -176,16 +167,16 @@ export async function insertData(header: ICql) {
 
       switch (header.insertOption ?? 0) {
         case 0:
-          table.rows.add(0, rows.length > 0 ? rows : null);
+          table.rows.add(0, rows.length > 0 ? rows : []);
           break;
         case 1:
-          table.rows.add(null, rows.length > 0 ? rows : null);
+          table.rows.add(undefined, rows.length > 0 ? rows : []);
           break;
         case 2:
           const body = table.getDataBodyRange();
           const showTotals = table.showTotals;
           table.showTotals = false;
-          table.rows.add(null, rows.length > 0 ? rows : null);
+          table.rows.add(undefined, rows.length > 0 ? rows : []);
           table.showTotals = showTotals;
           body.delete(Excel.DeleteShiftDirection.up);
 
@@ -193,7 +184,7 @@ export async function insertData(header: ICql) {
       }
       await context.sync();
     });
-  } catch (ex) {
+  } catch (ex: any) {
     if (ex.code !== "InvalidBinding") {
       stateStore.error("Table Insert Error", ex.message, null);
     }
@@ -201,7 +192,7 @@ export async function insertData(header: ICql) {
   }
 }
 
-export async function pasteData(header) {
+export async function pasteData(header: ICql) {
   const options = get(optionsStore);
   try {
     const rows = (await getDetails(header.id)).results;
@@ -231,7 +222,7 @@ export async function pasteData(header) {
       detail.values = rows;
       await context.sync();
     });
-  } catch (ex) {
+  } catch (ex: any) {
     stateStore.error("Paste data error", ex.message, null);
   }
 }
@@ -253,7 +244,7 @@ export async function pasteGrid(data: object[][]) {
         range.values = data;
         await context.sync();
       });
-    } catch (ex) {
+    } catch (ex: any) {
       stateStore.error("Grid paste error", ex.message, null);
     }
   } else {
@@ -272,7 +263,7 @@ export async function pasteSpecs(data: object[][]) {
       range.values = data;
       await context.sync();
     });
-  } catch (ex) {
+  } catch (ex: any) {
     stateStore.error("Specs paste error", ex.message, null);
   }
 }

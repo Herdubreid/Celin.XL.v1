@@ -29,7 +29,6 @@ function context(
 ) {
   try {
     const unsubscibe = serversStore.subscribe((servers) => {
-      console.log(servers);
       if (servers) {
 
         const ctx = servers.find((c) => c.id === id);
@@ -68,7 +67,7 @@ function context(
  * @param {any[][][]} parameters
  * @param {CustomFunctions.StreamingInvocation<any[][]>} invocation Function Return
  */
-function oncql(
+async function oncql(
   name: string,
   func: string,
   parameters: any[][][],
@@ -85,9 +84,9 @@ function oncql(
           )
         );
       } else {
-        const unsubscibe = cqlStateStore.subscribe((data) => {
+        const unsubscibe = await cqlStateStore.subscribe(async (data) => {
           if (data && (!name || data?.id === name)) {
-            invocation.setResult(runCmd(cmd, [data, parameters]));
+            invocation.setResult(await runCmd(cmd, [data, parameters]));
           }
         });
 
@@ -121,7 +120,7 @@ function oncql(
  * @param {any[][][]} parameters
  * @param {CustomFunctions.StreamingInvocation<any[][]>} invocation Function Return
  */
-function oncsl(
+async function oncsl(
   name: string,
   func: string,
   parameters: any[][][],
@@ -139,16 +138,16 @@ function oncsl(
           )
         );
       } else {
-        const unsubscibe1 = cslStateStore.subscribe((data) => {
+        const unsubscibe1 = await cslStateStore.subscribe(async (data) => {
           if (data && (!name || data.id === name)) {
             last = { ...last, ...data };
-            invocation.setResult(runCmd(cmd, [data, parameters]));
+            invocation.setResult(await runCmd(cmd, [data, parameters]));
           }
         });
-        const unsubscibe2 = cslResponseStateStore.subscribe((data) => {
+        const unsubscibe2 = await cslResponseStateStore.subscribe(async (data) => {
           if (!data || data.id === name) {
             last = { ...last, ...data };
-            invocation.setResult(runCmd(cmd, [data, parameters]));
+            invocation.setResult(await runCmd(cmd, [data, parameters]));
           }
         });
         invocation.onCanceled = () => {
@@ -183,7 +182,7 @@ function oncsl(
  * @param {any[][][]} parameters
  * @param {CustomFunctions.StreamingInvocation<any[][]>} invocation Function Return
  */
-function callstream(
+async function callstream(
   name: string,
   params: any[][][],
   invocation: CustomFunctions.StreamingInvocation<any[][]>
@@ -192,7 +191,7 @@ function callstream(
     const fn = get(cmdStore).find((c) => c.id === name);
     if (fn) {
       if (fn.type === CommandType.func) {
-        runCmd(fn, [null, params, invocation]);
+        await runCmd(fn, [null, params, invocation]);
       } else {
         invocation.setResult(
           new CustomFunctions.Error(
@@ -228,12 +227,12 @@ function callstream(
  * @param {any[][][]} parameters
  * @returns {any[][]}
  */
-function callvolatile(name: string, params: any[][][]) {
+async function callvolatile(name: string, params: any[][][]) {
   try {
     const fn = get(cmdStore).find((c) => c.id === name);
     if (fn) {
       if (fn.type === CommandType.func) {
-        return runCmd(fn, [null, params]);
+        return await runCmd(fn, [null, params]);
       } else {
         return new CustomFunctions.Error(
           CustomFunctions.ErrorCode.invalidValue,

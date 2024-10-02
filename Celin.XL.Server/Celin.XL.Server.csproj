@@ -8,6 +8,7 @@
 
 	<PropertyGroup>
 		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+		<Version>1.1.0.0</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -16,12 +17,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Blazor-State" Version="11.0.0-beta.29" />
+		<PackageReference Include="Blazor-State" Version="11.0.0-beta.36" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Celin.Query\Celin.Query\Celin.Query.csproj" />
 	  <ProjectReference Include="..\..\Celin.Query\Celin.Script\Celin.Script.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="wwwroot\assets\data\menu.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
 	</ItemGroup>
 
 </Project>

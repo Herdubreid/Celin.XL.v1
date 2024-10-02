@@ -2,9 +2,7 @@
   import { onDestroy, onMount } from "svelte";
   import { fade } from "svelte/transition";
   import { isExcel } from "../persist";
-  import { serversStore } from "../stores";
   import { parseCmd, submitQuery, submitScript } from "../submit";
-  import { createMenu, initMenus } from "../menus";
   import CqlEditor from "./CqlEditor.svelte";
   import CslEditor from "./CslEditor.svelte";
   import CmdEditor from "./CmdEditor.svelte";
@@ -47,8 +45,6 @@
 
   const cmdMenu = {
     KeyB: () => parseCmd(cmdSelected.snippet),
-    KeyM: () => createMenu(),
-    KeyR: () => initMenus(),
   };
 
   const menu = (option) => {

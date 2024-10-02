@@ -19,10 +19,6 @@
     {
       "title": "Build Command",
       "command": "KeyB"
-    },
-    {
-      "title": "Create Menu",
-      "command": "KeyM"
     }
   ]
 ]

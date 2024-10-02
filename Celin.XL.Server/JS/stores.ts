@@ -1,7 +1,7 @@
 //
 import { writable } from "svelte/store";
 import { getItem, setItem, removeItem } from "./persist";
-import { buildCmd, runCmd, toggleCmd } from "./submit";
+import { buildCmd, runCmd } from "./submit";
 import {
   type ICslResponse,
   type ICmd,
@@ -425,25 +425,9 @@ const cmd = () => {
     const cmds = (items ?? []).map<ICmd>((c) => {
       try {
         const fn = buildCmd(c);
-        const cmd = {
+        return {
           ...c,
           fn,
-        };
-        let unsub: any | null = null;
-        if (c.unsub) {
-          toggleCmd(cmd).then(result => {
-            unsub = result;
-          }).catch(error => {
-            console.error('Error:', error);
-            unsub = null;
-          });
-        } else {
-          unsub = null;
-        }
-
-        return {
-          ...cmd,
-          unsub,
         };
       } catch (ex: any) {
         return {
@@ -452,13 +436,15 @@ const cmd = () => {
         };
       }
     });
+
     set(cmds);
+
     subscribe((current) => {
       setItem(CMD_KEY, [
         ...current?.map((e) => ({
           ...e,
           fn: null,
-          unsub: e.type == CommandType.func ? false : e.unsub == null ? false : true,
+          unsub: e.type == CommandType.func ? false : e.unsub ? true : false,
           error: null,
         })),
       ]);
@@ -471,9 +457,6 @@ const cmd = () => {
       update((c) => {
         const ndx = c.findIndex((e) => e.id === cmd.id);
         if (ndx !== -1) {
-          try {
-            c[ndx]?.unsub();
-          } catch { }
           const a = [...c.slice(0, ndx), cmd, ...c.slice(ndx + 1)];
           return a;
         }
@@ -491,15 +474,4 @@ const cmd = () => {
   };
 };
 export const cmdStore = cmd();
-//#endregion
-
-//#region tableMenu
-const tableMenu = () => {
-  const { subscribe, set } = writable<ITableMenu>();
-  return {
-    set,
-    subscribe,
-  };
-};
-export const tableMenuStore = tableMenu();
 //#endregion

@@ -24,7 +24,7 @@ function assignNonNullProperties(source: any, target: any) {
     return false;
 }
 
-function parseRangeAddress(address: string|null) {
+function parseRangeAddress(address: string | null) {
     if (address === null) return {};
     let m = address?.match(/(?:^'?([^']+)'?!)?(.*)$/);
     let sheet: string | null = m ? m[1] : null;
@@ -44,16 +44,16 @@ function setProperty<T, K extends keyof T>(obj: T, key: K, value: T[K]): void {
     obj[key] = value;
 }
 
-function getRange(ctx: Excel.RequestContext, address: string|null): Excel.Range {
+function getRange(ctx: Excel.RequestContext, address: string | null): Excel.Range {
     let a = parseRangeAddress(address);
     const sh = isNullOrEmpty(a.sheet)
-    ? ctx.workbook.worksheets.getActiveWorksheet()
-    : ctx.workbook.worksheets.getItem(a.sheet!);
+        ? ctx.workbook.worksheets.getActiveWorksheet()
+        : ctx.workbook.worksheets.getItem(a.sheet!);
     const range = isNullOrEmpty(a.cells)
-    ? isNullOrEmpty(a.sheet)
-        ? ctx.workbook.getSelectedRange()
-        : sh.getUsedRange()
-    : sh.getRange(a.cells!);
+        ? isNullOrEmpty(a.sheet)
+            ? ctx.workbook.getSelectedRange()
+            : sh.getUsedRange()
+        : sh.getRange(a.cells!);
     return range;
 }
 

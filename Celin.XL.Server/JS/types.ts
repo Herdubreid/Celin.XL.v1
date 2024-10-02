@@ -33,13 +33,6 @@ export interface ISummary {
   records: number;
 }
 
-export interface ITableMenu {
-  id: string;
-  index: number;
-  option: any;
-  row: any[];
-}
-
 export interface IServer {
   id: number;
   name: string;
@@ -66,7 +59,7 @@ export interface IAction {
 export interface ICmd extends IAction {
   type: CommandType;
   isAsync: boolean;
-  fn: any | null;
+  fn: Function | null;
   unsub: OfficeExtension.EventHandlerResult<Excel.TableChangedEventArgs> | any | null;
 }
 
