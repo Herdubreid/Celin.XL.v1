@@ -9,7 +9,6 @@ import {
   cslResponseStateStore,
   cslStateStore,
   cslStore,
-  tableMenuStore,
 } from "./stores";
 import { runCmd, submitQuery, submitScript } from "./submit";
 import { getItem } from "./persist";
@@ -287,57 +286,6 @@ function call(name: string, params: any[][][]) {
       ex.message
     );
   }
-}
-
-/**
- * Menu event
- * @customfunction
- * @helpUrl https://celin.io/xl-docs/functions/onmenu.html
- * @param {string} menu Menu name
- * @param {any} option Menu option
- * @param {number[]} columns Columns to display
- * @param {CustomFunctions.StreamingInvocation<any[][]>} invocation Attribute value
- */
-function onmenu(
-  menu: string,
-  option: any,
-  columns: number[],
-  invocation: CustomFunctions.StreamingInvocation<any[][]>
-) {
-  invocation.setResult(
-    new CustomFunctions.Error(CustomFunctions.ErrorCode.notAvailable)
-  );
-  const unsubscibe = tableMenuStore.subscribe(async (mnu) => {
-    try {
-      if (mnu && mnu.id === menu && (!option || option === mnu.option)) {
-        await Excel.run(async (ctx) => {
-          const table = ctx.workbook.tables.getItem(mnu.id);
-          const range = table.rows.getItemAt(mnu.index);
-          range.load();
-          await ctx.sync();
-          if (range.values.length > 0) {
-            const row = range.values[0];
-            const values = columns.map(
-              (c) => row[Math.max(0, Math.min(row.length, c))]
-            );
-            invocation.setResult([values.length > 0 ? values : [""]]);
-          }
-        });
-      }
-    } catch (ex: any) {
-      console.error(ex);
-      invocation.setResult(
-        new CustomFunctions.Error(
-          CustomFunctions.ErrorCode.invalidValue,
-          ex.message
-        )
-      );
-    }
-  });
-
-  invocation.onCanceled = () => {
-    unsubscibe();
-  };
 }
 
 /**

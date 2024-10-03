@@ -1,4 +1,5 @@
 import * as localforage from "localforage";
+import { initCmds } from "./submit";
 
 /* global */
 
@@ -7,12 +8,10 @@ global.blazorLib = undefined;
 export const isExcel = new Promise<boolean>(async (resolve) => {
   await Office.onReady((info) => {
     const xl = info.host === Office.HostType.Excel;
-    resolve(xl);
-    /*
     if (xl) {
-      listSettings();
-      await initMenus();
-    }*/
+      initCmds();
+    }
+    resolve(xl);
   });
 });
 

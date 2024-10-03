@@ -1,6 +1,7 @@
 import { get } from "svelte/store";
 import { CommandType, type ICmd, type IDetails } from "./types";
 import {
+  cmdConfigComplete,
   cmdStore,
   cqlStateStore,
   cqlStore,
@@ -12,7 +13,6 @@ import { AsyncFunction } from "./helper";
 import { getValue, setFormula, setValues } from "./excel";
 import { getItem } from "./persist";
 
-// const VARS = /"[^"]*"|\W@(\w+)/g;
 const VARS = /"[^"]*"|(\W+|\w+)\s*@(\w+)/g;
 const CMD =
   /^(onMenu|onCql|onCsl|func|onTable)\s+(async\s+)?(\w+)((.|\n)*?)(?=^\n)/gm;
@@ -187,18 +187,16 @@ export const runCmd = async (cmd: ICmd, param: any[]): Promise<any | null> => {
         const tb = ctx.workbook.tables.getItemOrNullObject(cmd.id);
         await ctx.sync();
         if (!tb.isNullObject) {
-          cmd.fn!(lib);
-          const h = tb.onChanged.add(async (ev) => menuChanged(ev, cmd.fn!));
-          return h;
+          return tb.onChanged.add(async (ev) => menuChanged(ev, cmd.fn!));
         }
+        return null;
       });
     case CommandType.onTable:
       return await Excel.run(async (ctx) => {
         const tb = ctx.workbook.tables.getItemOrNullObject(cmd.id);
         await ctx.sync();
         if (!tb.isNullObject) {
-          const h = tb.onChanged.add(async (ev) => cmd.fn!(lib, ev));
-          return h;
+          return tb.onChanged.add(async (ev) => cmd.fn!(lib, ev));
         }
         return null;
       });
@@ -207,29 +205,15 @@ export const runCmd = async (cmd: ICmd, param: any[]): Promise<any | null> => {
 
 export const toggleCmd = async (cmd: ICmd) => {
   try {
-    switch (cmd.type) {
-      case CommandType.onTable:
-      case CommandType.onMenu:
-        if (cmd.unsub) {
-          await Excel.run(cmd.unsub.context, async (ctx) => {
-            console.log(`Unsubscribe ${cmd.id}`);
-            cmd.unsub.remove();
-            await ctx.sync();
-          });
-          cmdStore.edit({ ...cmd, unsub: null, error: null });
-        } else {
-          const unsub = await runCmd(cmd, []);
-          cmdStore.edit({ ...cmd, unsub, error: null });
-        }
-        break;
-      default:
-        if (cmd.unsub) {
-          cmd.unsub();
-          cmdStore.edit({ ...cmd, unsub: null, error: null });
-        } else {
-          const unsub = runCmd(cmd, []);
-          cmdStore.edit({ ...cmd, unsub, error: null });
-        }
+    if (cmd.unsub) {
+      await Excel.run(cmd.unsub.context, async (ctx) => {
+        cmd.unsub.remove();
+        await ctx.sync();
+      });
+      cmdStore.edit({ ...cmd, unsub: null, error: null });
+    } else {
+      const unsub = await runCmd(cmd, []);
+      cmdStore.edit({ ...cmd, unsub, error: null });
     }
   } catch (ex: any) {
     cmdStore.edit({ ...cmd, error: ex.toString() });
@@ -237,13 +221,14 @@ export const toggleCmd = async (cmd: ICmd) => {
 };
 
 export const initCmds = async () => {
+  await cmdConfigComplete;
   const cmds = get(cmdStore);
-  cmds.forEach(async (cmd) => {
-    if (cmd.unsub) {
+  cmds
+    .filter((cmd) => cmd.unsub !== null)
+    .forEach(async (cmd) => {
       const unsub = await runCmd(cmd, [])
       cmdStore.edit({ ...cmd, unsub, error: null });
-    }
-  });
+    });
 };
 
 export const buildCmd = (cmd: ICmd): any => {
@@ -265,12 +250,12 @@ export const buildCmd = (cmd: ICmd): any => {
       return Function(`${strict}${slib}${subs}(${isAsync}${msg})`);
     case CommandType.onTable:
       return isAsync
-      ? AsyncFunction(`${strict}${slib}${ev}${cmd.source}`)
-      : Function(`${strict}${slib}${ev}${cmd.source}`);
+        ? AsyncFunction(`${strict}${slib}${ev}${cmd.source}`)
+        : Function(`${strict}${slib}${ev}${cmd.source}`);
     case CommandType.onMenu:
       return isAsync
-      ? AsyncFunction(`${strict}${slib}${mnu}${cmd.source}`)
-      : Function(`${strict}${slib}${mnu}${cmd.source}`);
+        ? AsyncFunction(`${strict}${slib}${mnu}${cmd.source}`)
+        : Function(`${strict}${slib}${mnu}${cmd.source}`);
     case CommandType.func:
       return isAsync
         ? AsyncFunction(

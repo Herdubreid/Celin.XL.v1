@@ -74,10 +74,6 @@
   onMount(async () => {
     ready = true;
     global.ready = true;
-    //serversStore.init();
-    if (await isExcel) {
-      //  await initMenus();
-    }
   });
 
   onDestroy(() => unsubscribe());

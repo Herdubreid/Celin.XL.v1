@@ -1,5 +1,5 @@
 import { get } from "svelte/store";
-import { stateStore, optionsStore, tableMenuStore } from "./stores";
+import { stateStore, optionsStore } from "./stores";
 import type { ICql, IDetails } from "./types";
 import { getItem } from "./persist";
 

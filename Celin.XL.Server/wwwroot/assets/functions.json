@@ -149,36 +149,6 @@
             }
         },
         {
-            "description": "Menu event",
-            "helpUrl": "https://celin.io/xl-docs/functions/onmenu.html",
-            "id": "ONMENU",
-            "name": "ONMENU",
-            "options": {
-                "stream": true
-            },
-            "parameters": [
-                {
-                    "description": "Menu name",
-                    "name": "menu",
-                    "type": "string"
-                },
-                {
-                    "description": "Menu option",
-                    "name": "option",
-                    "type": "any"
-                },
-                {
-                    "description": "Columns to display",
-                    "name": "columns",
-                    "repeating": true,
-                    "type": "number"
-                }
-            ],
-            "result": {
-                "dimensionality": "matrix"
-            }
-        },
-        {
             "description": "Regular Expression function",
             "helpUrl": "https://celin.io/xl-docs/functions/regex.html",
             "id": "REGEX",

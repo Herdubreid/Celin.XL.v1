@@ -1,7 +1,7 @@
 ﻿import "./style.css";
 import "./functions";
 import type { DotNet } from "@microsoft/dotnet-js-interop";
-import type { detail, ICql, ICsl, ICslProgress, IServer, ISubject } from "./types";
+import type { detail, ICql, ICslProgress, IServer, ISubject } from "./types";
 import { get } from "svelte/store";
 import App from "./Components/EditorApp.svelte";
 import {
@@ -18,11 +18,9 @@ import {
 } from "./stores";
 import { insertData } from "./excel";
 import { setItem } from "./persist";
-import { initCmds } from "./submit";
 
-Office.onReady(async (info) => {
+Office.onReady(async () => {
   await Office.addin.setStartupBehavior(Office.StartupBehavior.load);
-  await initCmds();
 });
 
 export const app = {

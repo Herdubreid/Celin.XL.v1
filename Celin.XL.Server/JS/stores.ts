@@ -1,7 +1,7 @@
 //
 import { writable } from "svelte/store";
 import { getItem, setItem, removeItem } from "./persist";
-import { buildCmd, runCmd } from "./submit";
+import { buildCmd } from "./submit";
 import {
   type ICslResponse,
   type ICmd,
@@ -9,7 +9,6 @@ import {
   type ICsl,
   type ICslProgress,
   type IServer,
-  type ITableMenu,
   type ISubject,
   type ISubjectDemo,
   CommandType,
@@ -417,6 +416,9 @@ export const cmdStateStore = cmdState();
 //#endregion
 
 //#region  cmd
+let cmdConfig: any;
+export const cmdConfigComplete = new Promise(resolve => cmdConfig = resolve);
+
 const CMD_KEY = "cmd";
 const cmd = () => {
   const { set, subscribe, update } = writable<ICmd[]>([]);
@@ -449,6 +451,8 @@ const cmd = () => {
         })),
       ]);
     });
+
+    cmdConfig();
   });
   return {
     set,
