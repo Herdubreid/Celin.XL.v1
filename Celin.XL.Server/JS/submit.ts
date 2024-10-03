@@ -187,7 +187,8 @@ export const runCmd = async (cmd: ICmd, param: any[]): Promise<any | null> => {
         const tb = ctx.workbook.tables.getItemOrNullObject(cmd.id);
         await ctx.sync();
         if (!tb.isNullObject) {
-          return tb.onChanged.add(async (ev) => menuChanged(ev, cmd.fn!));
+          const h = tb.onChanged.add(async (ev) => menuChanged(ev, cmd.fn!));
+          return h;
         }
         return null;
       });
@@ -196,7 +197,8 @@ export const runCmd = async (cmd: ICmd, param: any[]): Promise<any | null> => {
         const tb = ctx.workbook.tables.getItemOrNullObject(cmd.id);
         await ctx.sync();
         if (!tb.isNullObject) {
-          return tb.onChanged.add(async (ev) => cmd.fn!(lib, ev));
+          const h = tb.onChanged.add(async (ev) => cmd.fn!(lib, ev));
+          return h;
         }
         return null;
       });
