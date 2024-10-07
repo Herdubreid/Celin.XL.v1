@@ -12,16 +12,16 @@
 	<Id>0867c62e-1aaf-4034-bf15-e2ab118cac37</Id>
 
 	<!--Version. Updates from the store only get triggered if there is a version change. -->
-	<Version>1.0.0.0</Version>
+	<Version>1.1.0.0</Version>
 	<ProviderName>BRAGASON AND ASSOCIATES PTY LTD</ProviderName>
 	<DefaultLocale>en-US</DefaultLocale>
 	<!-- The display name of your add-in. Used on the store and various places of the Office UI such as the add-ins dialog. -->
-	<DisplayName DefaultValue="Celin.XL.Server" />
+	<DisplayName DefaultValue="CelinXL.Server" />
 	<Description DefaultValue="Databrowser and script engine for Oracle E1"/>
 
 	<!-- Icon for your add-in. Used on installation screens and the add-ins dialog. -->
 	<IconUrl DefaultValue="https://localhost:7011/assets/icon-32.png" />
-	<HighResolutionIconUrl DefaultValue="https://localhost:7011/assets/icon-80.png"/>
+	<HighResolutionIconUrl DefaultValue="https://localhost:7011/assets/icon-64.png"/>
 
 	<!--If you plan to submit this add-in to the Office Store, uncomment the SupportUrl element below-->
 	<SupportUrl DefaultValue="https://celin.io/xl-docs" />
@@ -104,6 +104,7 @@
 								<Icon>
 									<bt:Image size="16" resid="Icon.16x16" />
 									<bt:Image size="32" resid="Icon.32x32" />
+									<bt:Image size="64" resid="Icon.64x64" />
 									<bt:Image size="80" resid="Icon.80x80" />
 								</Icon>
 
@@ -119,6 +120,7 @@
 									<Icon>
 										<bt:Image size="16" resid="Icon.16x16" />
 										<bt:Image size="32" resid="Icon.32x32" />
+										<bt:Image size="64" resid="Icon.64x64" />
 										<bt:Image size="80" resid="Icon.80x80" />
 									</Icon>
 
@@ -141,6 +143,7 @@
 			<bt:Images>
 				<bt:Image id="Icon.16x16" DefaultValue="https://localhost:7011/assets/icon-16.png"/>
 				<bt:Image id="Icon.32x32" DefaultValue="https://localhost:7011/assets/icon-32.png"/>
+				<bt:Image id="Icon.64x64" DefaultValue="https://localhost:7011/assets/icon-64.png"/>
 				<bt:Image id="Icon.80x80" DefaultValue="https://localhost:7011/assets/icon-80.png"/>
 			</bt:Images>
 			<bt:Urls>
@@ -151,14 +154,14 @@
 			</bt:Urls>
 			<!-- ShortStrings max characters==125. -->
 			<bt:ShortStrings>
-				<bt:String id="Functions.Namespace" DefaultValue="Celin"/>
-				<bt:String id="GetStarted.Title" DefaultValue="Get started with Celin.XL.Server" />
-				<bt:String id="Celin.Label" DefaultValue="Celin" />
-				<bt:String id="Celin.Tools.Button.Label" DefaultValue="XL.Server" />
+				<bt:String id="Functions.Namespace" DefaultValue="CelinXL"/>
+				<bt:String id="GetStarted.Title" DefaultValue="Get started with CelinXL" />
+				<bt:String id="Celin.Label" DefaultValue="CelinXL" />
+				<bt:String id="Celin.Tools.Button.Label" DefaultValue="Tools" />
 			</bt:ShortStrings>
 			<!-- LongStrings max characters==250. -->
 			<bt:LongStrings>
-				<bt:String id="GetStarted.Description" DefaultValue="Celin.Tools.Server is Loaded.  Goto the Data Tab." />
+				<bt:String id="GetStarted.Description" DefaultValue="CelinXL is Loaded.  Goto the Data Tab." />
 				<bt:String id="Celin.Tools.Button.Tooltip" DefaultValue="Click to Show a Taskpane" />
 			</bt:LongStrings>
 		</Resources>
