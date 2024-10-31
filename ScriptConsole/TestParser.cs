@@ -1,7 +1,9 @@
-﻿using Celin.Language;
+﻿using Celin.AIS.Data;
+using Celin.Language;
 using Celin.Language.XL;
 using Microsoft.Extensions.Logging;
 using Pidgin;
+using System.Text.Json;
 using static Pidgin.Parser;
 using static Pidgin.Parser<char>;
 
@@ -9,6 +11,11 @@ namespace Celin;
 
 static class TestParser
 {
+    static Celin.AIS.Request ParseRq(string value) =>
+        DataRequest
+        .Parser
+        .Before(End)
+        .ParseOrThrow(value);
     static object ParseNumber(string value) =>
         SkipWhitespaces
         .Then(Try(Real.Cast<object>())
@@ -31,13 +38,15 @@ static class TestParser
                 break;
             try
             {
+                var rq = ParseRq(ln);
+                Console.WriteLine(JsonSerializer.Serialize(rq));
                 //var s = ParsePlaceHolders(ln);
                 //Console.WriteLine(s);
                 //var p = Range(ln);
                 //Console.WriteLine($"{(p.sheet.HasValue ? p.sheet.Value : string.Empty)}!{p.range}");
-                var m = ParseValue(ln);
+                //var m = ParseValue(ln);
                 //var m = ParseNumber(ln);
-                Console.WriteLine(m);
+                //Console.WriteLine(m);
                 //Console.WriteLine($"{c.LeftHand}, {c.RightHand}");
                 //var a = Test(ln);
                 //Console.WriteLine(string.Join(",", a

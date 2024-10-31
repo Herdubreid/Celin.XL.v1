@@ -282,25 +282,26 @@
                     "type": "string"
                 },
                 {
-                    "description": "From Row",
-                    "name": "from",
-                    "type": "number"
-                },
-                {
-                    "description": "To Row",
-                    "name": "to",
-                    "type": "number"
-                },
-                {
-                    "description": "Format",
-                    "name": "format",
-                    "optional": true,
+                    "description": "Row and Column numbers",
+                    "name": "coords",
                     "repeating": true,
-                    "type": "any"
+                    "type": "number"
                 }
             ],
+            "result": {}
+        },
+        {
+            "description": "Get the Row nd Column number of current table cell",
+            "helpUrl": "https://celin.io/xl-docs/functions/tablecoords.html",
+            "id": "TABLECOORDS",
+            "name": "TABLECOORDS",
+            "options": {
+                "requiresAddress": true
+            },
+            "parameters": [],
             "result": {
-                "dimensionality": "matrix"
+                "dimensionality": "matrix",
+                "type": "number"
             }
         },
         {

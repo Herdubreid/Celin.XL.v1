@@ -208,14 +208,27 @@ export const runCmd = async (cmd: ICmd, param: any[]): Promise<any | null> => {
 export const toggleCmd = async (cmd: ICmd) => {
   try {
     if (cmd.unsub) {
-      await Excel.run(cmd.unsub.context, async (ctx) => {
-        cmd.unsub.remove();
-        await ctx.sync();
-      });
+      switch (cmd.type) {
+        case CommandType.onMenu:
+        case CommandType.onTable:
+          await Excel.run(cmd.unsub.context, async (ctx) => {
+            cmd.unsub.remove();
+            await ctx.sync();
+          });
+          break;
+        case CommandType.onCql:
+        case CommandType.onCsl:
+          cmd.unsub();
+          break;
+      }
       cmdStore.edit({ ...cmd, unsub: null, error: null });
     } else {
-      const unsub = await runCmd(cmd, []);
-      cmdStore.edit({ ...cmd, unsub, error: null });
+      if (cmd.type === CommandType.func) {
+        await runCmd(cmd, []);
+      } else {
+        const unsub = await runCmd(cmd, []);
+        cmdStore.edit({ ...cmd, unsub, error: null });
+      }
     }
   } catch (ex: any) {
     cmdStore.edit({ ...cmd, error: ex.toString() });
@@ -226,7 +239,7 @@ export const initCmds = async () => {
   await cmdConfigComplete;
   const cmds = get(cmdStore);
   cmds
-    .filter((cmd) => cmd.unsub !== null)
+    .filter((cmd) => cmd.unsub)
     .forEach(async (cmd) => {
       const unsub = await runCmd(cmd, [])
       cmdStore.edit({ ...cmd, unsub, error: null });

@@ -489,7 +489,6 @@ function cslstate(
   }
 }
 
-const FMT = /{(\d+)}/g;
 const lastUpdate = new Map<string, number>();
 
 /**
@@ -497,22 +496,19 @@ const lastUpdate = new Map<string, number>();
  * @customfunction
  * @helpUrl https://celin.io/xl-docs/functions/data.html
  * @param {string} name Data Name
- * @param {number} from From Row
- * @param {number} to To Row
- * @param {any[]} [format] Format
- * @param {CustomFunctions.StreamingInvocation<any[][]>} invocation Custom function invocation
+ * @param {number[][]} coords Row and Column numbers
+ * @param {CustomFunctions.StreamingInvocation<any>} invocation Custom function invocation
  */
 function data(
   name: string,
-  from: number,
-  to: number,
-  format: any[],
-  invocation: CustomFunctions.StreamingInvocation<any[][]>
+  coords: number[],
+  invocation: CustomFunctions.StreamingInvocation<any>
 ) {
   const unsubscibe = cqlStore.subscribe((current) => {
     try {
       const data = current.find((d) => d?.id === name);
-      if (data) {
+      console.log(data, coords);
+      if (data && coords.length > 0) {
         if (data.busy) {
           lastUpdate.set(name, 0);
           invocation.setResult([["#BUSY"]]);
@@ -523,39 +519,17 @@ function data(
             return;
           }
           lastUpdate.set(name, Date.now());
-          getItem<IDetails>(data.id).then((allrows) => {
-            const rows =
-              from < 0
-                ? allrows!.results
-                : allrows!.results.slice(
-                  from,
-                  Math.min(
-                    Math.max(to, -1),
-                    (allrows!.transposed ?? allrows!.results).length
-                  )
-                );
-            if (rows.length > 0) {
-              if (format.length > 0) {
-                const frows = rows.map((r) =>
-                  format.map((c: any) => {
-                    if (typeof c === "string") {
-                      const fmts = c.matchAll(FMT);
-                      if (fmts) {
-                        const fs = [...fmts].reduce(
-                          (f, fmt) => f.replace(fmt[0], r[+fmt[1]] as string),
-                          c
-                        );
-                        return fs;
-                      }
-                      return c;
-                    }
-                    return r[c];
-                  })
-                );
-                invocation.setResult(frows);
-              } else {
-                invocation.setResult(rows);
-              }
+          getItem<IDetails>(`cql-${data.id}`).then((details) => {
+            if (!details) return;
+            if (
+              details.results.length > coords[0] &&
+              details.results[0].length > coords[1]
+            ) {
+              const r = details.results[coords[0]];
+              console.log(r);
+              const c = r[coords[1]];
+              console.log(c);
+              invocation.setResult(details.results[coords[0]][coords[1]]);
             } else {
               invocation.setResult(
                 new CustomFunctions.Error(
@@ -582,6 +556,50 @@ function data(
     unsubscibe();
     lastUpdate.delete(name);
   };
+}
+
+/**
+ * Get the Row nd Column number of current table cell
+ * @customfunction
+ * @helpUrl https://celin.io/xl-docs/functions/tablecoords.html
+ * @param {CustomFunctions.Invocation} invocation Invocation object
+ * @returns {number[][]} Array with Row and Column number
+ * @requiresAddress
+ */
+async function tableCoords(
+  invocation: CustomFunctions.Invocation
+) {
+  const address = invocation.address!.split("!");
+  try {
+    const coords = await Excel.run(async (ctx) => {
+      const sh = ctx.workbook.worksheets.getItem(address[0]);
+      const rng = sh.getRange(address[1]);
+      const tbls = rng.getTables();
+
+      rng.load(["rowIndex", "columnIndex"]);
+      await ctx.sync();
+
+      const tbl = tbls.getFirst();
+      if (tbl) {
+        const tblRng = tbl.getDataBodyRange();
+
+        tblRng.load(["rowIndex", "columnIndex"]);
+        await ctx.sync();
+
+        const row = rng.rowIndex - tblRng.rowIndex;
+        const column = rng.columnIndex - tblRng.columnIndex;
+        return [
+          [row, column],
+          [column, column]
+        ];
+      }
+    });
+
+    console.log(coords);
+    return coords;
+  } catch (ex: any) {
+    console.error(ex);
+  }
 }
 
 /**
