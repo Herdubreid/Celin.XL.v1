@@ -63,20 +63,26 @@
       <div class="pb-4">
         <!-- svelte-ignore a11y-autofocus -->
         <input
-          autofocus
+          id="username"
+          type="text"
+          name="username"
+          autocomplete="username"
           required
+          autofocus
           disabled={busy}
           class="border rounded w-full py-2 px-3"
-          type="text"
           placeholder="User Name"
           bind:value={username}
         />
       </div>
       <div class="mb-2">
         <input
-          class="border border-red rounded w-full py-2 px-3"
+          id="password"
           type="password"
+          name="password"
+          autocomplete="current-password"
           required
+          class="border border-red rounded w-full py-2 px-3"
           disabled={busy}
           placeholder="Password"
           bind:value={password}
