@@ -7,24 +7,24 @@ namespace Celin.Language.XL;
 
 public class Values<T>
 {
-    static readonly Parser<char, T> STRING =
+    public static readonly Parser<char, T> STRING =
         SkipWhitespaces
             .Then(OneOf(
                 Literal.DoubleQuoted,
                 Literal.SingleQuoted,
                 Literal.Plain))
             .Cast<T>();
-    static readonly Parser<char, T> NUMBER =
+    public static readonly Parser<char, T> NUMBER =
         SkipWhitespaces
             .Then(Try(Real.Cast<T>())
             .Or(DecimalNum.Cast<T>()));
-    static readonly Parser<char, IEnumerable<T>> ARRAY =
+    public static readonly Parser<char, IEnumerable<T>> ARRAY =
         OneOf(NUMBER, STRING)
             .Optional()
             .SeparatedAtLeastOnce(Char(','))
             .Select(a => a
                 .Select(e => e.HasValue ? e.Value : default!));
-    static readonly Parser<char, IEnumerable<IEnumerable<T>>> MATRIX =
+    public static readonly Parser<char, IEnumerable<IEnumerable<T>>> MATRIX =
         ARRAY
             .Between(Char('['), Char(']'))
             .SeparatedAtLeastOnce(Char(','));

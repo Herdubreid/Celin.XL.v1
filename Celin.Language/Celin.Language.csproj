@@ -1,15 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Celin.AIS.Data\Celin.AIS.Data.csproj" />
-    <ProjectReference Include="..\..\Celin.Query\Celin.Script\Celin.Script.csproj" />
-    <ProjectReference Include="..\..\Celin.XL\Celin.XL.Server\Celin.XL.Server.csproj" />
   </ItemGroup>
 
 </Project>

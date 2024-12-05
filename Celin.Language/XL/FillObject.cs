@@ -30,7 +30,7 @@ public class FillObject : RangeBaseObject<FillProperties, FillObject>
         get => _xl.PatternTintAndShade;
         set => _local = _local with { PatternTintAndShade = value };
     }
-    public static async Task Set(string? key, FillProperties prop, string[] pars) =>
+    public static async Task Set(string? key, FillProperties prop, object?[] pars) =>
         await SyncAsyncDelegate(key, prop, pars);
     public FillObject(string? address) : base(address) { }
     public static FillObject Fill(string? address) => new(address);

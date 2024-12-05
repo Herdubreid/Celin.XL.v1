@@ -81,7 +81,7 @@ public class FormatObject : RangeBaseObject<FormatProperties, FormatObject>
         get => _xl.WrapText;
         set => _local = _local with { WrapText = value };
     }
-    public static async Task Set(string? key, FormatProperties prop, string[] pars) =>
+    public static async Task Set(string? key, FormatProperties prop, object?[] pars) =>
         await SyncAsyncDelegate(key, prop, pars);
     public FormatObject(string? address) : base(address) { }
     public static FormatObject Format(string? address)

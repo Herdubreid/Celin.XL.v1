@@ -6,9 +6,9 @@ static class Matrix
 {
     static readonly Dictionary<(int col, int row), object?> _values
         = new Dictionary<(int col, int row), object?>();
-    public static Task<SheetObject> Sync(SheetObject value, bool FromExcel)
+    public static ValueTask<SheetProperties> Sync(string? key, SheetProperties value, params string[] pars)
     {
-        return Task.FromResult(value);
+        return ValueTask.FromResult(value);
     }
     public static Task Set((string? sheet, string? cells, string? name) address, IEnumerable<IEnumerable<object?>> values)
     {

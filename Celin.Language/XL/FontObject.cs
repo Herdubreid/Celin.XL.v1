@@ -60,7 +60,7 @@ public class FontObject : RangeBaseObject<FontProperties, FontObject>
         get => _xl.Underline;
         set => _local = _local with { Underline = value };
     }
-    public static async Task Set(string? key, FontProperties prop, string[] pars) =>
+    public static async Task Set(string? key, FontProperties prop, object?[] pars) =>
         await SyncAsyncDelegate(key, prop, pars);
     public FontObject(string? address) : base(address) { }
     public static FontObject Font(string? address) => new(address);

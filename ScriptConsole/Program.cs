@@ -29,13 +29,14 @@ var d = JsonSerializer.Deserialize<BaseProperties>(json);
 
 Console.WriteLine(d);
 */
-TestParser.Run(logger);
+//TestParser.Run(logger);
+
+BaseObject<SheetProperties>.SyncAsyncDelegate = Matrix.Sync;
+var e1 = new E1([new E1.Host("e1", new Server("demo.steltix.com/v2/", logger))]);
+
+await Script1.Run(e1);
 /*
-var e1 = new Server("demo.steltix.com/v2/", logger);
 
-//BaseObject<SheetObject>.SyncFromDelegate = Matrix.Sync;
-
-//await Script1.Run(e1);
 
 var orgOut = Console.Out;
 TextWriter textWriter = new StringWriter();

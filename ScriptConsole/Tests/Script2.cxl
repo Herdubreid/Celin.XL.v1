@@ -1,0 +1,20 @@
+xl.tables
+.get(ab).delete
+
+xl.tables
+.add(ab)
+.body(@ab.data)
+
+xl.tables
+.get(ab)
+.data(@ab)
+
+xl.tables
+.add(ab)
+.showHeaders(false)
+.showTotals(false)
+.data(w48201f [7] all(1[7] > 1000))
+
+xl.range(a1) = w01012b jde0001 [19,20,50,50] all(1[19] = 2000 1[20] ? "Hallo" 1[48] > 4000)
+
+xl.range(b1) = (f0101 [group(at1) count_distinct(alph)]).rows

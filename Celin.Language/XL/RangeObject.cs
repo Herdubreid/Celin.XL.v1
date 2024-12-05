@@ -116,9 +116,8 @@ public class RangeObject : RangeBaseObject<RangeProperties, RangeObject>
     void _setXlValues(List<List<object?>>? values) =>
         _xl = _xl with { Values = values };
     #endregion
-    public static async Task Set(string? key, RangeProperties prop, string[] pars) =>
+    public static async Task Set(string? key, RangeProperties prop, object?[] pars) =>
         await SyncAsyncDelegate(key, prop, pars);
     public RangeObject(string? address) : base(address) { }
-    public static RangeObject Range(string? address = null)
-        => new(address);
+    public static RangeObject Range(string? address = null) => new(address);
 }
