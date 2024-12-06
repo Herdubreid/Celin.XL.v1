@@ -5,11 +5,10 @@ using static Pidgin.Parser;
 namespace Celin.Language.XL;
 
 public record TableProperties(
+    string? Name = null,
     bool? HighlightFirstColumn = null,
     bool? HighlightLastColumn = null,
-    string? Id = null,
     string? LegacyId = null,
-    string? Name = null,
     bool? ShowBandedColumns = null,
     bool? ShowBandedRows = null,
     bool? ShowFilterButton = null,
@@ -18,7 +17,7 @@ public record TableProperties(
     string? Style = null) : BaseProperties
 {
     public enum Methods { add, get, delete }
-    public TableProperties() : this(Id: null) { }
+    public TableProperties() : this(Name: null) { }
 };
 public class TableObject : BaseObject<TableProperties>
 {
@@ -43,8 +42,8 @@ public class TableObject : BaseObject<TableProperties>
         get => _local;
         set => _local = value;
     }
-    TableProperties _local;
-    TableProperties _xl;
+    protected TableProperties _local;
+    protected TableProperties _xl;
     public TableObject(string? tableName)
     {
         _xl = new TableProperties();

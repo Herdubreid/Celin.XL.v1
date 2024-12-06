@@ -48,19 +48,19 @@ public class JsService
         syncBorders,
     }
     string XL(xl f) => $"{LIB}.{nameof(xl)}.{f:g}";
-    public ValueTask<List<BorderProperties>> syncBorders(string? key, List<BorderProperties> values, params string[] pars)
+    public ValueTask<List<BorderProperties>> syncBorders(string? key, List<BorderProperties> values, params object?[] pars)
         => _js.InvokeAsync<List<BorderProperties>>(XL(xl.syncBorders), key, values);
-    public ValueTask<FontProperties> syncFont(string? key, FontProperties values, params string[] pars)
+    public ValueTask<FontProperties> syncFont(string? key, FontProperties values, params object?[] pars)
         => _js.InvokeAsync<FontProperties>(XL(xl.syncFont), key, values);
-    public ValueTask<FillProperties> syncFill(string? key, FillProperties values, params string[] pars)
+    public ValueTask<FillProperties> syncFill(string? key, FillProperties values, params object?[] pars)
         => _js.InvokeAsync<FillProperties>(XL(xl.syncFill), key, values);
-    public ValueTask<FormatProperties> syncFormat(string? key, FormatProperties values, params string[] pars)
+    public ValueTask<FormatProperties> syncFormat(string? key, FormatProperties values, params object?[] pars)
         => _js.InvokeAsync<FormatProperties>(XL(xl.syncFormat), key, values);
-    public ValueTask<T> syncList<T>(string? key, T values, params string[] pars)
+    public ValueTask<T> syncList<T>(string? key, T values, params object?[] pars)
         => _js.InvokeAsync<T>(XL(xl.syncList), key, pars[0], values);
-    public ValueTask<RangeProperties> syncRange(string? key, RangeProperties values, params string[] pars)
+    public ValueTask<RangeProperties> syncRange(string? key, RangeProperties values, params object?[] pars)
         => _js.InvokeAsync<RangeProperties>(XL(xl.syncRange), key, values);
-    public ValueTask<SheetProperties> syncSheet(string? key, SheetProperties values, params string[] pars)
+    public ValueTask<SheetProperties> syncSheet(string? key, SheetProperties values, params object?[] pars)
         => _js.InvokeAsync<SheetProperties>(XL(xl.syncSheet), key, values);
     #endregion
     #region invokables
