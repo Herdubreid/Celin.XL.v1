@@ -16,7 +16,7 @@ public class TableColumnCollectionObject(string _name) : BaseObject<List<TableCo
         _method = new(method, pars);
     public override object?[] Params => _method == null
         ? base.Params
-        : [_method.Value.Key.ToString(), _method.Value.Value]; 
+        : new object?[] { _method.Value.Key.ToString() }.Concat(_method.Value.Value).ToArray();
     public override string? Key => _name;
     public override List<TableColumnProperties> Properties { get => _xl; protected set => _xl = value; }
     public override List<TableColumnProperties> LocalProperties { get => _local; set => _local = value; }

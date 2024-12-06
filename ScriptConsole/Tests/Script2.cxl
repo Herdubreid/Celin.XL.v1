@@ -2,7 +2,8 @@ xl.tables
 .get(ab).delete
 
 xl.tables
-.add(ab)
+.add(f1)
+.name(ab)
 .body(@ab.data)
 
 xl.tables
@@ -18,3 +19,4 @@ xl.tables
 xl.range(a1) = w01012b jde0001 [19,20,50,50] all(1[19] = 2000 1[20] ? "Hallo" 1[48] > 4000)
 
 xl.range(b1) = (f0101 [group(at1) count_distinct(alph)]).rows
+

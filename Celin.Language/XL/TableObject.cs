@@ -17,14 +17,22 @@ public record TableProperties(
     bool? ShowTotals = null,
     string? Style = null) : BaseProperties
 {
+    public enum Methods { add, get, delete }
     public TableProperties() : this(Id: null) { }
 };
 public class TableObject : BaseObject<TableProperties>
 {
     public TableColumnCollectionObject Columns =>
         new TableColumnCollectionObject(Key ?? throw new NullReferenceException(nameof(Columns)));
+    public TableRowCollectionObject Rows =>
+        new TableRowCollectionObject(Key ?? throw new NullReferenceException(nameof(Rows)));
+    protected KeyValuePair<TableProperties.Methods, object?[]>? _method = null;
+    public void Method(TableProperties.Methods method, params object?[] pars) =>
+        _method = new(method, pars);
+    public override object?[] Params => _method == null
+        ? base.Params
+        : new object?[] { _method.Value.Key.ToString() }.Concat(_method.Value.Value).ToArray();
     public override string? Key => _xl.Id ?? _local.Name ?? string.Empty;
-    public override string[] Params => [_method?.ToString() ?? string.Empty];
     public override TableProperties Properties
     {
         get => _xl;
@@ -45,23 +53,21 @@ public class TableObject : BaseObject<TableProperties>
     public static TableObject Table(string? name = null)
         => new TableObject(name);
     #region parser
-    protected enum Methods { add, get, delete }
-    protected Methods? _method;
     protected static readonly Parser<char, string> TABLES =
         Try(Skipper.Next(Base.Tok(".tables")));
-    protected static readonly Parser<char, Methods> GET =
-        Try(Skipper.Next(Base.Tok($".{Methods.get}")))
-            .ThenReturn(Methods.get);
-    protected static readonly Parser<char, Methods> ADD =
-        Try(Skipper.Next(Base.Tok($".{Methods.add}")))
-            .ThenReturn(Methods.add);
-    protected static readonly Parser<char, Methods> DELETE =
-        Try(Skipper.Next(Base.Tok($".{Methods.delete}")))
-            .ThenReturn(Methods.delete);
+    protected static readonly Parser<char, TableProperties.Methods> GET =
+        Try(Skipper.Next(Base.Tok($".{TableProperties.Methods.get}")))
+            .ThenReturn(TableProperties.Methods.get);
+    protected static readonly Parser<char, TableProperties.Methods> ADD =
+        Try(Skipper.Next(Base.Tok($".{TableProperties.Methods.add}")))
+            .ThenReturn(TableProperties.Methods.add);
+    protected static readonly Parser<char, TableProperties.Methods> DELETE =
+        Try(Skipper.Next(Base.Tok($".{TableProperties.Methods.delete}")))
+            .ThenReturn(TableProperties.Methods.delete);
     protected static readonly Parser<char, string> NAME =
         Values<string>.STRING.Between(Char('('), Char(')'));
     public static Parser<char, TableObject> Parser =>
-        Map((a, n) => new TableObject(n) { _method = a },
+        Map((a, n) => new TableObject(n),
         XL.Then(TABLES.Then(ADD.Or(GET))),
         NAME);
     #endregion
