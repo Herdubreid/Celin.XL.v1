@@ -119,5 +119,9 @@ public class RangeObject : RangeBaseObject<RangeProperties, RangeObject>
     public static async Task Set(string? key, RangeProperties prop, object?[] pars) =>
         await SyncAsyncDelegate(key, prop, pars);
     public RangeObject(string? address) : base(address) { }
+    public RangeObject(RangeProperties xl) : base(xl.Address)
+    {
+        _xl = xl;
+    }
     public static RangeObject Range(string? address = null) => new(address);
 }

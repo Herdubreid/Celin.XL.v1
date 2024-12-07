@@ -67,7 +67,7 @@ public class TableObject : BaseObject<TableProperties>
         Values<string>.STRING.Between(Char('('), Char(')'));
     public static Parser<char, TableObject> Parser =>
         Map((a, n) => new TableObject(n),
-        XL.Then(TABLES.Then(ADD.Or(GET))),
+        TABLES.Then(ADD.Or(GET)),
         NAME);
     #endregion
 }

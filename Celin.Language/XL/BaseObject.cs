@@ -1,5 +1,4 @@
-﻿using Pidgin;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Celin.Language.XL;
 
@@ -30,7 +29,4 @@ public abstract class BaseObject<T>
         Properties = await SyncAsyncDelegate(Key, LocalProperties, Params);
         LocalProperties = new();
     }
-    #region Parser
-    protected static Parser<char, string> XL = Celin.AIS.Data.Base.Tok("xl");
-    #endregion
 }
