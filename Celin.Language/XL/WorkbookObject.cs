@@ -1,4 +1,6 @@
-﻿using Pidgin;
+﻿using Celin.AIS.Data;
+using Pidgin;
+using static Pidgin.Parser;
 
 namespace Celin.Language.XL;
 
@@ -21,7 +23,16 @@ public class WorkbookObject<T> : BaseObject<T> where T : new()
     protected T _local = new T();
     protected T _xl = new T();
     protected KeyValuePair<WorkbookProperties.Methods, object?[]>? _method = null;
-    #region Parser
-    protected static Parser<char, string> XL = AIS.Data.Base.Tok("xl");
-    #endregion
+}
+public static class WorkbookParser
+{
+    static Parser<char, string> XL => Base.Tok("xl.");
+    static Parser<char, BaseObject> TABLES =>
+        Base.Tok("tables").Then(TableParser.Parser).Cast<BaseObject>();
+    static Parser<char, string> RANGE => Base.Tok("range");
+    public static Parser<char, IEnumerable<BaseObject>> Parser =>
+        XL.Then(OneOf(
+            TABLES,
+            TableParser.Parser,
+            WorksheetParser.Parser).Separated(Char('.')));
 }

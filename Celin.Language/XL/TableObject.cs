@@ -5,16 +5,16 @@ using static Pidgin.Parser;
 namespace Celin.Language.XL;
 
 public record TableProperties(
+    string? Id = null,
     string? Name = null,
     bool? HighlightFirstColumn = null,
     bool? HighlightLastColumn = null,
-    string? LegacyId = null,
     bool? ShowBandedColumns = null,
     bool? ShowBandedRows = null,
     bool? ShowFilterButton = null,
     bool? ShowHeaders = null,
     bool? ShowTotals = null,
-    string? Style = null) : BaseProperties
+    string? Style = null) : BaseProperties(Id)
 {
     public enum Methods { add, get, delete }
     public TableProperties() : this(Name: null) { }
@@ -51,23 +51,54 @@ public class TableObject : BaseObject<TableProperties>
     }
     public static TableObject Table(string? name = null)
         => new TableObject(name);
-    #region parser
-    protected static readonly Parser<char, string> TABLES =
-        Try(Skipper.Next(Base.Tok(".tables")));
-    protected static readonly Parser<char, TableProperties.Methods> GET =
-        Try(Skipper.Next(Base.Tok($".{TableProperties.Methods.get}")))
-            .ThenReturn(TableProperties.Methods.get);
-    protected static readonly Parser<char, TableProperties.Methods> ADD =
-        Try(Skipper.Next(Base.Tok($".{TableProperties.Methods.add}")))
-            .ThenReturn(TableProperties.Methods.add);
-    protected static readonly Parser<char, TableProperties.Methods> DELETE =
-        Try(Skipper.Next(Base.Tok($".{TableProperties.Methods.delete}")))
-            .ThenReturn(TableProperties.Methods.delete);
-    protected static readonly Parser<char, string> NAME =
-        Values<string>.STRING.Between(Char('('), Char(')'));
-    public static Parser<char, TableObject> Parser =>
-        Map((a, n) => new TableObject(n),
-        TABLES.Then(ADD.Or(GET)),
-        NAME);
-    #endregion
+}
+public class TableParser : BaseParser
+{
+    static Parser<char, Action<TableObject>> Name =>
+        Base.Tok(nameof(Name)).Then(STRING_PARAMETER)
+        .Select<Action<TableObject>>(s => table => table.LocalProperties = table.LocalProperties with { Name = s });
+    static Parser<char, Action<TableObject>> HighlightFirstColumn =>
+        Base.Tok(nameof(HighlightFirstColumn)).Then(BOOL_PARAMETER)
+        .Select<Action<TableObject>>(b => table => table.LocalProperties = table.LocalProperties with { HighlightFirstColumn = b });
+    static Parser<char, Action<TableObject>> HighlightLastColumn =>
+        Base.Tok(nameof(HighlightLastColumn)).Then(BOOL_PARAMETER)
+        .Select<Action<TableObject>>(b => table => table.LocalProperties = table.LocalProperties with { HighlightLastColumn = b });
+    static Parser<char, Action<TableObject>> ShowBandedColumns =>
+        Base.Tok(nameof(ShowBandedColumns)).Then(BOOL_PARAMETER)
+        .Select<Action<TableObject>>(b => table => table.LocalProperties = table.LocalProperties with { ShowBandedColumns = b });
+    static Parser<char, Action<TableObject>> ShowBandedRows =>
+        Base.Tok(nameof(ShowBandedRows)).Then(BOOL_PARAMETER)
+        .Select<Action<TableObject>>(b => table => table.LocalProperties = table.LocalProperties with { ShowBandedRows = b });
+    static Parser<char, Action<TableObject>> ShowFilterButton =>
+        Base.Tok(nameof(ShowFilterButton)).Then(BOOL_PARAMETER)
+        .Select<Action<TableObject>>(b => table => table.LocalProperties = table.LocalProperties with { ShowFilterButton = b });
+    static Parser<char, Action<TableObject>> ShowHeaders =>
+        Base.Tok(nameof(ShowHeaders)).Then(BOOL_PARAMETER)
+        .Select<Action<TableObject>>(b => table => table.LocalProperties = table.LocalProperties with { ShowHeaders = b });
+    static Parser<char, Action<TableObject>> ShowTotals =>
+        Base.Tok(nameof(ShowTotals)).Then(BOOL_PARAMETER)
+        .Select<Action<TableObject>>(b => table => table.LocalProperties = table.LocalProperties with { ShowTotals = b });
+    static Parser<char, Action<TableObject>> Style =>
+        Base.Tok(nameof(Style)).Then(STRING_PARAMETER)
+        .Select<Action<TableObject>>(s => table => table.LocalProperties = table.LocalProperties with { Style = s });
+    static Parser<char, TableObject> TABLE =>
+        Base.Tok("table").Then(STRING_PARAMETER.Optional())
+        .Select(t => new TableObject(t.HasValue ? t.Value : null));
+    public static Parser<char, BaseObject> Parser =>
+        Map((t, ps) =>
+        {
+            foreach (var p in ps) p(t);
+            return t as BaseObject;
+        },
+        Skipper.Next(TABLE).Before(Char('.')),
+        OneOf(
+            Name,
+            HighlightFirstColumn,
+            HighlightLastColumn,
+            ShowBandedColumns,
+            ShowBandedRows,
+            ShowFilterButton,
+            ShowHeaders,
+            ShowTotals,
+            Style).Separated(Char('.')));
 }

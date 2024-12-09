@@ -20,8 +20,8 @@ public class ScriptShell
         FormatObject.Format(address);
     public static RangeObject Range(string? address = null) =>
         RangeObject.Range(address);
-    public static SheetObject Sheet(string? name = null) =>
-        SheetObject.Sheet(name);
+    public static WorksheetObject Sheet(string? name = null) =>
+        WorksheetObject.Sheet(name);
     public QueryObject Query(string query) => QueryObject.Query(E1.Default.Server, query);
     public E1 E1 { get; }
     public CancellationToken Cancel { get; set; }
