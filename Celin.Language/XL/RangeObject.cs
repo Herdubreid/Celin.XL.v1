@@ -124,4 +124,8 @@ public class RangeObject : RangeBaseObject<RangeProperties, RangeObject>
         _xl = xl;
     }
     public static RangeObject Range(string? address = null) => new(address);
+    #region operators
+    public static explicit operator RangeObject(WorkbookObject<RangeProperties> wb) =>
+        new RangeObject(wb.Properties);
+    #endregion
 }

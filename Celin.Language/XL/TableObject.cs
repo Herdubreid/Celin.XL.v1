@@ -4,23 +4,23 @@ using static Pidgin.Parser;
 
 namespace Celin.Language.XL;
 
-public record TableProperties(
-    string? Id = null,
-    string? Name = null,
-    bool? HighlightFirstColumn = null,
-    bool? HighlightLastColumn = null,
-    bool? ShowBandedColumns = null,
-    bool? ShowBandedRows = null,
-    bool? ShowFilterButton = null,
-    bool? ShowHeaders = null,
-    bool? ShowTotals = null,
-    string? Style = null) : BaseProperties(Id)
+public record TableProperties(string? Id = null) : BaseProperties(Id)
 {
-    public enum Methods { add, get, delete }
-    public TableProperties() : this(Name: null) { }
+    public string? Name { get; set; }
+    public bool? HighlightFirstColumn { get; set; }
+    public bool? HighlightLastColumn { get; set; }
+    public bool? ShowBandedColumns { get; set; }
+    public bool? ShowBandedRows { get; set; }
+    public bool? ShowFilterButton { get; set; }
+    public bool? ShowHeaders { get; set; }
+    public bool? ShowTotals { get; set; }
+    public string? Style { get; set; }
+    public enum Methods { getTable, addTable }
+    public TableProperties() : this(Id: null) { }
 };
 public class TableObject : BaseObject<TableProperties>
 {
+    public string? Cql { get; set; }
     public TableColumnCollectionObject Columns =>
         new TableColumnCollectionObject(Key ?? throw new NullReferenceException(nameof(Columns)));
     public TableRowCollectionObject Rows =>
@@ -31,7 +31,7 @@ public class TableObject : BaseObject<TableProperties>
     public override object?[] Params => _method == null
         ? base.Params
         : new object?[] { _method.Value.Key.ToString() }.Concat(_method.Value.Value).ToArray();
-    public override string? Key => _xl.Id ?? _local.Name ?? string.Empty;
+    public override string? Key => _xl.Id ?? _xl.Name ?? _local.Name ?? string.Empty;
     public override TableProperties Properties
     {
         get => _xl;
@@ -42,55 +42,42 @@ public class TableObject : BaseObject<TableProperties>
         get => _local;
         set => _local = value;
     }
-    protected TableProperties _local;
-    protected TableProperties _xl;
-    public TableObject(string? tableName)
-    {
-        _xl = new TableProperties();
-        _local = new TableProperties(Name: tableName);
-    }
-    public static TableObject Table(string? name = null)
-        => new TableObject(name);
+    protected TableProperties _local = new TableProperties();
+    protected TableProperties _xl = new TableProperties();
 }
 public class TableParser : BaseParser
 {
     static Parser<char, Action<TableObject>> Name =>
-        Base.Tok(nameof(Name)).Then(STRING_PARAMETER)
-        .Select<Action<TableObject>>(s => table => table.LocalProperties = table.LocalProperties with { Name = s });
+        Tok(nameof(Name)).Then(STRING_PARAMETER)
+        .Select<Action<TableObject>>(s => table => table.LocalProperties.Name = s);
     static Parser<char, Action<TableObject>> HighlightFirstColumn =>
-        Base.Tok(nameof(HighlightFirstColumn)).Then(BOOL_PARAMETER)
-        .Select<Action<TableObject>>(b => table => table.LocalProperties = table.LocalProperties with { HighlightFirstColumn = b });
+        Tok(nameof(HighlightFirstColumn)).Then(BOOL_PARAMETER)
+        .Select<Action<TableObject>>(b => table => table.LocalProperties.HighlightFirstColumn = b);
     static Parser<char, Action<TableObject>> HighlightLastColumn =>
-        Base.Tok(nameof(HighlightLastColumn)).Then(BOOL_PARAMETER)
-        .Select<Action<TableObject>>(b => table => table.LocalProperties = table.LocalProperties with { HighlightLastColumn = b });
+        Tok(nameof(HighlightLastColumn)).Then(BOOL_PARAMETER)
+        .Select<Action<TableObject>>(b => table => table.LocalProperties.HighlightLastColumn = b);
     static Parser<char, Action<TableObject>> ShowBandedColumns =>
-        Base.Tok(nameof(ShowBandedColumns)).Then(BOOL_PARAMETER)
-        .Select<Action<TableObject>>(b => table => table.LocalProperties = table.LocalProperties with { ShowBandedColumns = b });
+        Tok(nameof(ShowBandedColumns)).Then(BOOL_PARAMETER)
+        .Select<Action<TableObject>>(b => table => table.LocalProperties.ShowBandedColumns = b);
     static Parser<char, Action<TableObject>> ShowBandedRows =>
-        Base.Tok(nameof(ShowBandedRows)).Then(BOOL_PARAMETER)
-        .Select<Action<TableObject>>(b => table => table.LocalProperties = table.LocalProperties with { ShowBandedRows = b });
+        Tok(nameof(ShowBandedRows)).Then(BOOL_PARAMETER)
+        .Select<Action<TableObject>>(b => table => table.LocalProperties.ShowBandedRows = b);
     static Parser<char, Action<TableObject>> ShowFilterButton =>
-        Base.Tok(nameof(ShowFilterButton)).Then(BOOL_PARAMETER)
-        .Select<Action<TableObject>>(b => table => table.LocalProperties = table.LocalProperties with { ShowFilterButton = b });
+        Tok(nameof(ShowFilterButton)).Then(BOOL_PARAMETER)
+        .Select<Action<TableObject>>(b => table => table.LocalProperties.ShowFilterButton = b);
     static Parser<char, Action<TableObject>> ShowHeaders =>
-        Base.Tok(nameof(ShowHeaders)).Then(BOOL_PARAMETER)
-        .Select<Action<TableObject>>(b => table => table.LocalProperties = table.LocalProperties with { ShowHeaders = b });
+        Tok(nameof(ShowHeaders)).Then(BOOL_PARAMETER)
+        .Select<Action<TableObject>>(b => table => table.LocalProperties.ShowHeaders = b);
     static Parser<char, Action<TableObject>> ShowTotals =>
-        Base.Tok(nameof(ShowTotals)).Then(BOOL_PARAMETER)
-        .Select<Action<TableObject>>(b => table => table.LocalProperties = table.LocalProperties with { ShowTotals = b });
+        Tok(nameof(ShowTotals)).Then(BOOL_PARAMETER)
+        .Select<Action<TableObject>>(b => table => table.LocalProperties.ShowTotals = b);
     static Parser<char, Action<TableObject>> Style =>
-        Base.Tok(nameof(Style)).Then(STRING_PARAMETER)
-        .Select<Action<TableObject>>(s => table => table.LocalProperties = table.LocalProperties with { Style = s });
-    static Parser<char, TableObject> TABLE =>
-        Base.Tok("table").Then(STRING_PARAMETER.Optional())
-        .Select(t => new TableObject(t.HasValue ? t.Value : null));
-    public static Parser<char, BaseObject> Parser =>
-        Map((t, ps) =>
-        {
-            foreach (var p in ps) p(t);
-            return t as BaseObject;
-        },
-        Skipper.Next(TABLE).Before(Char('.')),
+        Tok(nameof(Style)).Then(STRING_PARAMETER)
+        .Select<Action<TableObject>>(s => table => table.LocalProperties.Style = s);
+    static Parser<char, Action<TableObject>> Cql =>
+        Tok(nameof(Cql)).Then(STRING_PARAMETER)
+        .Select<Action<TableObject>>(s => table => table.Cql = s);
+    public static Parser<char, IEnumerable<Action<TableObject>>> PROPERTIES =>
         OneOf(
             Name,
             HighlightFirstColumn,
@@ -100,5 +87,36 @@ public class TableParser : BaseParser
             ShowFilterButton,
             ShowHeaders,
             ShowTotals,
-            Style).Separated(Char('.')));
+            Style)
+        .Separated(DOT_SEPARATOR);
+    static Parser<char, Maybe<string>> TABLE =>
+        Tok("table")
+        .Then(ADDRESS_PARAMETER.Optional());
+    static Parser<char, BaseObject> GetTable =>
+        Map((n, actions) =>
+        {
+            var table = new TableObject();
+            table.Method(TableProperties.Methods.getTable, n);
+            if (actions.HasValue)
+                foreach (var action in actions.Value)
+                    action(table);
+            return table as BaseObject;
+        },
+        TABLES.Before(DOT_SEPARATOR),
+        PROPERTIES.Optional());
+    static Parser<char, string> TABLES =>
+         Base.Tok("tables")
+         .Then(STRING_PARAMETER);
+    static Parser<char, BaseObject> AddTable =>
+        Map((a, actions) =>
+        {
+            var table = new TableObject();
+            table.Method(TableProperties.Methods.addTable, a.Value, true);
+            foreach (var action in actions) action(table);
+            return table as BaseObject;
+        },
+        TABLE.Before(DOT_SEPARATOR),
+        PROPERTIES);
+    public static Parser<char, BaseObject> PARSER =>
+        OneOf(GetTable, AddTable);
 }

@@ -62,7 +62,7 @@ public class ListObject<T> : BaseObject<List<List<T>>?>
         Func<List<List<T>>?> getXl,
         Action<List<List<T>>?> setXl)
     {
-        Dim = RangeObject.Dim(range.Address!);
+        Dim = CellReference.Dim(range.Address!);
         Params = [props];
         _range = range;
         _getLocal = getLocal;
