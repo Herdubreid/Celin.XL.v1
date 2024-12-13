@@ -13,6 +13,10 @@ public class ListObject<T> : BaseObject<List<List<T>>?>
 
         return this;
     }
+    public void Set(List<List<T>> matrix)
+    {
+
+    }
     public T this[int row, int col]
     {
         get => (_getXl() ?? Init).ElementAt(row)!.ElementAt(col)!;

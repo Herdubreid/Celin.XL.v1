@@ -31,7 +31,7 @@ Console.WriteLine(d);
 */
 //TestParser.Run(logger);
 
-BaseObject<SheetProperties>.SyncAsyncDelegate = Matrix.Sync;
+//BaseObject<WorksheetProperties>.SyncAsyncDelegate = Matrix.Sync;
 var e1 = new E1([new E1.Host("e1", new Server("demo.steltix.com/v2/", logger))]);
 
 await Script1.Run(e1);

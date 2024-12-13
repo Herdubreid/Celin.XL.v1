@@ -60,8 +60,8 @@ public class JsService
         => _js.InvokeAsync<T>(XL(xl.syncList), key, pars[0], values);
     public ValueTask<RangeProperties> syncRange(string? key, RangeProperties values, params object?[] pars)
         => _js.InvokeAsync<RangeProperties>(XL(xl.syncRange), key, values);
-    public ValueTask<SheetProperties> syncSheet(string? key, SheetProperties values, params object?[] pars)
-        => _js.InvokeAsync<SheetProperties>(XL(xl.syncSheet), key, values);
+    public ValueTask<WorksheetProperties> syncSheet(string? key, WorksheetProperties values, params object?[] pars)
+        => _js.InvokeAsync<WorksheetProperties>(XL(xl.syncSheet), key, values);
     #endregion
     #region invokables
     [JSInvokable]
@@ -130,6 +130,6 @@ public class JsService
         BaseObject<List<List<string?>>>.SyncAsyncDelegate = syncList;
         BaseObject<List<List<object?>>>.SyncAsyncDelegate = syncList;
         BaseObject<RangeProperties>.SyncAsyncDelegate = syncRange;
-        BaseObject<SheetProperties>.SyncAsyncDelegate = syncSheet;
+        BaseObject<WorksheetProperties>.SyncAsyncDelegate = syncSheet;
     }
 }

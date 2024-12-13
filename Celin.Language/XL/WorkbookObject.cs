@@ -28,12 +28,12 @@ public class WorkbookParser : BaseParser
 {
     static Parser<char, string> XL =>
         Base.Tok("xl").Before(DOT_SEPARATOR);
-    static Parser<char, string> RANGE => Base.Tok("range");
     public static Parser<char, IEnumerable<BaseObject>> Parser =>
         XL
         .Then(
             OneOf(
                 TableParser.Table,
+                RangeParser.Range,
                 WorksheetParser.Parser)
             .Separated(DOT_SEPARATOR));
 }
