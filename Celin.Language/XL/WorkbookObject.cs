@@ -33,7 +33,7 @@ public class WorkbookParser : BaseParser
         XL
         .Then(
             OneOf(
-                TableParser.PARSER,
+                TableParser.Table,
                 WorksheetParser.Parser)
             .Separated(DOT_SEPARATOR));
 }

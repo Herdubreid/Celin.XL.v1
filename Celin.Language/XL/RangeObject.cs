@@ -1,27 +1,28 @@
-﻿namespace Celin.Language.XL;
+﻿using Pidgin;
 
-public record RangeProperties(
-    string? Address = null,
-    int? CellCount = null,
-    int? ColumnCount = null,
-    bool? ColumnHidden = null,
-    int? ColumnIndex = null,
-    List<List<object?>>? Formulas = null,
-    bool? HasSpill = null,
-    decimal? Height = null,
-    bool? Hidden = null,
-    bool? IsEntireColumn = null,
-    bool? IsEntireRow = null,
-    List<List<string?>>? NumberFormat = null,
-    int? RowCount = null,
-    bool? RowHidden = null,
-    int? RowIndex = null,
-    string? Style = null,
-    List<List<string?>>? Text = null,
-    List<List<object?>>? Values = null,
-    List<List<string?>>? ValueTypes = null) : BaseProperties
+namespace Celin.Language.XL;
+
+public record RangeProperties() : BaseProperties
 {
-    public RangeProperties() : this(Address: null) { }
+    public string? Address { get; set; }
+    public int? CellCount { get; set; }
+    public int? ColumnCount { get; set; }
+    public bool? ColumnHidden { get; set; }
+    public int? ColumnIndex { get; set; }
+    public List<List<object?>>? Formulas { get; set; }
+    public bool? HasSpill { get; set; }
+    public decimal? Height { get; set; }
+    public bool? Hidden { get; set; }
+    public bool? IsEntireColumn { get; set; }
+    public bool? IsEntireRow { get; set; }
+    public List<List<string?>>? NumberFormat { get; set; }
+    public int? RowCount { get; set; }
+    public bool? RowHidden { get; set; }
+    public int? RowIndex { get; set; }
+    public string? Style { get; set; }
+    public List<List<string?>>? Text { get; set; }
+    public List<List<object?>>? Values { get; set; }
+    public List<List<string?>>? ValueTypes { get; set; }
 };
 
 public class RangeObject : RangeBaseObject<RangeProperties, RangeObject>
@@ -128,4 +129,37 @@ public class RangeObject : RangeBaseObject<RangeProperties, RangeObject>
     public static explicit operator RangeObject(WorkbookObject<RangeProperties> wb) =>
         new RangeObject(wb.Properties);
     #endregion
+}
+public class RangeParser : BaseParser
+{
+    static Parser<char, Action<RangeObject>> Address =>
+        Tok(nameof(Address)).Then(ADDRESS_PARAMETER)
+        .Select<Action<RangeObject>>(a => range => range.LocalProperties.Address = a);
+    static Parser<char, Action<RangeObject>> ColumnCount =>
+        Tok(nameof(ColumnCount)).Then(INT_PARAMETER)
+        .Select<Action<RangeObject>>(i => range => range.LocalProperties.ColumnCount = i);
+    static Parser<char, Action<RangeObject>> ColumnHidden =>
+        Tok(nameof(ColumnHidden)).Then(BOOL_PARAMETER)
+        .Select<Action<RangeObject>>(b => range => range.LocalProperties.ColumnHidden = b);
+    static Parser<char, Action<RangeObject>> RowHidden =>
+        Tok(nameof(RowHidden)).Then(BOOL_PARAMETER)
+        .Select<Action<RangeObject>>(b => range => range.LocalProperties.RowHidden = b);
+    static Parser<char, Action<RangeObject>> Formulas =>
+        Tok(nameof(Formulas)).Then(OBJECT_MATRIX_PARAMETER)
+        .Select<Action<RangeObject>>(m => range => range.LocalProperties.Formulas = m);
+    static Parser<char, Action<RangeObject>> NumberFormat =>
+        Tok(nameof(NumberFormat)).Then(STRING_MATRIX_PARAMETER)
+        .Select<Action<RangeObject>>(m => range => range.LocalProperties.NumberFormat = m);
+    static Parser<char, Action<RangeObject>> Text =>
+        Tok(nameof(Text)).Then(STRING_MATRIX_PARAMETER)
+        .Select<Action<RangeObject>>(m => range => range.LocalProperties.Text = m);
+    static Parser<char, Action<RangeObject>> Values =>
+        Tok(nameof(Values)).Then(OBJECT_MATRIX_PARAMETER)
+        .Select<Action<RangeObject>>(m => range => range.LocalProperties.Values = m);
+    static Parser<char, Action<RangeObject>> ValueTypes =>
+        Tok(nameof(ValueTypes)).Then(STRING_MATRIX_PARAMETER)
+        .Select<Action<RangeObject>>(m => range => range.LocalProperties.ValueTypes = m);
+    static Parser<char, Action<RangeObject>> Style =>
+        Tok(nameof(Style)).Then(STRING_PARAMETER)
+        .Select<Action<RangeObject>>(s => range => range.LocalProperties.Style = s);
 }

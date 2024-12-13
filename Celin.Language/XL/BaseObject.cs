@@ -45,21 +45,44 @@ public static class ParserExtensions
 {
     public static Parser<char, T> InBraces<T>(this Parser<char, T> parser) =>
         Char('(').Then(parser).Before(Char(')'));
+    public static Parser<char, T> InBracket<T>(this Parser<char, T> parser) =>
+        Char('[').Then(parser).Before(Char(']'));
+    public static Parser<char, T> Trim<T>(this Parser<char, T> parser) =>
+        parser.Before(SkipWhitespaces);
+    public static Parser<char, T> DotPrefix<T>(this Parser<char, T> parser) =>
+        Try(SkipWhitespaces.Then(Char('.')).Then(parser));
+    public static Parser<char, T> Actions<T>(
+        this Parser<char, T> parser,
+        Parser<char, IEnumerable<Action<T>>> actions)
+        where T : BaseObject =>
+        Map((obj, actions) =>
+        {
+            if (actions.HasValue)
+                foreach (var action in actions.Value)
+                    action(obj);
+            return obj;
+        },
+        parser,
+        actions.DotPrefix().Optional());
 }
 public class BaseParser
 {
     protected static Parser<char, T> Tok<T>(Parser<char, T> p) =>
-        Try(p).Before(SkipWhitespaces);
+        Try(SkipWhitespaces.Then(p)).Before(SkipWhitespaces);
     protected static Parser<char, char> Tok(char value) => Tok(CIChar(value));
     protected static Parser<char, string> Tok(string value) => Tok(CIString(value));
     protected static Parser<char, string> ALIAS =>
-        Map((l, r) => l + (r.HasValue ? r.Value : string.Empty),
-        Values<string>.STRING,
-        Values<string>.STRING.Before(Char('.')).Optional());
+        Map((l, r) => l.ToUpper() + (r.HasValue ? $".{r.Value.ToUpper()}" : string.Empty),
+        LetterOrDigit.AtLeastOnceString(),
+        Char('.').Then(LetterOrDigit.AtLeastOnceString()).Optional());
     protected static Parser<char, char> DOT_SEPARATOR =>
         SkipWhitespaces.Then(Char('.'));
     protected static Parser<char, char> COMMA_SEPARATOR =>
         SkipWhitespaces.Then(Char(','));
+    protected static Parser<char, List<List<object?>>> OBJECT_MATRIX_PARAMETER =>
+        Values<object?>.MATRIX.InBraces();
+    protected static Parser<char, List<List<string?>>> STRING_MATRIX_PARAMETER =>
+        Values<string?>.MATRIX.InBraces();
     protected static Parser<char, string> ADDRESS =>
         AnyCharExcept(')').ManyString().Select(s =>
         {
@@ -67,13 +90,13 @@ public class BaseParser
             return cref.Address;
         });
     protected static Parser<char, string> ADDRESS_PARAMETER =>
-        ADDRESS.InBraces(); //.Between(Char('('), Char(')'));
+        ADDRESS.InBraces();
     protected static Parser<char, string> STRING_PARAMETER =>
-        Values<string>.STRING.InBraces(); //.Between(Char('('), Char(')'));
+        Values<string>.STRING.InBraces();
     protected static Parser<char, int> INT_PARAMETER =>
-        Values<int>.NUMBER.Between(Char('('), Char(')'));
+        Values<int>.NUMBER.InBraces();
     protected static Parser<char, decimal> DECIMAL_PARAMETER =>
-        Values<decimal>.NUMBER.Between(Char('('), Char(')'));
+        Values<decimal>.NUMBER.InBraces();
     protected static Parser<char, bool> BOOL_PARAMETER =>
-        Values<string>.BOOL.Between(Char('('), Char(')'));
+        Values<string>.BOOL.InBraces();
 }

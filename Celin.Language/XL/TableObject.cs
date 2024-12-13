@@ -20,7 +20,7 @@ public record TableProperties(string? Id = null) : BaseProperties(Id)
 };
 public class TableObject : BaseObject<TableProperties>
 {
-    public string? Cql { get; set; }
+    public CqlObject? Cql { get; set; }
     public TableColumnCollectionObject Columns =>
         new TableColumnCollectionObject(Key ?? throw new NullReferenceException(nameof(Columns)));
     public TableRowCollectionObject Rows =>
@@ -75,9 +75,9 @@ public class TableParser : BaseParser
         Tok(nameof(Style)).Then(STRING_PARAMETER)
         .Select<Action<TableObject>>(s => table => table.LocalProperties.Style = s);
     static Parser<char, Action<TableObject>> Cql =>
-        Tok(nameof(Cql)).Then(STRING_PARAMETER)
-        .Select<Action<TableObject>>(s => table => table.Cql = s);
-    public static Parser<char, IEnumerable<Action<TableObject>>> PROPERTIES =>
+        CqlParser.Query
+        .Select<Action<TableObject>>(cql => table => table.Cql = cql);
+    static Parser<char, IEnumerable<Action<TableObject>>> PROPERTIES =>
         OneOf(
             Name,
             HighlightFirstColumn,
@@ -87,36 +87,31 @@ public class TableParser : BaseParser
             ShowFilterButton,
             ShowHeaders,
             ShowTotals,
-            Style)
+            Style,
+            Cql)
         .Separated(DOT_SEPARATOR);
-    static Parser<char, Maybe<string>> TABLE =>
+    static Parser<char, TableObject> TABLE =>
         Tok("table")
-        .Then(ADDRESS_PARAMETER.Optional());
+        .Then(ADDRESS_PARAMETER.Optional())
+        .Select(s =>
+        {
+            var table = new TableObject();
+            table.Method(TableProperties.Methods.addTable, s.HasValue ? s.Value : null);
+            return table;
+        });
+    static Parser<char, TableObject> TABLES =>
+        Tok("tables")
+        .Then(STRING_PARAMETER)
+        .Select(s =>
+        {
+            var table = new TableObject();
+            table.Method(TableProperties.Methods.getTable, s);
+            return table;
+        });
     static Parser<char, BaseObject> GetTable =>
-        Map((n, actions) =>
-        {
-            var table = new TableObject();
-            table.Method(TableProperties.Methods.getTable, n);
-            if (actions.HasValue)
-                foreach (var action in actions.Value)
-                    action(table);
-            return table as BaseObject;
-        },
-        TABLES.Before(DOT_SEPARATOR),
-        PROPERTIES.Optional());
-    static Parser<char, string> TABLES =>
-         Base.Tok("tables")
-         .Then(STRING_PARAMETER);
+        TABLES.Actions(PROPERTIES).Cast<BaseObject>();
     static Parser<char, BaseObject> AddTable =>
-        Map((a, actions) =>
-        {
-            var table = new TableObject();
-            table.Method(TableProperties.Methods.addTable, a.Value, true);
-            foreach (var action in actions) action(table);
-            return table as BaseObject;
-        },
-        TABLE.Before(DOT_SEPARATOR),
-        PROPERTIES);
-    public static Parser<char, BaseObject> PARSER =>
+        TABLE.Actions(PROPERTIES).Cast<BaseObject>();
+    public static Parser<char, BaseObject> Table =>
         OneOf(GetTable, AddTable);
 }

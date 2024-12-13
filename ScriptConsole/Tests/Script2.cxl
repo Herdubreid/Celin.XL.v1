@@ -1,18 +1,22 @@
-@customers = xl
+xl
 .table(b5)
-.query(f0101)
+.cql(f0101)
 .fields(an8,alph)
 .all(at1=C)
 .orAll(at1>D)
 .asc(alph)
 
-@balance = xl.
+cql.refresh()
+
+
+xl.
 .table(h2)
 .aggregate(f0911)
 .group(ani)
 .sum(aa)
 .all(fy=19)
 .orAny(pn-11)
+
 
 @cd = xl.tables(ab);
 
