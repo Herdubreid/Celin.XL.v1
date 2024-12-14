@@ -148,7 +148,7 @@ public class RangeParser : BaseParser
         .Select<Action<RangeObject>>(b => range => range.LocalProperties.RowHidden = b);
     static Parser<char, Action<RangeObject>> Formulas =>
         Tok(nameof(Formulas)).Then(OBJECT_MATRIX_PARAMETER)
-        .Select<Action<RangeObject>>(m => range => range.Formulas.Set(m));
+        .Select<Action<RangeObject>>(m => range => range.LocalProperties.Formulas = m);
     static Parser<char, Action<RangeObject>> NumberFormat =>
         Tok(nameof(NumberFormat)).Then(STRING_MATRIX_PARAMETER)
         .Select<Action<RangeObject>>(m => range => range.LocalProperties.NumberFormat = m);
@@ -167,7 +167,11 @@ public class RangeParser : BaseParser
     static Parser<char, Action<RangeObject>> Cql =>
         CqlParser.Query
         .Select<Action<RangeObject>>(cql => range => range.Cql = cql);
-    static Parser<char, IEnumerable<Action<RangeObject>>> ACTIONS =>
+    static Parser<char, RangeObject> RANGE =>
+        Tok("range")
+        .Then(ADDRESS_PARAMETER).Optional()
+        .Select(a => new RangeObject(a.HasValue ? a.Value : null));
+    public static Parser<char, IEnumerable<Action<RangeObject>>> Actions =>
         OneOf(
             Address,
             ColumnCount,
@@ -181,10 +185,6 @@ public class RangeParser : BaseParser
             Style,
             Cql)
         .Separated(DOT_SEPARATOR);
-    static Parser<char, RangeObject> RANGE =>
-        Tok("range")
-        .Then(ADDRESS_PARAMETER).Optional()
-        .Select(a => new RangeObject(a.HasValue ? a.Value : null));
     public static Parser<char, BaseObject> Range =>
-        RANGE.Actions(ACTIONS).Cast<BaseObject>();
+        RANGE.Actions(Actions).Cast<BaseObject>();
 }

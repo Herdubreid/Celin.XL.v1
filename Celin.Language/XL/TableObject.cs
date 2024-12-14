@@ -21,10 +21,10 @@ public record TableProperties(string? Id = null) : BaseProperties(Id)
 public class TableObject : BaseObject<TableProperties>
 {
     public CqlObject? Cql { get; set; }
-    public TableColumnCollectionObject Columns =>
-        new TableColumnCollectionObject(Key ?? throw new NullReferenceException(nameof(Columns)));
-    public TableRowCollectionObject Rows =>
-        new TableRowCollectionObject(Key ?? throw new NullReferenceException(nameof(Rows)));
+    public TableColumnsObject Columns =>
+        new TableColumnsObject(Key ?? throw new NullReferenceException(nameof(Columns)));
+    public TableRowsObject Rows =>
+        new TableRowsObject(Key ?? throw new NullReferenceException(nameof(Rows)));
     protected KeyValuePair<TableProperties.Methods, object?[]>? _method = null;
     public void Method(TableProperties.Methods method, params object?[] pars) =>
         _method = new(method, pars);
@@ -77,19 +77,6 @@ public class TableParser : BaseParser
     static Parser<char, Action<TableObject>> Cql =>
         CqlParser.Query
         .Select<Action<TableObject>>(cql => table => table.Cql = cql);
-    static Parser<char, IEnumerable<Action<TableObject>>> PROPERTIES =>
-        OneOf(
-            Name,
-            HighlightFirstColumn,
-            HighlightLastColumn,
-            ShowBandedColumns,
-            ShowBandedRows,
-            ShowFilterButton,
-            ShowHeaders,
-            ShowTotals,
-            Style,
-            Cql)
-        .Separated(DOT_SEPARATOR);
     static Parser<char, TableObject> TABLE =>
         Tok("table")
         .Then(ADDRESS_PARAMETER.Optional())
@@ -108,10 +95,22 @@ public class TableParser : BaseParser
             table.Method(TableProperties.Methods.getTable, s);
             return table;
         });
-    static Parser<char, BaseObject> GetTable =>
-        TABLES.Actions(PROPERTIES).Cast<BaseObject>();
-    static Parser<char, BaseObject> AddTable =>
-        TABLE.Actions(PROPERTIES).Cast<BaseObject>();
-    public static Parser<char, BaseObject> Table =>
-        OneOf(GetTable, AddTable);
+    public static Parser<char, IEnumerable<Action<TableObject>>> Actions =>
+        OneOf(
+            Name,
+            HighlightFirstColumn,
+            HighlightLastColumn,
+            ShowBandedColumns,
+            ShowBandedRows,
+            ShowFilterButton,
+            ShowHeaders,
+            ShowTotals,
+            Style,
+            Cql)
+        .Separated(DOT_SEPARATOR);
+    public static Parser<char, BaseObject> Object =>
+        OneOf(
+            TABLES.Actions(Actions),
+            TABLE.Actions(Actions))
+        .Cast<BaseObject>();
 }

@@ -1,12 +1,22 @@
 xl
 .table(b5)
-.cql(f0101)
+
+cql(f0101)
 .fields(an8,alph)
 .all(at1=C)
 .orAll(at1>D)
 .asc(alph)
 
 cql.refresh()
+
+xl
+.table(e1)
+.header("First","Second","Third")
+.format([,,"@"])
+.body([1,2,3],[4,5,6])
+
+columns[0]
+.name(First)
 
 
 xl.

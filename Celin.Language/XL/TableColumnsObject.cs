@@ -9,7 +9,7 @@ public record TableColumnProperties(
     public enum Methods { add, getCount, getItem }
     public TableColumnProperties() : this(Id: null) { }
 }
-public class TableColumnCollectionObject(string _name) : BaseObject<List<TableColumnProperties>>
+public class TableColumnsObject(string _name) : BaseObject<List<TableColumnProperties>>
 {
     protected KeyValuePair<TableColumnProperties.Methods, object?[]>? _method = null;
     public void Method(TableColumnProperties.Methods method, params object?[] pars) =>
@@ -22,5 +22,8 @@ public class TableColumnCollectionObject(string _name) : BaseObject<List<TableCo
     public override List<TableColumnProperties> LocalProperties { get => _local; set => _local = value; }
     protected List<TableColumnProperties> _local = new List<TableColumnProperties>();
     protected List<TableColumnProperties> _xl = new List<TableColumnProperties>();
-    public static TableColumnCollectionObject TableColumnCollection(string name) => new(name);
+    public static TableColumnsObject TableColumnCollection(string name) => new(name);
+}
+public class TableColumnsParser
+{
 }

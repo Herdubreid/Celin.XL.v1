@@ -7,7 +7,7 @@ public record TableRowProperties(
     public enum Methods { add }
     public TableRowProperties() : this(Index: null) { }
 }
-public class TableRowCollectionObject(string _name) : BaseObject<List<TableRowProperties>>
+public class TableRowsObject(string _name) : BaseObject<List<TableRowProperties>>
 {
     protected KeyValuePair<TableRowProperties.Methods, object?[]>? _method = null;
     public void Method(TableRowProperties.Methods method, params object?[] pars) =>
@@ -20,5 +20,5 @@ public class TableRowCollectionObject(string _name) : BaseObject<List<TableRowPr
     public override List<TableRowProperties> LocalProperties { get => _local; set => _local = value; }
     protected List<TableRowProperties> _local = new List<TableRowProperties>();
     protected List<TableRowProperties> _xl = new List<TableRowProperties>();
-    public static TableRowCollectionObject TableRowCollection(string name) => new(name);
+    public static TableRowsObject TableRowCollection(string name) => new(name);
 }
