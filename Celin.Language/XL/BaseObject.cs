@@ -1,7 +1,6 @@
 ﻿using Pidgin;
-using static Pidgin.Parser;
-using static Pidgin.Parser<char>;
 using System.Text.Json.Serialization;
+using static Pidgin.Parser;
 
 namespace Celin.Language.XL;
 
@@ -12,8 +11,8 @@ namespace Celin.Language.XL;
 [JsonDerivedType(typeof(FillProperties), nameof(FillProperties))]
 [JsonDerivedType(typeof(FontProperties), nameof(FontProperties))]
 [JsonDerivedType(typeof(TableProperties), nameof(TableProperties))]
-[JsonDerivedType(typeof(TableColumnProperties), nameof(TableColumnProperties))]
-[JsonDerivedType(typeof(TableRowProperties), nameof(TableRowProperties))]
+[JsonDerivedType(typeof(TableHeaderProperties), nameof(TableHeaderProperties))]
+[JsonDerivedType(typeof(TableBodyProperties), nameof(TableBodyProperties))]
 public record BaseProperties(
     string? Id = null)
 {
@@ -29,7 +28,7 @@ public abstract class BaseObject<T> : BaseObject
     public abstract T Properties { get; protected set; }
     public abstract T LocalProperties { get; set; }
     public static SyncAsyncDelegate<T> SyncAsyncDelegate { get; set; } = null!;
-    public async Task Sync()
+    public async Task SyncAsync()
     {
         Properties = await SyncAsyncDelegate(Key, LocalProperties, Params);
         LocalProperties = new();
@@ -79,6 +78,10 @@ public class BaseParser
         SkipWhitespaces.Then(Char('.'));
     protected static Parser<char, char> COMMA_SEPARATOR =>
         SkipWhitespaces.Then(Char(','));
+    protected static Parser<char, List<object?>> OBJECT_ARRAY_PARAMETER =>
+        Values<object?>.ARRAY.InBraces();
+    protected static Parser<char, List<string?>> STRING_ARRAY_PARAMETER =>
+        Values<string?>.ARRAY.InBraces();
     protected static Parser<char, List<List<object?>>> OBJECT_MATRIX_PARAMETER =>
         Values<object?>.MATRIX.InBraces();
     protected static Parser<char, List<List<string?>>> STRING_MATRIX_PARAMETER =>
@@ -86,6 +89,7 @@ public class BaseParser
     protected static Parser<char, string> ADDRESS =>
         AnyCharExcept(')').ManyString().Select(s =>
         {
+            if (string.IsNullOrEmpty(s)) return string.Empty;
             var cref = new CellReference(s);
             return cref.Address;
         });

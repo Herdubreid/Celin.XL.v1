@@ -1,6 +1,6 @@
-﻿using Celin.AIS.Data;
-using Pidgin;
+﻿using Pidgin;
 using static Pidgin.Parser;
+using static Pidgin.Parser<char>;
 
 namespace Celin.Language.XL;
 
@@ -21,10 +21,8 @@ public record TableProperties(string? Id = null) : BaseProperties(Id)
 public class TableObject : BaseObject<TableProperties>
 {
     public CqlObject? Cql { get; set; }
-    public TableColumnsObject Columns =>
-        new TableColumnsObject(Key ?? throw new NullReferenceException(nameof(Columns)));
-    public TableRowsObject Rows =>
-        new TableRowsObject(Key ?? throw new NullReferenceException(nameof(Rows)));
+    public TableHeaderObject? Header { get; set; }
+    public TableBodyObject? Body { get; set; }
     protected KeyValuePair<TableProperties.Methods, object?[]>? _method = null;
     public void Method(TableProperties.Methods method, params object?[] pars) =>
         _method = new(method, pars);
@@ -41,6 +39,21 @@ public class TableObject : BaseObject<TableProperties>
     {
         get => _local;
         set => _local = value;
+    }
+    public new async Task SyncAsync()
+    {
+        await base.SyncAsync();
+        if (Cql != null) await Cql.SyncAsync();
+        if (Header != null)
+        {
+            Header.Id = Key;
+            await Header.SyncAsync();
+        }
+        if (Body != null)
+        {
+            Body.Id = Key;
+            await Body.SyncAsync();
+        }
     }
     protected TableProperties _local = new TableProperties();
     protected TableProperties _xl = new TableProperties();
@@ -74,6 +87,12 @@ public class TableParser : BaseParser
     static Parser<char, Action<TableObject>> Style =>
         Tok(nameof(Style)).Then(STRING_PARAMETER)
         .Select<Action<TableObject>>(s => table => table.LocalProperties.Style = s);
+    static Parser<char, Action<TableObject>> Header =>
+        TableHeaderParser.Header
+        .Select<Action<TableObject>>(h => table => table.Header = h);
+    static Parser<char, Action<TableObject>> Body =>
+        TableBodyParser.Parser
+        .Select<Action<TableObject>>(b => table => table.Body = b);
     static Parser<char, Action<TableObject>> Cql =>
         CqlParser.Query
         .Select<Action<TableObject>>(cql => table => table.Cql = cql);
@@ -95,6 +114,9 @@ public class TableParser : BaseParser
             table.Method(TableProperties.Methods.getTable, s);
             return table;
         });
+    public static Parser<char, Action<TableObject>> INVALID =>
+        Any.ManyString()
+        .Select<Action<TableObject>>(s => throw new Exception($"'{s}' is invalid"));
     public static Parser<char, IEnumerable<Action<TableObject>>> Actions =>
         OneOf(
             Name,
@@ -106,7 +128,10 @@ public class TableParser : BaseParser
             ShowHeaders,
             ShowTotals,
             Style,
-            Cql)
+            Header,
+            Body,
+            Cql,
+            INVALID)
         .Separated(DOT_SEPARATOR);
     public static Parser<char, BaseObject> Object =>
         OneOf(

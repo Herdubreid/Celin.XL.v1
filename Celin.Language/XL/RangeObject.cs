@@ -38,6 +38,11 @@ public class RangeObject : RangeBaseObject<RangeProperties, RangeObject>
             _address = _xl.Address;
         }
     }
+    public new async Task SyncAsync()
+    {
+        await base.SyncAsync();
+        if (Cql != null) await Cql.SyncAsync();
+    }
     public async Task Set(params BaseProperties[] properties)
     {
         foreach (var prop in properties)
@@ -137,9 +142,6 @@ public class RangeParser : BaseParser
     static Parser<char, Action<RangeObject>> Address =>
         Tok(nameof(Address)).Then(ADDRESS_PARAMETER)
         .Select<Action<RangeObject>>(a => range => range.LocalProperties.Address = a);
-    static Parser<char, Action<RangeObject>> ColumnCount =>
-        Tok(nameof(ColumnCount)).Then(INT_PARAMETER)
-        .Select<Action<RangeObject>>(i => range => range.LocalProperties.ColumnCount = i);
     static Parser<char, Action<RangeObject>> ColumnHidden =>
         Tok(nameof(ColumnHidden)).Then(BOOL_PARAMETER)
         .Select<Action<RangeObject>>(b => range => range.LocalProperties.ColumnHidden = b);
@@ -152,15 +154,9 @@ public class RangeParser : BaseParser
     static Parser<char, Action<RangeObject>> NumberFormat =>
         Tok(nameof(NumberFormat)).Then(STRING_MATRIX_PARAMETER)
         .Select<Action<RangeObject>>(m => range => range.LocalProperties.NumberFormat = m);
-    static Parser<char, Action<RangeObject>> Text =>
-        Tok(nameof(Text)).Then(STRING_MATRIX_PARAMETER)
-        .Select<Action<RangeObject>>(m => range => range.LocalProperties.Text = m);
     static Parser<char, Action<RangeObject>> Values =>
         Tok(nameof(Values)).Then(OBJECT_MATRIX_PARAMETER)
         .Select<Action<RangeObject>>(m => range => range.LocalProperties.Values = m);
-    static Parser<char, Action<RangeObject>> ValueTypes =>
-        Tok(nameof(ValueTypes)).Then(STRING_MATRIX_PARAMETER)
-        .Select<Action<RangeObject>>(m => range => range.LocalProperties.ValueTypes = m);
     static Parser<char, Action<RangeObject>> Style =>
         Tok(nameof(Style)).Then(STRING_PARAMETER)
         .Select<Action<RangeObject>>(s => range => range.LocalProperties.Style = s);
@@ -174,14 +170,11 @@ public class RangeParser : BaseParser
     public static Parser<char, IEnumerable<Action<RangeObject>>> Actions =>
         OneOf(
             Address,
-            ColumnCount,
             ColumnHidden,
             RowHidden,
             Formulas,
             NumberFormat,
-            Text,
             Values,
-            ValueTypes,
             Style,
             Cql)
         .Separated(DOT_SEPARATOR);
