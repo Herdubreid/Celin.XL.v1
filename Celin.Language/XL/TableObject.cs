@@ -114,9 +114,6 @@ public class TableParser : BaseParser
             table.Method(TableProperties.Methods.getTable, s);
             return table;
         });
-    public static Parser<char, Action<TableObject>> INVALID =>
-        Any.ManyString()
-        .Select<Action<TableObject>>(s => throw new Exception($"'{s}' is invalid"));
     public static Parser<char, IEnumerable<Action<TableObject>>> Actions =>
         OneOf(
             Name,
@@ -130,9 +127,8 @@ public class TableParser : BaseParser
             Style,
             Header,
             Body,
-            Cql,
-            INVALID)
-        .Separated(DOT_SEPARATOR);
+            Cql)
+        .SeparatedAndOptionallyTerminated(DOT_SEPARATOR);
     public static Parser<char, BaseObject> Object =>
         OneOf(
             TABLES.Actions(Actions),

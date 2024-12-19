@@ -16,6 +16,7 @@ public record WorksheetProperties(string? Id = null) : BaseProperties(Id)
     public string? TabColor { get; set; }
     public int? TabId { get; set; }
     public string? Visibility { get; set; }
+    public enum Methods { add }
     public WorksheetProperties() : this(Id: null) { }
 };
 public class WorksheetObject : BaseObject<WorksheetProperties>
@@ -25,6 +26,12 @@ public class WorksheetObject : BaseObject<WorksheetProperties>
         string? name = _xl.Name ?? _local.Name;
         return RangeObject.Range($"{(string.IsNullOrEmpty(name) ? "" : $"'{name}'!")}{address}");
     }
+    protected KeyValuePair<WorksheetProperties.Methods, object?[]>? _method = null;
+    public void Method(WorksheetProperties.Methods method, params object?[] pars) =>
+        _method = new(method, pars);
+    public override object?[] Params => _method == null
+        ? base.Params
+        : new object?[] { _method.Value.Key.ToString() }.Concat(_method.Value.Value).ToArray();
     public override string Key => _xl.Id ?? _local.Name ?? string.Empty;
     public override WorksheetProperties Properties
     {
@@ -49,49 +56,45 @@ public class WorksheetObject : BaseObject<WorksheetProperties>
 public class WorksheetParser : BaseParser
 {
     static Parser<char, Action<WorksheetObject>> Name =>
-        Base.Tok(nameof(Name)).Then(STRING_PARAMETER)
+        Tok(nameof(Name)).Then(STRING_PARAMETER)
         .Select<Action<WorksheetObject>>(s => sheet => sheet.LocalProperties.Name = s);
     static Parser<char, Action<WorksheetObject>> Position =>
-        Base.Tok(nameof(Position)).Then(INT_PARAMETER)
+        Tok(nameof(Position)).Then(INT_PARAMETER)
         .Select<Action<WorksheetObject>>(n => sheet => sheet.LocalProperties.Position = n);
     static Parser<char, Action<WorksheetObject>> EnableCalculation =>
-        Base.Tok(nameof(EnableCalculation)).Then(BOOL_PARAMETER)
+        Tok(nameof(EnableCalculation)).Then(BOOL_PARAMETER)
         .Select<Action<WorksheetObject>>(b => sheet => sheet.LocalProperties.EnableCalculation = b);
     static Parser<char, Action<WorksheetObject>> ShowGridlines =>
-        Base.Tok(nameof(ShowGridlines)).Then(BOOL_PARAMETER)
+        Tok(nameof(ShowGridlines)).Then(BOOL_PARAMETER)
         .Select<Action<WorksheetObject>>(b => sheet => sheet.LocalProperties.ShowGridlines = b);
     static Parser<char, Action<WorksheetObject>> ShowHeadings =>
-        Base.Tok(nameof(ShowHeadings)).Then(BOOL_PARAMETER)
+        Tok(nameof(ShowHeadings)).Then(BOOL_PARAMETER)
         .Select<Action<WorksheetObject>>(b => sheet => sheet.LocalProperties.ShowHeadings = b);
     static Parser<char, Action<WorksheetObject>> StandardWidth =>
-        Base.Tok(nameof(StandardWidth)).Then(DECIMAL_PARAMETER)
+        Tok(nameof(StandardWidth)).Then(DECIMAL_PARAMETER)
         .Select<Action<WorksheetObject>>(d => sheet => sheet.LocalProperties.StandardWidth = d);
     static Parser<char, Action<WorksheetObject>> TabColor =>
-        Base.Tok(nameof(TabColor)).Then(STRING_PARAMETER)
+        Tok(nameof(TabColor)).Then(STRING_PARAMETER)
         .Select<Action<WorksheetObject>>(s => sheet => sheet.LocalProperties.TabColor = s);
     static Parser<char, Action<WorksheetObject>> Visibility =>
-        Base.Tok(nameof(Visibility)).Then(
+        Tok(nameof(Visibility)).Then(
             OneOf(Base.Tok("Visible"), Base.Tok("Hidden"), Base.Tok("VeryHidden"))
             .Between(Char('('), Char(')')))
             .Select<Action<WorksheetObject>>(s => sheet => sheet.LocalProperties.Visibility = s);
     static Parser<char, WorksheetObject> WORKSHEET =>
-        Base.Tok("sheet").Then(STRING_PARAMETER.Optional())
+        Tok("sheet").Then(STRING_PARAMETER.Optional())
         .Select(w => new WorksheetObject(w.HasValue ? w.Value : null));
-    public static Parser<char, BaseObject> Parser =>
-        Map((sheet, actions) =>
-        {
-            foreach (var action in actions) action(sheet);
-            return sheet as BaseObject;
-        },
-        Skipper.Next(WORKSHEET).Before(Char('.')),
-            OneOf(
-                Name,
-                Position,
-                EnableCalculation,
-                ShowGridlines,
-                ShowHeadings,
-                StandardWidth,
-                TabColor,
-                Visibility)
-            .Separated(SkipWhitespaces.Then(Char('.'))));
+    public static Parser<char, IEnumerable<Action<WorksheetObject>>> Actions =>
+        OneOf(
+            Name,
+            Position,
+            EnableCalculation,
+            ShowGridlines,
+            ShowHeadings,
+            StandardWidth,
+            TabColor,
+            Visibility)
+        .SeparatedAndOptionallyTerminated(DOT_SEPARATOR);
+    public static Parser<char, BaseObject> Object =>
+        WORKSHEET.Actions(Actions).Cast<BaseObject>();
 }

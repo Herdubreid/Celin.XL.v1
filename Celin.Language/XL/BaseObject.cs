@@ -1,6 +1,8 @@
 ﻿using Pidgin;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using static Pidgin.Parser;
+using static Pidgin.Parser<char>;
 
 namespace Celin.Language.XL;
 
@@ -64,8 +66,10 @@ public static class ParserExtensions
         parser,
         actions.DotPrefix().Optional());
 }
-public class BaseParser
+public partial class BaseParser
 {
+    [GeneratedRegex(@"^('[^']+'!|\w+!)?[A-Za-z]{1,3}\d{0,7}(:[A-Za-z]{1,3}\d{0,7})?$")]
+    protected static partial Regex AddressPattern();
     protected static Parser<char, T> Tok<T>(Parser<char, T> p) =>
         Try(SkipWhitespaces.Then(p)).Before(SkipWhitespaces);
     protected static Parser<char, char> Tok(char value) => Tok(CIChar(value));
@@ -87,11 +91,11 @@ public class BaseParser
     protected static Parser<char, List<List<string?>>> STRING_MATRIX_PARAMETER =>
         Values<string?>.MATRIX.InBraces();
     protected static Parser<char, string> ADDRESS =>
-        AnyCharExcept(')').ManyString().Select(s =>
+        AnyCharExcept(')').ManyString().Where(s =>
         {
-            if (string.IsNullOrEmpty(s)) return string.Empty;
-            var cref = new CellReference(s);
-            return cref.Address;
+            if (string.IsNullOrEmpty(s)) return true;
+            var m = AddressPattern().Match(s);
+            return m.Success;
         });
     protected static Parser<char, string> ADDRESS_PARAMETER =>
         ADDRESS.InBraces();

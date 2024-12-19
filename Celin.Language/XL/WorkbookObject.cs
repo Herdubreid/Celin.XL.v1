@@ -1,6 +1,7 @@
 ﻿using Celin.AIS.Data;
 using Pidgin;
 using static Pidgin.Parser;
+using static Pidgin.Parser<char>;
 
 namespace Celin.Language.XL;
 
@@ -27,12 +28,18 @@ public class WorkbookObject<T> : BaseObject<T> where T : new()
 public class WorkbookParser : BaseParser
 {
     static Parser<char, string> XL =>
-        Base.Tok("xl").Before(DOT_SEPARATOR);
-    public static Parser<char, BaseObject> Parser =>
-        XL
-        .Then(
-            OneOf(
-                TableParser.Object,
-                RangeParser.Range,
-                WorksheetParser.Parser));
+        Tok("xl").Before(DOT_SEPARATOR);
+    public static Parser<char, string> Comment =>
+        String("/*")
+        .Then(Any.Until(Tok("*/")))
+        .Select(s => new string(s.ToArray()));
+    public static Parser<char, (string Comment, BaseObject Object)> Parser =>
+        Map((s, o) => (s.HasValue ? s.Value : string.Empty, o),
+        Comment.Optional(),
+        SkipWhitespaces.
+            Then(XL.
+                Then(OneOf(
+                    TableParser.Object,
+                    RangeParser.Object,
+                    WorksheetParser.Object))));
 }

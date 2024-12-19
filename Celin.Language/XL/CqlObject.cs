@@ -42,7 +42,7 @@ public class CqlParser : BaseParser
         .Select<Action<CqlObject>>(os => query => query.Properties.Order.Add(os));
     public static Parser<char, IEnumerable<Action<CqlObject>>> OPTIONAL =>
         OneOf(FILTER,ORDER)
-        .Separated(DOT_SEPARATOR);
+        .SeparatedAndOptionallyTerminated(DOT_SEPARATOR);
     static Parser<char, List<Action<CqlObject>>> REQUIRED =>
         Map((cql, max, fields) =>
         {

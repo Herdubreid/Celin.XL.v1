@@ -177,7 +177,7 @@ public class RangeParser : BaseParser
             Values,
             Style,
             Cql)
-        .Separated(DOT_SEPARATOR);
-    public static Parser<char, BaseObject> Range =>
+        .SeparatedAndOptionallyTerminated(DOT_SEPARATOR);
+    public static Parser<char, BaseObject> Object =>
         RANGE.Actions(Actions).Cast<BaseObject>();
 }
