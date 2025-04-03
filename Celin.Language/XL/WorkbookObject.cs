@@ -1,5 +1,4 @@
-﻿using Celin.AIS.Data;
-using Pidgin;
+﻿using Pidgin;
 using static Pidgin.Parser;
 using static Pidgin.Parser<char>;
 
@@ -33,7 +32,7 @@ public class WorkbookParser : BaseParser
         String("/*")
         .Then(Any.Until(Tok("*/")))
         .Select(s => new string(s.ToArray()));
-    public static Parser<char, (string Comment, BaseObject Object)> Parser =>
+    public static Parser<char, (string Comment, BaseObject Object)> Object =>
         Map((s, o) => (s.HasValue ? s.Value : string.Empty, o),
         Comment.Optional(),
         SkipWhitespaces.
