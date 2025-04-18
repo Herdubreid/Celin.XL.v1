@@ -4,8 +4,8 @@ using static Pidgin.Parser;
 namespace Celin.Language.XL;
 
 public record TableBodyProperties(
-    List<List<object?>>? Values,
-    List<string?>? NumberFormat = null)
+    IEnumerable<IEnumerable<object?>>? Values,
+    IEnumerable<string?>? NumberFormat = null)
 {
     public TableBodyProperties() : this(Values: null) { }
 }
