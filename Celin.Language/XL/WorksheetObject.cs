@@ -51,7 +51,7 @@ public class WorksheetObject : BaseObject<WorksheetProperties>
         _local = new WorksheetProperties { Name = sheetName };
     }
     public static WorksheetObject Sheet(string? name = null)
-        => new WorksheetObject(name);
+        => new(name);
 }
 public class WorksheetParser : BaseParser
 {
